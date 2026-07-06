@@ -206,7 +206,8 @@ the two layers explicit is what stops that imbalance from recurring.
 
 | Dimension | What it captures | Kind | Endless slot | Status |
 |---|---|---|---|---|
-| **Story arc / shape** | emotional trajectory, matched to the Reagan six | contract | `Shape` | ✅ shipped (deterministic) |
+| **Emotional arc** | the *valence* trajectory, matched to the Reagan six | contract | `Shape` | ✅ shipped (deterministic) |
+| **Structural template** | the *functional* plot skeleton — three-act, Freytag, hero's journey, seven-point, Save the Cat, Kishōtenketsu… | contract† | Endless beat planner / genre layer | later |
 | **Characters (flat)** | wants, appearance, secret, one emotional snapshot | contract | `WorldSeed.characters` | ✅ shipped (`--deep`) |
 | **Locations** | the places the action occupies | contract | `WorldSeed.locations` | ✅ shipped (`--deep`) |
 | **Objects / Chekhov guns** | props that carry narrative weight | contract | `WorldSeed.chekhov_objects` | ✅ shipped (`--deep`) |
@@ -235,6 +236,32 @@ both repos.
 ‡ *Analysis-or-joint:* extractable and insightful now, but Endless has no slot,
 so it's a lens until one is added (timeline also waits on non-linear generation).
 
+**Emotional arc vs. structural template — two orthogonal sub-axes of "shape."**
+A survey of storytelling frameworks (epubli's "15 Storytelling-Methoden": three-,
+four-, five-act/Freytag, seven-point, hero's journey, Story Circle, Save the Cat,
+Story Spine, Romancing the Beat, Kishōtenketsu, …) makes clear that all fifteen
+are the *same kind of thing* — functional plot skeletons — and none is a new
+dimension. They're templates on one axis. But they force a split we'd been
+blurring: a story has **both** an emotional arc (the valence curve — what we
+classify) **and** a structural template (the functional skeleton — which we
+don't), and the two are independent. A three-act story can be Man-in-Hole *or*
+Tragedy; the act skeleton and the fortune curve are set separately. Classifying
+*which template* a story follows is a real deconstruction target, distinct from
+the Reagan arc, and it feeds Endless's beat planner (plan from "hero's journey",
+not just from a valence shape). Several templates are genre-bound — Romancing the
+Beat is romance, Save the Cat is screen — which is exactly why **genre** and
+**structural template** couple: genre selects a template.
+
+**A boundary both tools share: the conflict-arc assumption.** The Reagan six and
+Freytag alike assume a story is a *tension curve climbing to a climax*. Kishōtenketsu
+(ki–shō–ten–ketsu: introduction, development, twist, reconciliation) is a
+four-act structure with **no central conflict and no tension climax** — the "twist"
+recontextualizes rather than confronts. Our emotional-arc classifier would force
+such a story onto a valence curve it doesn't have, and Endless can't generate one.
+Naming this honestly (à la §7): the whole system is currently conflict-driven by
+assumption, and conflict-optional structures are outside it until both sides model
+the structural-template axis rather than the valence arc alone.
+
 ### 8.3 What Phase 0 extracts today, and its shallowness
 
 Six dimensions ship, but they are **flat where the story is deep**, and the whole
@@ -261,9 +288,11 @@ telling layer beyond prose style is missing:
    relationship changes. Turns flat characters into arcs — highest
    insight-per-effort. Joint change: add a trajectory to `Character` here **and**
    a consumption slot in Endless. This *is* the v1 round-trip work in §9.
-3. **Act hierarchy.** Make beats nest. Small schema change (a tree instead of a
-   list), a clearer structural picture, and act boundaries Endless can read as a
-   pacing budget.
+3. **Act hierarchy + structural template.** Same structural layer, so build them
+   together: make beats nest (a tree, not a list) *and* classify which named
+   skeleton the nesting follows (three-act, hero's journey, seven-point…). Act
+   boundaries give Endless a pacing budget; the template lets it plan from a
+   skeleton, not just a valence shape.
 4. **Per-character voice**, then **relationships**, when multi-character stories
    demand them — both contract-adjacent, both joint changes with Endless.
 5. **Genre** classification — cheap to extract, and Endless's genre layer gives it
@@ -365,4 +394,6 @@ Real sentiment model, labeled eval set, round-trip fidelity metric, corpus-level
 comparison, better sentence segmentation. The dimensions still on the map — POV,
 character development, act hierarchy, per-character voice, relationships, genre,
 conflict/stakes, pacing, timeline, themes, tone — are laid out across the two
-layers in §8; the sequencing is in §9.
+layers in §8; the sequencing is in §9. Also open: structural-template
+classification (three-act / hero's journey / …), and lifting the conflict-arc
+assumption so conflict-optional structures like Kishōtenketsu fit (§8.2).
