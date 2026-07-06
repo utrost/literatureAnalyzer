@@ -212,6 +212,25 @@ class StoryClassification(BaseModel):
     notes: str | None = None
 
 
+class WorldDiff(BaseModel):
+    """Per-chapter world observation (S1, book scale).
+
+    The entities seen or updated within one section. ``merge_world`` folds an
+    ordered list of these into a single global ``WorldSeed``. This is a *diff*
+    against the accumulating graph (new + updated entities), not yet a full
+    op-based event log — story-time event-sourcing (adds/removes/field-ops) is
+    the deferred refinement. The chunked Lector is told the entities-so-far so it
+    reuses their ids, which is how recurring characters resolve across chapters.
+    """
+
+    section_id: str
+    characters: list[Character] = Field(default_factory=list)
+    locations: list[Location] = Field(default_factory=list)
+    chekhov_objects: list[ChekhovObject] = Field(default_factory=list)
+    secrets: list[Secret] = Field(default_factory=list)
+    protagonist_id: str | None = None
+
+
 class StoryAnalysis(BaseModel):
     """Top-level deconstruction of one story.
 
@@ -232,6 +251,9 @@ class StoryAnalysis(BaseModel):
     # A flat short story: structure is a single chapter, section_arcs is empty.
     structure: Section | None = None
     section_arcs: list[SectionArc] = Field(default_factory=list)
+    # S1 (book scale): per-chapter world observations behind the merged `world`.
+    # Provenance + the seed of a story-time event log. Empty for whole-text extraction.
+    world_diffs: list[WorldDiff] = Field(default_factory=list)
 
 
 # ---------- Divergence (the fidelity critic, §8.5) --------------------------

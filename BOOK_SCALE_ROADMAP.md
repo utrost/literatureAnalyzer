@@ -49,9 +49,11 @@ The prerequisite everything else depends on. Additive schema work; no scale yet.
 - **Deferred to S1:** mapping beats → sections (populating `beat_ids`) needs the LLM beats and the chunked Lector; per-level *generation* is S2. S0 lays the structure; S1/S2 fill and consume it.
 - **Exit (met):** schemas + segmentation landed; all existing tests pass unchanged; a chaptered text yields a real tree + per-chapter arcs, a short story a one-node tree.
 
-### Phase S1 — Chunked analysis + world graph *(Analyzer)* → **R2 novella**
+### Phase S1 — Chunked analysis + world graph *(Analyzer)* → **R2 novella** — 🚧 in progress
 
 The biggest single lift on the analysis side.
+
+*Increment 1 shipped:* per-chapter extraction (`roles/chunked_lector.py` + prompt) emitting a `WorldDiff` per chapter, fed the entities-so-far so recurring characters reuse ids; a **deterministic, fully-tested merge** (`worldmerge.merge_world`) that folds the ordered diffs into one `WorldSeed`, with entity resolution by id (primary) and normalized-name backstop, state-evolves-to-latest field rules, and secret/`known_by` accumulation. `analyze()` routes chaptered texts through the chunked path automatically (flat stories keep the whole-text Lector, unchanged); `StoryAnalysis.world_diffs` keeps per-chapter provenance. *Still open in S1:* a true op-based story-time **event log** (adds/removes/field-ops) and materialized snapshots, LLM-assisted **coreference** beyond exact/normalized names ("the old man" = "Silas"), **SQLite** storage + chunk-level incremental cache, and a labeled **entity-resolution eval**.
 
 - **Chunked Lector:** per-chapter extraction emitting typed **diffs** (entities added/changed, relationships, secrets, events) rather than one whole-book dump.
 - **Diff-merge + entity resolution:** coalesce per-chapter diffs into a global graph; resolve coreference ("the old man" = "Silas") across chapters.

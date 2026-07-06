@@ -30,6 +30,7 @@ src/lit_analyzer/
 ├── analyzer.py         # spine: runs deterministic passes, optional --deep passes
 ├── segment.py          # words / sentences / paragraphs / windows / chapter_spans (deterministic)
 ├── structure.py        # Section-tree hierarchy from text (S0, book scale)
+├── worldmerge.py       # fold per-chapter WorldDiffs into one world (S1, book scale)
 ├── sentiment.py        # VADER sentiment (deterministic), lexicon fallback
 ├── lexicon.py          # tiny built-in sentiment lexicon (bag-of-words fallback)
 ├── arc.py              # arc sampling + shape classification (deterministic)
@@ -43,7 +44,7 @@ src/lit_analyzer/
 ├── llm.py              # slim LiteLLM+Instructor wrapper, lazy-imported
 ├── schemas.py          # shared contract + analysis-only types
 ├── prompts/*.v1.md     # versioned prompts for the LLM roles
-└── roles/              # lector.py, beat_labeler.py, reskinner.py, beat_recaster.py
+└── roles/              # lector, chunked_lector, beat_labeler, classifier, reskinner, beat_recaster
 examples/               # sample stories (public-domain / self-authored)
 tests/                  # deterministic-only pytest
 config.example.yaml     # canonical default config (--deep only)

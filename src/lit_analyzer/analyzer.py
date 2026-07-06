@@ -65,9 +65,17 @@ def analyze(
     if world is not None:
         analysis.world = world
     elif deep_config is not None:
-        from .roles import lector  # deferred: only paid on a real deep call
+        if _is_chaptered(story_structure):
+            # S1: chunked per-chapter extraction, merged into one world.
+            diffs = _chunked_world_diffs(deep_config, text)
+            from . import worldmerge
 
-        analysis.world = lector.extract_world(deep_config, text=text)
+            analysis.world = worldmerge.merge_world(diffs)
+            analysis.world_diffs = diffs
+        else:
+            from .roles import lector  # deferred: only paid on a real deep call
+
+            analysis.world = lector.extract_world(deep_config, text=text)
 
     if beats is not None:
         analysis.beats = beats
@@ -84,6 +92,31 @@ def analyze(
         analysis.classification = classifier.classify_story(deep_config, text=text)
 
     return analysis
+
+
+def _is_chaptered(story_structure) -> bool:
+    """True when the deterministic structure found more than one chapter."""
+    return story_structure is not None and story_structure.level == "book"
+
+
+def _chunked_world_diffs(deep_config, text: str):
+    """Run the chunked Lector chapter-by-chapter, feeding entities-so-far forward
+    so recurring characters keep their ids. Returns the ordered WorldDiffs."""
+    from . import worldmerge
+    from .roles import chunked_lector
+
+    diffs = []
+    for i, (_title, body) in enumerate(segment.chapter_spans(text)):
+        if len(segment.words(body)) < _MIN_SECTION_WORDS:
+            continue
+        diff = chunked_lector.extract_chapter(
+            deep_config,
+            section_id=f"ch{i + 1}",
+            text=body,
+            entities_so_far=worldmerge.entities_summary(diffs),
+        )
+        diffs.append(diff)
+    return diffs
 
 
 def _section_arcs(text: str, *, segments: int) -> list[SectionArc]:
