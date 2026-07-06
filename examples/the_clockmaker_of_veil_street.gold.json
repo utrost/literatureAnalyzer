@@ -1,0 +1,12 @@
+{
+  "_comment": "Gold entity labels for the entity-resolution eval (entity_eval.score_world_diffs). Maps every NAME or epithet a character may be extracted under to its true entity id. The interesting cases: Silas is called 'the old man' in chapters II and IV, and 'the master' once — a good run reuses his id for those mentions; a weak one mints new ids and the eval reports a missed merge.",
+  "Ada": "ada",
+  "Silas": "silas",
+  "Silas Vane": "silas",
+  "the old man": "silas",
+  "the master": "silas",
+  "Bram": "bram",
+  "Ada's father": "father",
+  "her father": "father",
+  "Ada's late father": "father"
+}
