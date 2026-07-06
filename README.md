@@ -8,6 +8,9 @@ Feed it a story and it reconstructs the four artifacts Endless is built around â
 using the **same schemas**, so what this produces is what Endless consumes.
 Analyze a story you love, then regenerate in its shape and voice.
 
+> **New here?** The [**User Guide**](./USER_GUIDE.md) walks through both tools and
+> their combined workflows (round-trip, transposition, voice transfer) end to end.
+
 ## What it extracts
 
 | artifact | how | what you get |
