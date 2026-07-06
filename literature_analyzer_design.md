@@ -197,10 +197,16 @@ its insight value is high enough to justify not closing a loop.
 
 ### 8.2 The dimension map
 
+A story splits into two layers, and the map has to cover both: the **story** (what
+happens — events, people, world) and the **telling** (how it's narrated — voice,
+perspective, tone). Phase 0 came out strong on story and thin on telling; keeping
+the two layers explicit is what stops that imbalance from recurring.
+
+**Story layer — what happens:**
+
 | Dimension | What it captures | Kind | Endless slot | Status |
 |---|---|---|---|---|
 | **Story arc / shape** | emotional trajectory, matched to the Reagan six | contract | `Shape` | ✅ shipped (deterministic) |
-| **Prose style** | sentence/diction/distance axes + exemplars | contract | `StyleProfile` | ✅ shipped (deterministic) |
 | **Characters (flat)** | wants, appearance, secret, one emotional snapshot | contract | `WorldSeed.characters` | ✅ shipped (`--deep`) |
 | **Locations** | the places the action occupies | contract | `WorldSeed.locations` | ✅ shipped (`--deep`) |
 | **Objects / Chekhov guns** | props that carry narrative weight | contract | `WorldSeed.chekhov_objects` | ✅ shipped (`--deep`) |
@@ -208,16 +214,31 @@ its insight value is high enough to justify not closing a loop.
 | **Character development** | each character's *change* across the story | contract† | — (needs new field) | ⏳ next (v1) |
 | **Act hierarchy** | acts → sequences → scenes nesting the flat beats | contract† | — (needs nested `BeatPlan`) | ⏳ v1 |
 | **Relationships / social graph** | who's tied to whom, and how it shifts | contract† | — (needs edges on the graph) | later |
-| **Timeline / chronology** | story-time vs. narration-order; flashbacks, threads | analysis-only‡ | — | later |
+| **Conflict / stakes** | the dramatic question; what's at risk and against what | analysis‡ | — (Endless scores it, no slot) | later |
+| **Timeline / chronology** | story-time vs. narration-order; flashbacks, threads | analysis‡ | — | later |
 | **Themes / motifs** | recurring images and the question it circles | analysis-only | — | later |
 
+**Telling layer — how it's narrated:**
+
+| Dimension | What it captures | Kind | Endless slot | Status |
+|---|---|---|---|---|
+| **Prose style** | sentence/diction/distance axes + exemplars | contract | `StyleProfile` | ✅ shipped (deterministic) |
+| **POV / focalization** | first/third/omniscient; whose eyes, and where it shifts | contract | `Beat.pov` (shipped, unextracted!) | ⏳ next |
+| **Per-character voice** | each character's idiolect, distinct from the narrator's | contract† | `Character.voice_profile_id` | later |
+| **Genre** | the convention set overlaid on the shape (mystery, romance…) | contract† | Endless's genre layer (§4 there) | later |
+| **Pacing** | scene-vs-summary rhythm — where time dilates and compresses | analysis‡ | — | later |
+| **Tone / attitude** | irony, comic vs. tragic register, the narrator's stance | analysis-only | — | later |
+
 † *Contract-adjacent:* a contract dimension in spirit, but the matching Endless
-slot doesn't exist yet, so shipping it is a joint change across both repos.
-‡ *Analysis-only until* Endless can generate non-linearly.
+slot doesn't exist yet (or isn't wired), so shipping it is a joint change across
+both repos.
+‡ *Analysis-or-joint:* extractable and insightful now, but Endless has no slot,
+so it's a lens until one is added (timeline also waits on non-linear generation).
 
 ### 8.3 What Phase 0 extracts today, and its shallowness
 
-Six dimensions ship, but three of them are **flat where the story is deep**:
+Six dimensions ship, but they are **flat where the story is deep**, and the whole
+telling layer beyond prose style is missing:
 
 - A **character** is a static snapshot — one `wants`, one `emotional_state`. But a
   story is precisely the *change* in that snapshot. This is the single biggest
@@ -225,24 +246,36 @@ Six dimensions ship, but three of them are **flat where the story is deep**:
 - **Beats** are a flat list, when real structure nests (acts → scenes → beats).
 - The **social graph** is implicit — secrets carry a `known_by`, but there are no
   relationship edges.
+- **POV goes unextracted even though Endless already has the slot.** `Beat.pov` is
+  a shipped field Endless generates from; we don't recover it. That's the cheapest
+  loop to close — a contract dimension with a waiting slot and no schema work.
 
 ### 8.4 The recommended order (feeds the phase ladder)
 
-1. **Character development.** Reuse the beat segmentation already extracted:
+1. **POV / focalization.** The cheapest loop to close: `Beat.pov` already exists
+   in Endless, so this is extraction only — no schema change on either side.
+   Detect narrative person and focalizer per beat and flag where they shift.
+   Do it first because it's contract, shipped-slot, and nearly free.
+2. **Character development.** Reuse the beat segmentation already extracted:
    sample each character's emotional state per beat, track want→need shifts and
    relationship changes. Turns flat characters into arcs — highest
    insight-per-effort. Joint change: add a trajectory to `Character` here **and**
    a consumption slot in Endless. This *is* the v1 round-trip work in §9.
-2. **Act hierarchy.** Make beats nest. Small schema change (a tree instead of a
+3. **Act hierarchy.** Make beats nest. Small schema change (a tree instead of a
    list), a clearer structural picture, and act boundaries Endless can read as a
    pacing budget.
-3. **Relationships** when multi-character stories demand it.
-4. **Timeline** and **themes** last — high insight, but analysis-only until
-   Endless can consume them, so they don't compound with the generation side yet.
+4. **Per-character voice**, then **relationships**, when multi-character stories
+   demand them — both contract-adjacent, both joint changes with Endless.
+5. **Genre** classification — cheap to extract, and Endless's genre layer gives it
+   a home; slot it in once the layer is wired there.
+6. **Conflict/stakes, pacing, timeline, themes, tone** last — high insight, but
+   analysis-or-joint until Endless has slots, so they don't compound with the
+   generation side yet.
 
-The rule of thumb: **deepen the contract before widening into analysis-only.** A
-tool that deconstructs a story into exactly what its sibling can rebuild is worth
-more than one that reports ten disconnected views.
+The rule of thumb: **deepen the contract before widening into analysis-only**, and
+**recover a shipped Endless slot before inventing a new one.** A tool that
+deconstructs a story into exactly what its sibling can rebuild is worth more than
+one that reports a dozen disconnected views.
 
 ---
 
@@ -278,6 +311,7 @@ way to see a whole shelf.
 ## 10. What's NOT here yet
 
 Real sentiment model, labeled eval set, round-trip fidelity metric, corpus-level
-comparison, better sentence segmentation, per-character voice extraction. The
-dimensions still on the map — character development, act hierarchy, relationships,
-timeline, themes — are laid out in §8; the sequencing is in §9.
+comparison, better sentence segmentation. The dimensions still on the map — POV,
+character development, act hierarchy, per-character voice, relationships, genre,
+conflict/stakes, pacing, timeline, themes, tone — are laid out across the two
+layers in §8; the sequencing is in §9.
