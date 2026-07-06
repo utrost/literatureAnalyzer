@@ -69,13 +69,10 @@ def measure(text: str) -> tuple[StyleProfile, StyleEvidence]:
     _density = _bucket(modifier_ratio, 0.02, 0.045)
     density_bucket = {"low": "sparse", "medium": "medium", "high": "lush"}[_density]
 
-    # POV: more first- than third-person pronouns reads as close first person.
-    if first_person > third_person:
-        psychic_distance = "close"
-    elif third_person > 3 * max(first_person, 1):
-        psychic_distance = "medium"
-    else:
-        psychic_distance = "medium"
+    # POV proxy: first-person-dominant prose reads as close; otherwise medium.
+    # "far" (distant summary narration) isn't reliably detectable from pronoun
+    # counts alone, so we don't claim it — honest over a guess (design doc §7).
+    psychic_distance = "close" if first_person > third_person else "medium"
 
     # Register: contractions + low Latinate -> colloquial; the opposite -> formal.
     if contractions > word_count * 0.01 and latinate_bucket == "low":
