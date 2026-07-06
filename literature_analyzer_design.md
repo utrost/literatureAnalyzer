@@ -119,6 +119,42 @@ The top two run always and offline. The bottom two run under `--deep` with a
 configured model. `StoryAnalysis` bundles all four (world/beats `None` without
 `--deep`).
 
+### 4.2 Artifacts and reuse
+
+The determinism boundary decides what's worth persisting. The deterministic
+passes are instant and offline — recomputing is cheaper than a disk read, so
+they're never cached. The `--deep` passes are LLM calls, and *those* are stored,
+the same lesson Endless's `checkpoint.py` opens with ("never lose a 12-minute
+run").
+
+The store (`store.py`) is **content-addressed**: the key is a hash of the source
+text, so a story always lands in the same directory and a re-run reuses its
+world and beats instead of re-calling the model.
+
+```
+out/analyses/<hash>/
+    meta.json      # source, text_sha, segments, shape, timestamps
+    world.json     # WorldSeed  — reused whenever present (depends only on text)
+    beats.json     # BeatPlan   — reused only if --segments matches (beats depend on shape)
+    analysis.json  # the full StoryAnalysis
+```
+
+The reuse rule follows the data dependencies: the world graph depends only on the
+text (the cache key), so it's always reused; beats depend on the classified
+shape, which depends on `--segments`, so they're reused only when the cached run
+used the same segment count. `--fresh` forces recompute.
+
+One hook serves three jobs. `analyze(..., world=, beats=)` lets a caller inject
+those artifacts; the store passes cached ones, and — because the files are plain
+JSON on disk — a *user* can hand-edit `world.json` and the next run honors the
+edit instead of re-extracting. That's the same **modify-then-reuse** loop Endless
+gets from editing `world.json` and `--resume`-ing. The analyzer stays a pure
+function (no I/O); the store layer owns persistence.
+
+Still manual (see §9): reloading a saved `analysis.json` to re-render without
+recomputing, and a wired bridge that emits an extracted style/world *into
+Endless's* library and run layout to close the round-trip (§8.5) without hand-copying.
+
 ---
 
 ## 5. Data Models
@@ -410,6 +446,17 @@ fingerprint across a body of work" (§9).
 - LLM Lector and beat labeler behind `--deep`, with versioned prompts.
 - `deconstruct` CLI (Markdown + JSON), packaged as `lit_analyzer`.
 - Schema contract with Endless; deterministic-only test suite.
+- **Content-addressed artifact store (§4.2):** `--deep` world/beats cached under
+  `out/analyses/<hash>/`, reused on re-run, hand-editable for modify-then-reuse.
+  `--fresh` recomputes. Deterministic passes stay uncached (instant).
+
+**Reuse gaps still open (v1):** two lifecycle pieces the store sets up but doesn't
+finish. (a) A `deconstruct --from <analysis.json>` to reload a saved analysis and
+re-render — or re-run *only* the deep passes over a cached deterministic base —
+without recomputing. (b) A **bridge to Endless**: emit an extracted `StyleProfile`
+as a `data/styles/*.yaml` and a `WorldSeed`/`BeatPlan` into Endless's run layout,
+so the round-trip (§8.5) is wired rather than hand-copied. Both are small; both
+want the store that now exists.
 
 **v0.5 — Sharper measurement.** Replace the bag-of-words lexicon with a real
 sentiment model (VADER, NRC-VAD, or a cheap LLM sentiment pass) and measure

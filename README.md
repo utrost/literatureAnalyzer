@@ -44,6 +44,14 @@ uv run deconstruct examples/the_lantern.txt --deep
 `provider: ollama` is auto-normalized to `ollama_chat`, and local models use
 Instructor's JSON mode — the same lessons Endless learned the hard way apply here.
 
+**Deep results are cached.** The LLM world/beats land in a content-addressed
+store under `out/analyses/<hash>/` (keyed on the source text), so re-running the
+same story reuses them instead of re-calling the model. The world is reused
+whenever present; beats are reused only if `--segments` is unchanged. Pass
+`--fresh` to recompute, `--store-dir` to relocate the cache. The artifacts are
+plain JSON — hand-edit `world.json` and the next run honors your edit
+(modify-then-reuse). The deterministic passes are instant, so they're never cached.
+
 ## The contract with Endless
 
 The output schemas (`Shape`, `StyleProfile`, `WorldSeed`, `BeatPlan`) are copied

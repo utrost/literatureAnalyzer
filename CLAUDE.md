@@ -34,6 +34,7 @@ src/lit_analyzer/
 ├── metrics.py          # prose → StyleProfile (deterministic)
 ├── report.py           # StoryAnalysis → Markdown
 ├── config.py           # YAML → Pydantic (only for --deep)
+├── store.py            # content-addressed cache for --deep artifacts (§4.2)
 ├── llm.py              # slim LiteLLM+Instructor wrapper, lazy-imported
 ├── schemas.py          # shared contract + analysis-only types
 ├── prompts/*.v1.md     # versioned prompts for the LLM roles

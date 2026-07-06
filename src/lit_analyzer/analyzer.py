@@ -9,7 +9,7 @@ directly — the roles do — so this module imports cleanly with no LLM deps.
 from __future__ import annotations
 
 from . import arc, metrics
-from .schemas import StoryAnalysis
+from .schemas import BeatPlan, StoryAnalysis, WorldSeed
 
 
 def analyze(
@@ -18,12 +18,20 @@ def analyze(
     source: str = "text",
     segments: int = arc.DEFAULT_SEGMENTS,
     deep_config: "object | None" = None,
+    world: WorldSeed | None = None,
+    beats: BeatPlan | None = None,
 ) -> StoryAnalysis:
     """Deconstruct ``text`` into a StoryAnalysis.
 
-    ``deep_config`` is a ``DeepConfig`` (from ``config``) or ``None``. When
-    provided, the LLM roles run to fill ``world`` and ``beats``; the import of
-    those roles is deferred so the deterministic path never needs LLM deps.
+    The deterministic passes (arc, metrics) always run. The world graph and
+    beats are filled in one of three ways, checked in order:
+
+    1. A supplied ``world`` / ``beats`` wins outright — this is the hook the
+       store uses to inject cached artifacts, and that a user uses to inject a
+       hand-edited ``world.json`` (modify-then-reuse). No model is called.
+    2. Otherwise, if ``deep_config`` is set, the LLM roles compute them. The
+       role imports are deferred so the deterministic path needs no LLM deps.
+    3. Otherwise they stay ``None``.
     """
     style, evidence = metrics.measure(text)
     shape = arc.classify(text, segments=segments)
@@ -36,13 +44,18 @@ def analyze(
         shape=shape,
     )
 
-    if deep_config is not None:
-        # Deferred import: only paid when --deep is actually used.
-        from .roles import beat_labeler, lector
+    if world is not None:
+        analysis.world = world
+    elif deep_config is not None:
+        from .roles import lector  # deferred: only paid on a real deep call
 
         analysis.world = lector.extract_world(deep_config, text=text)
-        analysis.beats = beat_labeler.label_beats(
-            deep_config, text=text, shape=shape.best
-        )
+
+    if beats is not None:
+        analysis.beats = beats
+    elif deep_config is not None:
+        from .roles import beat_labeler  # deferred
+
+        analysis.beats = beat_labeler.label_beats(deep_config, text=text, shape=shape.best)
 
     return analysis
