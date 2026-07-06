@@ -231,6 +231,23 @@ class WorldDiff(BaseModel):
     protagonist_id: str | None = None
 
 
+class WorldEvent(BaseModel):
+    """One entry in the story-time event log (S1, book scale).
+
+    Derived deterministically from the ordered per-chapter ``WorldDiff``s: it
+    records *when* something happened (which section) so the world is a history,
+    not just a snapshot — "Mara learned the lens exists in chapter 4". Snapshots
+    at any point are materialized by folding the diffs up to that section.
+    """
+
+    seq: int = Field(ge=0, description="Global order across the whole story.")
+    section_id: str
+    kind: Literal["introduced", "state_changed", "secret_learned"]
+    entity_kind: Literal["character", "location", "object", "secret"]
+    entity_id: str
+    note: str | None = None
+
+
 class StoryAnalysis(BaseModel):
     """Top-level deconstruction of one story.
 
@@ -251,9 +268,10 @@ class StoryAnalysis(BaseModel):
     # A flat short story: structure is a single chapter, section_arcs is empty.
     structure: Section | None = None
     section_arcs: list[SectionArc] = Field(default_factory=list)
-    # S1 (book scale): per-chapter world observations behind the merged `world`.
-    # Provenance + the seed of a story-time event log. Empty for whole-text extraction.
+    # S1 (book scale): per-chapter world observations behind the merged `world`,
+    # and the story-time event log derived from them. Empty for whole-text extraction.
     world_diffs: list[WorldDiff] = Field(default_factory=list)
+    world_events: list[WorldEvent] = Field(default_factory=list)
 
 
 # ---------- Divergence (the fidelity critic, §8.5) --------------------------

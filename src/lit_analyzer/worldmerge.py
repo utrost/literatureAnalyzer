@@ -26,8 +26,12 @@ import re
 from .schemas import Character, ChekhovObject, Location, Secret, WorldDiff, WorldSeed
 
 
-def _norm(name: str) -> str:
+def norm_name(name: str) -> str:
+    """Normalize a name for cross-chapter matching (shared with worldlog)."""
     return re.sub(r"[^a-z0-9]+", " ", name.lower()).strip()
+
+
+_norm = norm_name  # internal alias
 
 
 def _resolve_id(entity, by_id: dict, name_to_id: dict[str, str]) -> str | None:

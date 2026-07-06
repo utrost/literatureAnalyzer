@@ -68,10 +68,11 @@ def analyze(
         if _is_chaptered(story_structure):
             # S1: chunked per-chapter extraction, merged into one world.
             diffs = _chunked_world_diffs(deep_config, text)
-            from . import worldmerge
+            from . import worldlog, worldmerge
 
             analysis.world = worldmerge.merge_world(diffs)
             analysis.world_diffs = diffs
+            analysis.world_events = worldlog.build_event_log(diffs)
         else:
             from .roles import lector  # deferred: only paid on a real deep call
 

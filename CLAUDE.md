@@ -31,6 +31,8 @@ src/lit_analyzer/
 ├── segment.py          # words / sentences / paragraphs / windows / chapter_spans (deterministic)
 ├── structure.py        # Section-tree hierarchy from text (S0, book scale)
 ├── worldmerge.py       # fold per-chapter WorldDiffs into one world (S1, book scale)
+├── worldlog.py         # story-time event log + snapshot materialization (S1)
+├── eventstore.py       # SQLite persistence for the event log (S1, stdlib sqlite3)
 ├── sentiment.py        # VADER sentiment (deterministic), lexicon fallback
 ├── lexicon.py          # tiny built-in sentiment lexicon (bag-of-words fallback)
 ├── arc.py              # arc sampling + shape classification (deterministic)
