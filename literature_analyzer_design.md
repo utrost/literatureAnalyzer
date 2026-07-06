@@ -492,6 +492,9 @@ ties" must survive the jump to a new world. That's the make-or-break LLM judgmen
 
 ## 9. Build phases
 
+*Scaling from short stories to book length is its own multi-phase effort spanning
+both repos — see [`BOOK_SCALE_ROADMAP.md`](./BOOK_SCALE_ROADMAP.md).*
+
 **v0 — Phase 0. ✅ shipped.**
 - Deterministic arc classifier (sampled sentiment → Reagan six by z-scored RMSE).
 - Deterministic prose metrics → `StyleProfile` + `StyleEvidence` + exemplars.
