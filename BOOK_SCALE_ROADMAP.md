@@ -59,7 +59,9 @@ The biggest single lift on the analysis side.
 
 *Increment 3 shipped:* the **chunk-level incremental cache** (`chunkcache.py`, SQLite). Each chapter's `WorldDiff` is cached under a key of *its text + the entities established before it*, so re-analyzing a book re-runs the LLM only on what actually changed: editing the last chapter re-extracts one chapter; editing an early chapter correctly cascades to everything downstream that depends on it. Wired into the `--deep` path (bypassed by `--fresh`). Tested by stubbing the extractor and asserting the exact re-extraction set.
 
-*Still open in S1:* op-based *mutations* (removes/moves/field-ops) beyond introduce/state-change/learn; **materialized-state views** over the event table; LLM-assisted **coreference** beyond exact/normalized names ("the old man" = "Silas"); and a labeled **entity-resolution eval**.
+*Increment 4 shipped:* the **entity-resolution eval** (`entity_eval.py`). Labeled mentions (each chapter's extracted character tagged with its true entity) are scored coreference-style — pairwise precision/recall/F1 plus the two interpretable failure counts: **over-merges** (distinct entities wrongly collapsed, e.g. two "John"s) and **missed merges** (same entity left split, e.g. "the old man" ≠ "Silas"). `score_world_diffs` runs it on a real `--deep` run's `world_diffs` against a small name→entity gold, turning "the ids looked consistent" into a number. This is the measurement that makes scaling honest.
+
+*Still open in S1:* op-based *mutations* (removes/moves/field-ops) beyond introduce/state-change/learn; **materialized-state views** over the event table; LLM-assisted **coreference** beyond exact/normalized names (the eval now *measures* this gap). The deterministic backbone of S1 is complete; what remains is LLM-side quality, validated by a live run.
 
 - **Chunked Lector:** per-chapter extraction emitting typed **diffs** (entities added/changed, relationships, secrets, events) rather than one whole-book dump.
 - **Diff-merge + entity resolution:** coalesce per-chapter diffs into a global graph; resolve coreference ("the old man" = "Silas") across chapters.

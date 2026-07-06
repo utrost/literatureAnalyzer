@@ -103,6 +103,29 @@ def merge_world(diffs: list[WorldDiff]) -> WorldSeed:
     )
 
 
+def resolution_map(diffs: list[WorldDiff]) -> dict[tuple[str, str], str]:
+    """Map each ``(section_id, character_id)`` mention to its canonical id.
+
+    The same resolution merge_world uses (id first, normalized-name backstop),
+    exposed so the entity-resolution eval can compare the induced clustering to a
+    gold labeling.
+    """
+    canonical_by_id: dict[str, str] = {}
+    name_to_canonical: dict[str, str] = {}
+    mapping: dict[tuple[str, str], str] = {}
+    for diff in diffs:
+        for c in diff.characters:
+            if c.id in canonical_by_id:
+                canon = canonical_by_id[c.id]
+            else:
+                key = norm_name(c.name)
+                canon = name_to_canonical.get(key, c.id)
+                name_to_canonical.setdefault(key, canon)
+                canonical_by_id[c.id] = canon
+            mapping[(diff.section_id, c.id)] = canon
+    return mapping
+
+
 def entities_summary(diffs: list[WorldDiff]) -> str:
     """A compact 'entities so far' block to hand the next chapter's Lector, so it
     reuses ids for recurring characters (the primary resolution mechanism)."""
