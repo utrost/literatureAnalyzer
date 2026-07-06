@@ -124,3 +124,26 @@ Book scale is largely *finishing the roadmap both design docs already sketch*:
 - The **shared four-schema contract** and the **determinism boundary** mean these changes are additive on both sides.
 
 **Realistic first target when the time comes:** not *War and Peace* — a **novella (~20–40k words) with explicit chapter markers** (Phase S0→S2). It forces chunking, merge, hierarchy, and the event-sourced graph without the full entity-resolution nightmare of a 400-page cast, and it's the smallest artifact that proves the whole architecture.
+
+---
+
+## Extending the Roadmap: Asset Libraries, Tropes, and Style Aggregation (v1.1 additions)
+
+Our recent implementation of the **Asset Library, Genre Classification, Trope Taxonomies, and Corpus Aggregation** introduces new pathways for scaling to book length:
+
+### 1. Tropes as Graph State Transformers (Phase S1 / S2)
+- Today, tropes (e.g., `betrayal`, `faustian_bargain`) are flat annotations on beats. 
+- **Scale Reframe:** Tropes should act as state transition templates for the event-sourced world graph. 
+  - *Example:* Selecting a `betrayal` trope for a beat automatically triggers a graph update: mutating the relationship status between Character A and Character B to "hostile", creating a new `Secret` node, and modifying their wants/emotional states.
+
+### 2. Genre-Specific Influence Constraints & Warnings (Phase S2)
+- Today, mismatched genres trigger warnings (e.g., Gothic style vs Whimsical world).
+- **Scale Reframe:** The system should dynamically "blend" conflicting styles or world seeds rather than just warning. If a user forces a Gothic world with a Whimsical style, the orchestrator should inject specific blending directives into the Author prompt (e.g., *"Write in a whimsical register but overlay gothic descriptions of the environment"*).
+
+### 3. Dynamic Style Steering via Corpus Aggregates (Phase S2 / S3)
+- Today, we build a static composite profile for an author (e.g. Poe) by averaging metrics across a corpus.
+- **Scale Reframe:** Instead of a single static style, use the corpus metrics to *dynamically steer* scenes during book generation. As the book proceeds along the multi-scale arc (e.g., approaching the "worst moment" or climax), the style should dynamically shift to the author's most intense writing style (e.g., higher modifier density, shorter sentence length mean) derived from the climax sections of the source corpus.
+
+### 4. Recombination Playground & CLI Steerability (Phase S0 / S2)
+- Expose direct CLI arguments in Endless to override styles, worlds, and templates directly (`--style`, --world-seed, `--beat-template`). This allows rapid, programmatic testing of book-scale recombination recipes without having to constantly edit `config.yaml` or write template files.
+
