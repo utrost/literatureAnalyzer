@@ -193,6 +193,13 @@ def _deep_analyze(
     if not fresh and meta.get("segments") == segments:
         cached_beats = store.load_beats()
 
+    # Chunk-level incremental cache for the chaptered (S1) extraction path.
+    chunk_cache = None
+    if not fresh:
+        from .chunkcache import ChunkCache
+
+        chunk_cache = ChunkCache.open(store_dir or DEFAULT_STORE_DIR)
+
     analysis = analyzer.analyze(
         text,
         source=str(file),
@@ -201,7 +208,10 @@ def _deep_analyze(
         world=cached_world,
         beats=cached_beats,
         classification=cached_classification,
+        chunk_cache=chunk_cache,
     )
+    if chunk_cache is not None:
+        chunk_cache.close()
 
     store.save_world(analysis.world)
     store.save_beats(analysis.beats)

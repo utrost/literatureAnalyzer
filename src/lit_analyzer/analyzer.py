@@ -31,6 +31,7 @@ def analyze(
     world: WorldSeed | None = None,
     beats: BeatPlan | None = None,
     classification: StoryClassification | None = None,
+    chunk_cache: "object | None" = None,
 ) -> StoryAnalysis:
     """Deconstruct ``text`` into a StoryAnalysis.
 
@@ -67,7 +68,7 @@ def analyze(
     elif deep_config is not None:
         if _is_chaptered(story_structure):
             # S1: chunked per-chapter extraction, merged into one world.
-            diffs = _chunked_world_diffs(deep_config, text)
+            diffs = _chunked_world_diffs(deep_config, text, chunk_cache)
             from . import worldlog, worldmerge
 
             analysis.world = worldmerge.merge_world(diffs)
@@ -100,9 +101,13 @@ def _is_chaptered(story_structure) -> bool:
     return story_structure is not None and story_structure.level == "book"
 
 
-def _chunked_world_diffs(deep_config, text: str):
+def _chunked_world_diffs(deep_config, text: str, chunk_cache=None):
     """Run the chunked Lector chapter-by-chapter, feeding entities-so-far forward
-    so recurring characters keep their ids. Returns the ordered WorldDiffs."""
+    so recurring characters keep their ids. Returns the ordered WorldDiffs.
+
+    With a ``chunk_cache``, unchanged chapters (same text + same entities-so-far)
+    are reused instead of re-calling the model — the incremental cache (S1).
+    """
     from . import worldmerge
     from .roles import chunked_lector
 
@@ -110,12 +115,26 @@ def _chunked_world_diffs(deep_config, text: str):
     for i, (_title, body) in enumerate(segment.chapter_spans(text)):
         if len(segment.words(body)) < _MIN_SECTION_WORDS:
             continue
+        section_id = f"ch{i + 1}"
+        entities = worldmerge.entities_summary(diffs)
+
+        cached = None
+        key = None
+        if chunk_cache is not None:
+            from .chunkcache import chapter_key
+
+            key = chapter_key(body, entities)
+            cached = chunk_cache.get(key)
+
+        if cached is not None:
+            diffs.append(cached.model_copy(update={"section_id": section_id}))
+            continue
+
         diff = chunked_lector.extract_chapter(
-            deep_config,
-            section_id=f"ch{i + 1}",
-            text=body,
-            entities_so_far=worldmerge.entities_summary(diffs),
+            deep_config, section_id=section_id, text=body, entities_so_far=entities
         )
+        if chunk_cache is not None and key is not None:
+            chunk_cache.put(key, diff)
         diffs.append(diff)
     return diffs
 

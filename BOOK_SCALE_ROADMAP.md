@@ -57,7 +57,9 @@ The biggest single lift on the analysis side.
 
 *Increment 2 shipped:* the **story-time event log** — `worldlog.build_event_log` derives an ordered `WorldEvent` history from the diffs (character introduced, emotional state changed, secret learned, *in which chapter*), and `worldlog.snapshot_at` materializes the world as of any section. Persisted by `eventstore.py` in **SQLite** (stdlib `sqlite3`, no new dep) as a queryable `world_events` table with a per-section filter — the roadmap's "storage → SQLite" beachhead. `StoryAnalysis.world_events` carries the log. All deterministic and fully tested.
 
-*Still open in S1:* op-based *mutations* (removes/moves/field-ops) beyond introduce/state-change/learn; **materialized-state views** and a chunk-level **incremental cache** on the SQLite table; LLM-assisted **coreference** beyond exact/normalized names ("the old man" = "Silas"); and a labeled **entity-resolution eval**.
+*Increment 3 shipped:* the **chunk-level incremental cache** (`chunkcache.py`, SQLite). Each chapter's `WorldDiff` is cached under a key of *its text + the entities established before it*, so re-analyzing a book re-runs the LLM only on what actually changed: editing the last chapter re-extracts one chapter; editing an early chapter correctly cascades to everything downstream that depends on it. Wired into the `--deep` path (bypassed by `--fresh`). Tested by stubbing the extractor and asserting the exact re-extraction set.
+
+*Still open in S1:* op-based *mutations* (removes/moves/field-ops) beyond introduce/state-change/learn; **materialized-state views** over the event table; LLM-assisted **coreference** beyond exact/normalized names ("the old man" = "Silas"); and a labeled **entity-resolution eval**.
 
 - **Chunked Lector:** per-chapter extraction emitting typed **diffs** (entities added/changed, relationships, secrets, events) rather than one whole-book dump.
 - **Diff-merge + entity resolution:** coalesce per-chapter diffs into a global graph; resolve coreference ("the old man" = "Silas") across chapters.
