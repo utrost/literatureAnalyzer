@@ -32,7 +32,9 @@ src/lit_analyzer/
 ├── lexicon.py          # tiny built-in sentiment lexicon (bag-of-words)
 ├── arc.py              # arc sampling + shape classification (deterministic)
 ├── metrics.py          # prose → StyleProfile (deterministic)
-├── report.py           # StoryAnalysis → Markdown
+├── compare.py          # fidelity critic: two StoryAnalysis → Divergence (§8.5)
+├── bridge.py           # emit an analysis as an Endless handoff bundle (--emit-endless)
+├── report.py           # StoryAnalysis / Divergence → Markdown
 ├── config.py           # YAML → Pydantic (only for --deep)
 ├── store.py            # content-addressed cache for --deep artifacts (§4.2)
 ├── llm.py              # slim LiteLLM+Instructor wrapper, lazy-imported

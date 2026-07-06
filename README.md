@@ -100,12 +100,31 @@ its `data/styles/`, set `story.style` in Endless's config, and
 `story --resume <id>` — Endless skips seeding and planning (world and beats are
 already there) and writes a **new story in the deconstructed structure and voice**.
 
+**Did the structure survive?** The fidelity critic diffs two analyses —
+*structures, not texts* (regeneration is meant to reword):
+
+```bash
+uv run deconstruct original.txt --deep -f json -o original.json
+# ...generate a new story in Endless from the handoff, then analyze it back...
+uv run deconstruct regenerated.txt --deep --compare original.json
+```
+
+```
+# Round-trip fidelity
+- Overall structural fidelity: 78%
+| dimension | fidelity | detail |
+| shape | 100% | same shape, arc dist 0.10 |
+| style |  88% | 8 axes compared |
+| world |  71% | protagonist kept; chars 5→4, overlap 60% |
+| beats |  80% | 5→5 beats, id overlap 80% |
+```
+
 **Who judges the result?** Two different critics, each with a home:
 
 | question | lives in | status |
 |---|---|---|
-| did the structure survive the round-trip? | **here** — diff two `StoryAnalysis` (design §8.5) | planned (v1) |
-| is the regenerated story any *good*? | **Endless** — its LLM-judge eval harness | shipped there |
+| did the structure survive the round-trip? | **here** — `--compare` diffs two `StoryAnalysis` (§8.5) | ✅ shipped |
+| is the regenerated story any *good*? | **Endless** — its LLM-judge eval harness | ✅ shipped there |
 
 See [`literature_analyzer_design.md`](./literature_analyzer_design.md) §8.5 for the
 fidelity critic and §4.2 for how artifacts are stored and reused.

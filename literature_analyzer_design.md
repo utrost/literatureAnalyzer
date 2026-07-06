@@ -374,8 +374,18 @@ belongs where generation lives.
 
 | Faculty | Question | Home | Status |
 |---|---|---|---|
-| Fidelity | did the structure survive the round-trip? | **here** — `compare()` + loop harness | new, small |
+| Fidelity | did the structure survive the round-trip? | **here** — `compare()` (`compare.py`, `--compare`) | ✅ shipped |
 | Quality | is the regenerated story good? | **Endless** — eval harness / judge | ✅ exists |
+
+*Shipped:* `compare(a, b) → Divergence` diffs two `StoryAnalysis` into per-dimension
+similarities (shape: same-best + z-scored arc distance; style: per-axis deltas;
+world: name/protagonist overlap; beats: id/count overlap) and an overall score in
+[0, 1]. Deterministic, offline, rendered by `report.render_divergence`. World and
+beats are compared only when both sides ran `--deep`. What's still manual is the
+*end-to-end automation* — the actual analyze → invoke Endless → analyze chain
+crosses repos; today you bridge with `--emit-endless`, generate in Endless, then
+`--compare` the two analyses. Both halves exist; only the one-command orchestration
+across the two tools doesn't.
 
 So: no third repo. A third project would duplicate Endless's judge and add a
 *third* schema contract to keep in sync — cost, no benefit. The **round-trip
@@ -465,14 +475,14 @@ whether classification accuracy on hand-labeled stories improves. Better
 sentence segmentation. An LLM-authored style brief in `--deep` that reads richer
 than the templated one. This is the analog of Endless's v0.5 "quality close."
 
-**v1 — Round-trip fidelity (the fidelity critic).** Close the loop for real: build
-the `compare()` diff over `StoryAnalysis` and the round-trip harness (analyze →
-invoke Endless → analyze → compare) described in §8.5. That round-trip distance is
-the honest end-to-end metric for both projects at once. Quality judgment is *not*
-duplicated here — it stays in Endless's eval harness. Start with the controlled
-half-loop (known structure in, measure recovery) to isolate the analyzer's error
-from the generator's before trusting the full round-trip. Add a corpus + a small
-labeled eval set so classification and style measurement can be scored, not vibed.
+**v1 — Round-trip fidelity (the fidelity critic).** ✅ *The critic shipped:*
+`compare()` (`--compare`) diffs two `StoryAnalysis` into a `Divergence` — the
+honest end-to-end structural metric for both projects at once (§8.5). Quality
+judgment is *not* duplicated here — it stays in Endless's eval harness. **Still
+open:** the controlled half-loop as a *repeatable* eval (feed Endless a known
+structure, measure recovery, to isolate the analyzer's error from the generator's),
+one-command orchestration across the two repos, and a corpus + small labeled eval
+set so classification and style measurement can be scored, not vibed.
 
 **v2 — Comparative deconstruction.** Analyze many stories, cluster by shape and
 style, surface an author's fingerprint across a body of work. Diff two stories'

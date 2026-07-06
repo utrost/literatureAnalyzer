@@ -175,3 +175,67 @@ class StoryAnalysis(BaseModel):
     shape: ShapeMatch
     world: WorldSeed | None = None
     beats: BeatPlan | None = None
+
+
+# ---------- Divergence (the fidelity critic, §8.5) --------------------------
+#
+# The result of comparing two StoryAnalysis objects — typically an original and
+# a regeneration. This compares *structures*, not texts: regeneration is meant
+# to reword, so a low distance means the bones survived, not the sentences.
+# Every sub-score is a similarity in [0, 1] where 1 means identical structure.
+
+
+class AxisDelta(BaseModel):
+    """One style axis compared across two analyses."""
+
+    axis: str
+    a: str
+    b: str
+    distance: float = Field(ge=0.0, le=1.0)
+
+
+class ShapeDivergence(BaseModel):
+    best_a: str
+    best_b: str
+    same_best: bool
+    curve_distance: float = Field(ge=0.0, description="z-scored RMSE between the two arcs.")
+    similarity: float = Field(ge=0.0, le=1.0)
+
+
+class StyleDivergence(BaseModel):
+    distance: float = Field(ge=0.0, le=1.0)
+    similarity: float = Field(ge=0.0, le=1.0)
+    axes: list[AxisDelta]
+
+
+class WorldDivergence(BaseModel):
+    characters_a: int
+    characters_b: int
+    character_overlap: float = Field(ge=0.0, le=1.0, description="Jaccard over character names.")
+    protagonist_match: bool
+    location_overlap: float = Field(ge=0.0, le=1.0)
+    similarity: float = Field(ge=0.0, le=1.0)
+
+
+class BeatDivergence(BaseModel):
+    count_a: int
+    count_b: int
+    id_overlap: float = Field(ge=0.0, le=1.0, description="Jaccard over beat ids.")
+    similarity: float = Field(ge=0.0, le=1.0)
+
+
+class Divergence(BaseModel):
+    """How well a regeneration preserved a source story's structure.
+
+    ``world`` and ``beats`` are present only when *both* compared analyses have
+    them (i.e. both were run with ``--deep``). ``overall`` is the mean of the
+    available per-dimension similarities.
+    """
+
+    source_a: str
+    source_b: str
+    shape: ShapeDivergence
+    style: StyleDivergence
+    world: WorldDivergence | None = None
+    beats: BeatDivergence | None = None
+    overall: float = Field(ge=0.0, le=1.0)

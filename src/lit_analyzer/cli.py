@@ -29,6 +29,11 @@ def _deconstruct(
         "--emit-endless",
         help="Also write an Endless-consumable handoff bundle (world/beats/style) to this dir. Needs --deep artifacts.",
     ),
+    compare_to: Path = typer.Option(
+        None,
+        "--compare",
+        help="Compare this analysis against a saved analysis.json and report round-trip structural fidelity.",
+    ),
     out: Path = typer.Option(
         None,
         "--out",
@@ -98,6 +103,25 @@ def _deconstruct(
             f"(run {result.run_id}, style '{result.style_name}'); see HOWTO.md",
             err=True,
         )
+
+    if compare_to is not None:
+        # Fidelity critic (§8.5): diff this analysis against a saved one.
+        from . import compare, report as _report
+
+        other = StoryAnalysis.model_validate_json(compare_to.read_text())
+        divergence = compare.compare(analysis, other)
+        rendered = (
+            json.dumps(divergence.model_dump(), indent=2)
+            if fmt == "json"
+            else _report.render_divergence(divergence)
+        )
+        if out:
+            out.parent.mkdir(parents=True, exist_ok=True)
+            out.write_text(rendered)
+            typer.echo(f"wrote {out} — fidelity {divergence.overall:.0%}")
+        else:
+            typer.echo(rendered)
+        return
 
     if fmt == "json":
         rendered = json.dumps(analysis.model_dump(), indent=2)
