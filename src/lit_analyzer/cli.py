@@ -16,7 +16,19 @@ from .arc import DEFAULT_SEGMENTS
 
 
 def _deconstruct(
-    file: Path = typer.Argument(..., help="Path to a plain-text story to deconstruct."),
+    file: Path = typer.Argument(
+        None, help="Path to a plain-text story to deconstruct. Omit when using --from."
+    ),
+    from_analysis: Path = typer.Option(
+        None,
+        "--from",
+        help="Reload a saved analysis.json instead of analyzing a file. Re-renders without recomputing.",
+    ),
+    emit_endless: Path = typer.Option(
+        None,
+        "--emit-endless",
+        help="Also write an Endless-consumable handoff bundle (world/beats/style) to this dir. Needs --deep artifacts.",
+    ),
     out: Path = typer.Option(
         None,
         "--out",
@@ -57,15 +69,35 @@ def _deconstruct(
     ),
 ) -> None:
     """Deconstruct a human-written story into shape, style, world, and beats."""
-    text = file.read_text()
+    from .schemas import StoryAnalysis
 
-    if deep:
-        analysis = _deep_analyze(
-            text, file, segments, fresh, store_dir, config_path
-        )
+    if from_analysis is not None:
+        # Reload a saved analysis — no recompute, no model.
+        analysis = StoryAnalysis.model_validate_json(from_analysis.read_text())
+    elif file is not None:
+        text = file.read_text()
+        if deep:
+            analysis = _deep_analyze(text, file, segments, fresh, store_dir, config_path)
+        else:
+            # Deterministic passes are instant and offline — no store, no cache.
+            analysis = analyzer.analyze(text, source=str(file), segments=segments)
     else:
-        # Deterministic passes are instant and offline — no store, no cache.
-        analysis = analyzer.analyze(text, source=str(file), segments=segments)
+        typer.echo("provide a FILE to analyze, or --from analysis.json to reload", err=True)
+        raise typer.Exit(code=2)
+
+    if emit_endless is not None:
+        from . import bridge
+
+        try:
+            result = bridge.emit_endless(analysis, emit_endless)
+        except ValueError as exc:
+            typer.echo(str(exc), err=True)
+            raise typer.Exit(code=2)
+        typer.echo(
+            f"emitted Endless bundle → {result.dest} "
+            f"(run {result.run_id}, style '{result.style_name}'); see HOWTO.md",
+            err=True,
+        )
 
     if fmt == "json":
         rendered = json.dumps(analysis.model_dump(), indent=2)

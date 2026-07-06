@@ -449,14 +449,15 @@ fingerprint across a body of work" (§9).
 - **Content-addressed artifact store (§4.2):** `--deep` world/beats cached under
   `out/analyses/<hash>/`, reused on re-run, hand-editable for modify-then-reuse.
   `--fresh` recomputes. Deterministic passes stay uncached (instant).
-
-**Reuse gaps still open (v1):** two lifecycle pieces the store sets up but doesn't
-finish. (a) A `deconstruct --from <analysis.json>` to reload a saved analysis and
-re-render — or re-run *only* the deep passes over a cached deterministic base —
-without recomputing. (b) A **bridge to Endless**: emit an extracted `StyleProfile`
-as a `data/styles/*.yaml` and a `WorldSeed`/`BeatPlan` into Endless's run layout,
-so the round-trip (§8.5) is wired rather than hand-copied. Both are small; both
-want the store that now exists.
+- **Reload:** `deconstruct --from <analysis.json>` reloads a saved analysis and
+  re-renders (Markdown or JSON) without recomputing. Re-running the deep passes
+  over a cached base is already covered by the content-addressed store.
+- **Bridge to Endless (`bridge.py`, `--emit-endless <dir>`):** writes the
+  extracted `StyleProfile` as a `data/styles`-compatible `<name>.yaml` and the
+  `WorldSeed`/`BeatPlan` into Endless's run layout (`runs/<id>/world.json`,
+  `plan.json`, `meta.json`), plus a `HOWTO.md`. Endless's `--resume` loads
+  `world.json`/`plan.json` and skips seeding/planning, so it authors straight from
+  the deconstructed structure. This wires §8.5's round-trip instead of hand-copying.
 
 **v0.5 — Sharper measurement.** Replace the bag-of-words lexicon with a real
 sentiment model (VADER, NRC-VAD, or a cheap LLM sentiment pass) and measure
