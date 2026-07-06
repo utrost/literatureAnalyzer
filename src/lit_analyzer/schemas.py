@@ -38,6 +38,10 @@ class ShapeBeat(BaseModel):
 class Shape(BaseModel):
     name: str
     beats: list[ShapeBeat]
+    children: list["Shape"] = Field(
+        default_factory=list,
+        description="Nested sub-arcs (S0, book scale): a book-arc's chapter-arcs. Empty = flat.",
+    )
 
 
 # ---------- Style -----------------------------------------------------------
@@ -120,10 +124,35 @@ class Beat(BaseModel):
     tropes: list[str] = Field(default_factory=list, description="Tropes present in this beat, from our taxonomy (e.g. 'faustian_bargain', 'noble_sacrifice')")
 
 
+class Section(BaseModel):
+    """A node in a story's structural hierarchy (S0 — book scale).
+
+    A flat short story is a single ``chapter`` Section; a novel nests
+    ``book → part → chapter → scene``. Leaf sections group beats by id
+    (``beat_ids``). On a BeatPlan, ``structure=None`` means flat — one implicit
+    chapter — which is exactly today's behavior.
+    """
+
+    id: str
+    level: Literal["book", "part", "chapter", "scene"]
+    title: str | None = None
+    children: list["Section"] = Field(default_factory=list)
+    beat_ids: list[str] = Field(
+        default_factory=list, description="Beats grouped directly under this section (typically leaves)."
+    )
+
+
 class BeatPlan(BaseModel):
     model_config = {"populate_by_name": True}
     beats: list[Beat]
+    structure: Section | None = Field(
+        default=None, description="Optional hierarchy over the beats (S0). None = flat."
+    )
     meta: dict | None = Field(default=None, alias="_meta")
+
+
+Section.model_rebuild()
+Shape.model_rebuild()
 
 
 # ============================================================================
@@ -153,6 +182,15 @@ class ShapeMatch(BaseModel):
     best: str = Field(description="Name of the closest reference shape.")
     curve: list[ArcSample]
     ranking: list[ShapeScore] = Field(description="All shapes, best first.")
+
+
+class SectionArc(BaseModel):
+    """Multi-scale arc (S0): a ShapeMatch measured over one structural section."""
+
+    section_id: str
+    level: str
+    title: str | None = None
+    shape: ShapeMatch
 
 
 class StyleEvidence(BaseModel):
@@ -190,6 +228,10 @@ class StoryAnalysis(BaseModel):
     world: WorldSeed | None = None
     beats: BeatPlan | None = None
     classification: StoryClassification | None = None
+    # S0 (book scale): deterministic structural hierarchy + per-section arcs.
+    # A flat short story: structure is a single chapter, section_arcs is empty.
+    structure: Section | None = None
+    section_arcs: list[SectionArc] = Field(default_factory=list)
 
 
 # ---------- Divergence (the fidelity critic, §8.5) --------------------------

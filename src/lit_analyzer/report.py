@@ -41,6 +41,17 @@ def render(analysis: StoryAnalysis) -> str:
         lines.append(f"| {s.shape}{mark} | {s.distance:.3f} | {s.confidence:.3f} |")
     lines.append("")
 
+    # S0: per-chapter (multi-scale) arcs, shown only for a chaptered text.
+    if getattr(a, "section_arcs", None):
+        lines.append("## Structure (per-chapter arc)")
+        lines.append("")
+        lines.append("| section | title | shape | arc |")
+        lines.append("|---|---|---|---|")
+        for sa in a.section_arcs:
+            spark = _sparkline([s.valence for s in sa.shape.curve])
+            lines.append(f"| {sa.section_id} | {sa.title or ''} | {sa.shape.best} | `{spark}` |")
+        lines.append("")
+
     ax = a.style.axes
     lines.append("## Style")
     lines.append("")

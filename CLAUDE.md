@@ -28,7 +28,8 @@ or the round-trip breaks. The analysis-only types (`ArcSample`, `ShapeMatch`,
 src/lit_analyzer/
 ├── cli.py              # Typer entrypoint — `deconstruct <FILE>`
 ├── analyzer.py         # spine: runs deterministic passes, optional --deep passes
-├── segment.py          # words / sentences / paragraphs / windows (deterministic)
+├── segment.py          # words / sentences / paragraphs / windows / chapter_spans (deterministic)
+├── structure.py        # Section-tree hierarchy from text (S0, book scale)
 ├── sentiment.py        # VADER sentiment (deterministic), lexicon fallback
 ├── lexicon.py          # tiny built-in sentiment lexicon (bag-of-words fallback)
 ├── arc.py              # arc sampling + shape classification (deterministic)

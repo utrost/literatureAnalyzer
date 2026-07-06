@@ -8,8 +8,18 @@ directly — the roles do — so this module imports cleanly with no LLM deps.
 
 from __future__ import annotations
 
-from . import arc, metrics
-from .schemas import BeatPlan, StoryAnalysis, WorldSeed, StoryClassification
+from . import arc, metrics, segment, structure
+from .schemas import (
+    BeatPlan,
+    SectionArc,
+    StoryAnalysis,
+    StoryClassification,
+    WorldSeed,
+)
+
+# Chapters shorter than this (words) aren't given their own arc — too little
+# signal to sample. They still appear in the structure tree.
+_MIN_SECTION_WORDS = 40
 
 
 def analyze(
@@ -37,12 +47,19 @@ def analyze(
     style, evidence = metrics.measure(text)
     shape = arc.classify(text, segments=segments)
 
+    # S0: deterministic structural hierarchy + per-chapter (multi-scale) arcs.
+    # A markerless short story -> a single chapter and no per-section arcs.
+    story_structure = structure.build_structure(text)
+    section_arcs = _section_arcs(text, segments=segments)
+
     analysis = StoryAnalysis(
         source=source,
         word_count=evidence.word_count,
         style=style,
         style_evidence=evidence,
         shape=shape,
+        structure=story_structure,
+        section_arcs=section_arcs,
     )
 
     if world is not None:
@@ -67,3 +84,23 @@ def analyze(
         analysis.classification = classifier.classify_story(deep_config, text=text)
 
     return analysis
+
+
+def _section_arcs(text: str, *, segments: int) -> list[SectionArc]:
+    """A ShapeMatch per chapter, for a chaptered text. Empty for a flat story."""
+    spans = segment.chapter_spans(text)
+    if len(spans) <= 1:
+        return []
+    arcs: list[SectionArc] = []
+    for i, (title, body) in enumerate(spans):
+        if len(segment.words(body)) < _MIN_SECTION_WORDS:
+            continue
+        arcs.append(
+            SectionArc(
+                section_id=f"ch{i + 1}",
+                level="chapter",
+                title=title,
+                shape=arc.classify(body, segments=segments),
+            )
+        )
+    return arcs
