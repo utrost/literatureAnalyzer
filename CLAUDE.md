@@ -33,6 +33,7 @@ src/lit_analyzer/
 ├── arc.py              # arc sampling + shape classification (deterministic)
 ├── metrics.py          # prose → StyleProfile (deterministic)
 ├── compare.py          # fidelity critic: two StoryAnalysis → Divergence (§8.5)
+├── transform.py        # transposition: retell in a new setting/voice (§8.7)
 ├── bridge.py           # emit an analysis as an Endless handoff bundle (--emit-endless)
 ├── report.py           # StoryAnalysis / Divergence → Markdown
 ├── config.py           # YAML → Pydantic (only for --deep)
@@ -40,7 +41,7 @@ src/lit_analyzer/
 ├── llm.py              # slim LiteLLM+Instructor wrapper, lazy-imported
 ├── schemas.py          # shared contract + analysis-only types
 ├── prompts/*.v1.md     # versioned prompts for the LLM roles
-└── roles/              # lector.py (world), beat_labeler.py (beats)
+└── roles/              # lector.py, beat_labeler.py, reskinner.py, beat_recaster.py
 examples/               # sample stories (public-domain / self-authored)
 tests/                  # deterministic-only pytest
 config.example.yaml     # canonical default config (--deep only)

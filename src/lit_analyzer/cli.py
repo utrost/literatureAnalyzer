@@ -34,6 +34,26 @@ def _deconstruct(
         "--compare",
         help="Compare this analysis against a saved analysis.json and report round-trip structural fidelity.",
     ),
+    transpose_to: str = typer.Option(
+        None,
+        "--transpose",
+        help="Retell the story in this setting brief, e.g. \"cyberpunk generation ship\". Implies --deep; needs a model.",
+    ),
+    directive: list[str] = typer.Option(
+        None,
+        "--directive",
+        help="Steer the transposition (repeatable): 'age Huck to 40', 'make Tom a woman'.",
+    ),
+    rename: list[str] = typer.Option(
+        None,
+        "--rename",
+        help="Force an entity's new name (repeatable): 'jim=N-7'. Enforced exactly.",
+    ),
+    as_style: Path = typer.Option(
+        None,
+        "--as-style",
+        help="Retell in this voice: a StyleProfile or analysis.json (e.g. one extracted from another author).",
+    ),
     out: Path = typer.Option(
         None,
         "--out",
@@ -76,6 +96,9 @@ def _deconstruct(
     """Deconstruct a human-written story into shape, style, world, and beats."""
     from .schemas import StoryAnalysis
 
+    # Transposing the source needs its world + beats, so it implies --deep.
+    deep = deep or transpose_to is not None
+
     if from_analysis is not None:
         # Reload a saved analysis — no recompute, no model.
         analysis = StoryAnalysis.model_validate_json(from_analysis.read_text())
@@ -89,6 +112,11 @@ def _deconstruct(
     else:
         typer.echo("provide a FILE to analyze, or --from analysis.json to reload", err=True)
         raise typer.Exit(code=2)
+
+    if transpose_to is not None:
+        analysis = _transpose(
+            analysis, transpose_to, directive or [], rename or [], as_style, config_path
+        )
 
     if emit_endless is not None:
         from . import bridge
@@ -191,6 +219,40 @@ def _deep_analyze(
         err=True,
     )
     return analysis
+
+
+def _load_style(path: Path):
+    """Resolve --as-style to a StyleProfile: accept a StyleProfile or an analysis.json."""
+    from .schemas import StoryAnalysis, StyleProfile
+
+    raw = path.read_text()
+    try:
+        return StyleProfile.model_validate_json(raw)
+    except Exception:
+        return StoryAnalysis.model_validate_json(raw).style
+
+
+def _transpose(analysis, setting, directives, renames, as_style, config_path):
+    """Retell a deconstructed story in a new setting and (optional) voice."""
+    from .config import default_config_path, load_config
+    from . import transform
+
+    try:
+        spec = transform.Transposition(
+            setting=setting,
+            directives=directives,
+            renames=transform.parse_renames(renames),
+            style=_load_style(as_style) if as_style else None,
+        )
+        cfg = load_config(config_path or default_config_path())
+        result = transform.transpose(cfg.deep, analysis, spec)
+    except ValueError as exc:
+        typer.echo(str(exc), err=True)
+        raise typer.Exit(code=2)
+
+    voice = f", voice '{spec.style.name}'" if spec.style else ""
+    typer.echo(f"transposed → {setting}{voice}", err=True)
+    return result
 
 
 def main() -> None:

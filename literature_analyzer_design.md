@@ -446,6 +446,48 @@ fingerprint across a body of work" (§9).
    by one author, aggregate the axes, and pick representative exemplars, to model an
    *author's* voice rather than a single story's. This is the §9 v2 work.
 
+### 8.7 Transposition: retelling in a new setting and voice
+
+The capstone use of everything above: deconstruct a story, keep its **bones**,
+swap its **surface**, regenerate. *Huckleberry Finn* retold on a generation ship
+in another author's voice — same arc, same beats, same relationships and secrets;
+new world, new narrator. Transposition is a transform *between* deconstruction and
+reconstruction, and because it consumes and produces the shared contract types it
+lives here (`transform.py` + `roles/reskinner.py`, `roles/beat_recaster.py`),
+behind `--deep`; Endless stays a pure generator.
+
+The essential/incidental split from §8.5 is the whole design:
+
+| held fixed (the story's identity) | transformed (its surface) |
+|---|---|
+| Shape — the emotional arc | world: names, appearance, the nature of places and objects |
+| beat functions + order | beat events, re-concretized in the setting |
+| each character's wants, relationships, secrets | narrator voice (a substituted `StyleProfile`) |
+
+The reskinner rewrites a `WorldSeed`'s surface fields while preserving its
+functional ones and — critically — **every `id`**, which the code *validates*
+after the model returns, because the beats reference those ids. The beat recaster
+then rewrites each beat's events to the new world while keeping `shape_function`
+and order. Voice is not transformed but *substituted*: drop in a `StyleProfile`
+extracted from another author (the §8.6 loop, pointed at a different corpus).
+
+**The control surface is layered soft-to-hard**, which is the answer to "how do we
+steer it":
+
+- **setting brief** (`--transpose`) — the target world; the primary lever, prompt-level.
+- **directives** (`--directive`, repeatable) — free-text steering honored literally:
+  change a character's age or gender, relocate a place, shift tone. Soft, prompt-level;
+  a gender/age change renders into the character's `appearance` prose.
+- **renames** (`--rename id=Name`, repeatable) — a hard constraint, **enforced in
+  code** after the model, so a forced name is guaranteed rather than hoped for.
+- **voice** (`--as-style`) — substitute the narrator `StyleProfile`.
+
+Preservation of shape, beat-functions, and the functional world graph is not a
+lever — it's structural, so a transposition can't silently drop the story's
+identity. What's hard (and where quality lives) is beat recasting: re-concretizing
+an event's *method* while holding its *function* — "fakes their own death to sever
+ties" must survive the jump to a new world. That's the make-or-break LLM judgment.
+
 ---
 
 ## 9. Build phases
@@ -468,6 +510,11 @@ fingerprint across a body of work" (§9).
   `plan.json`, `meta.json`), plus a `HOWTO.md`. Endless's `--resume` loads
   `world.json`/`plan.json` and skips seeding/planning, so it authors straight from
   the deconstructed structure. This wires §8.5's round-trip instead of hand-copying.
+- **Fidelity critic (`compare.py`, `--compare`):** diffs two `StoryAnalysis` into a
+  `Divergence` — structural similarity per dimension plus an overall score (§8.5).
+- **Transposition (`transform.py`, `--transpose`):** retell a deconstructed story
+  in a new setting and voice, keeping shape/beats/relationships fixed (§8.7).
+  Control levers: `--transpose`, `--directive`, `--rename`, `--as-style`.
 
 **v0.5 — Sharper measurement.** Replace the bag-of-words lexicon with a real
 sentiment model (VADER, NRC-VAD, or a cheap LLM sentiment pass) and measure

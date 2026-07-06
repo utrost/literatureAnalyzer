@@ -60,6 +60,44 @@ uv run deconstruct examples/the_lantern.txt --deep -f json -o analysis.json
 uv run deconstruct --from analysis.json                 # re-render as Markdown
 ```
 
+## Transpose a story (retell it elsewhere, in another voice)
+
+The capstone: deconstruct a story, keep its **bones**, swap its **surface**, and
+regenerate. Analyze *Huckleberry Finn*, then retell it in a sci-fi setting in
+another author's voice — same arc, same beats, same relationships and secrets;
+new world, new narrator.
+
+```bash
+uv run deconstruct huck_finn.txt --deep \
+  --transpose "a generation ship centuries into a slow voyage" \
+  --directive "age Huck to a weary 40" \
+  --directive "Jim is an escaped labor-android seeking legal personhood" \
+  --rename jim=N-7 \
+  --as-style gaiman.json \
+  --emit-endless out/huck_scifi/
+# gaiman.json is just an earlier `deconstruct <a Gaiman book> --deep -f json -o gaiman.json`
+```
+
+What's held fixed vs. transformed:
+
+| kept (the story's identity) | transformed (its surface) |
+|---|---|
+| Shape — the emotional arc | world: names, appearance, setting |
+| beat functions + order | beat events, re-concretized in the setting |
+| each character's wants, relationships, secrets | narrator voice (`--as-style`) |
+
+**How you steer it**, soft to hard:
+
+- `--transpose "<brief>"` — the target world (the main lever).
+- `--directive "..."` (repeatable) — free-text steering: change a character's age or gender, relocate a place, shift tone. Rendered into the transposed prose.
+- `--rename id=NewName` (repeatable) — force an exact name, **enforced in code** after the model, so it's guaranteed.
+- `--as-style <file>` — retell in a voice extracted from another author (or any saved `StyleProfile`).
+
+Entity `id`s are preserved (and validated) through the transform, so the beats
+still reference the right characters. The result flows straight into
+`--emit-endless`, so Endless generates the new story. Needs the `deep` extra and
+a model (`--transpose` implies `--deep`).
+
 ## The two projects — a closed loop
 
 Literature Analyzer and [Endless](https://github.com/utrost/Endless) are inverse
