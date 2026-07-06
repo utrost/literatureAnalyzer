@@ -52,17 +52,63 @@ whenever present; beats are reused only if `--segments` is unchanged. Pass
 plain JSON — hand-edit `world.json` and the next run honors your edit
 (modify-then-reuse). The deterministic passes are instant, so they're never cached.
 
-## The contract with Endless
+## Reusing an analysis
 
-The output schemas (`Shape`, `StyleProfile`, `WorldSeed`, `BeatPlan`) are copied
-from Endless deliberately. The loop:
+```bash
+# Save the full analysis, then re-render later with no recompute and no model:
+uv run deconstruct examples/the_lantern.txt --deep -f json -o analysis.json
+uv run deconstruct --from analysis.json                 # re-render as Markdown
+```
+
+## The two projects — a closed loop
+
+Literature Analyzer and [Endless](https://github.com/utrost/Endless) are inverse
+halves of one system. Endless goes **structure → prose**; this goes
+**prose → structure**. They share four schemas verbatim (`Shape`, `StyleProfile`,
+`WorldSeed`, `BeatPlan`), so one tool's output *is* the other's input — that copy
+is a deliberate contract (change a field in one, change it in both).
 
 ```
-human story ──▶ [Literature Analyzer] ──▶ Shape + Style + World + Beats
-                                                    │
-                                                    ▼
-                                          [Endless] ──▶ new story in the same shape & voice
+                        ┌──────────────────────────┐
+   human-written  ───▶  │   Literature Analyzer    │  prose → structure
+   story                │  (deconstruct)           │
+                        └────────────┬─────────────┘
+                                     │  Shape · Style · World · Beats
+                                     ▼
+                        ┌──────────────────────────┐
+                        │        Endless           │  structure → prose
+                        │  (narrate / generate)    │
+                        └────────────┬─────────────┘
+                                     │  a NEW story in the same shape & voice
+                                     ▼
+                     ( re-analyze it → compare structures = round-trip fidelity )
 ```
+
+**Hand a deconstruction to Endless** — the `--emit-endless` bridge writes the
+extracted world, beats, and style in Endless's own formats:
+
+```bash
+uv run deconstruct examples/the_lantern.txt --deep --emit-endless handoff/
+# handoff/ now holds:
+#   runs/<id>/{meta,world,plan}.json   — an Endless run, pre-seeded and pre-planned
+#   styles/<name>.yaml                 — the extracted narrator voice
+#   HOWTO.md                           — the exact copy + resume steps
+```
+
+Follow `handoff/HOWTO.md`: drop the run into Endless's `out/runs/`, the style into
+its `data/styles/`, set `story.style` in Endless's config, and
+`story --resume <id>` — Endless skips seeding and planning (world and beats are
+already there) and writes a **new story in the deconstructed structure and voice**.
+
+**Who judges the result?** Two different critics, each with a home:
+
+| question | lives in | status |
+|---|---|---|
+| did the structure survive the round-trip? | **here** — diff two `StoryAnalysis` (design §8.5) | planned (v1) |
+| is the regenerated story any *good*? | **Endless** — its LLM-judge eval harness | shipped there |
+
+See [`literature_analyzer_design.md`](./literature_analyzer_design.md) §8.5 for the
+fidelity critic and §4.2 for how artifacts are stored and reused.
 
 ## How the deterministic passes work
 
