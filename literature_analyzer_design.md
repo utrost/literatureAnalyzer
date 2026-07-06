@@ -355,6 +355,51 @@ measure how well the analyzer recovers it, isolating the analyzer's half from th
 generator's. That controlled half-loop is how the fidelity critic earns trust
 before it's pointed at the full round-trip.
 
+### 8.6 Voice fidelity: skeleton, fingerprint, author
+
+Style is the one dimension already wired end to end — `metrics.py` extracts a
+`StyleProfile`, Endless's Author writes from it. So "can we capture Hemingway vs.
+Goethe and reproduce the difference?" is worth answering precisely, because it
+exposes three levels of voice fidelity and where the loop currently stops.
+
+**Level 1 — the skeleton (the axes).** The eight `StyleAxes` cleanly *separate*
+terse-Hemingway from ornate-Goethe: short vs. long sentences, low vs. high
+variance, colloquial vs. formal register, low vs. high Latinate, sparse vs. lush
+description, minimal vs. elaborate attribution. Feed either set of numbers to
+Endless and the output is recognizably terse or recognizably ornate. But the axes
+are a *skeleton*: two genuinely different voices can share all eight numbers. They
+miss the **syntactic architecture** (parataxis — Hemingway's "and… and…" — vs.
+hypotaxis — Goethe's nested clauses), **rhythm/cadence**, **signature vocabulary**,
+and **punctuation habits**. Mean sentence length is a weak proxy for clause
+structure.
+
+**Level 2 — the fingerprint (the exemplars).** The real voice rides on
+`StyleProfile.exemplars` — actual passages — which is why Endless's Author prompt
+calls exemplars "the truest signal." This is the difference between "short
+sentences" and "*these* short sentences." **The gap (now closed, move 1 below):**
+Endless was sourcing the Author's exemplars only from the *current story's* prior
+scenes (drift control), and ignoring the `StyleProfile.exemplars` an analysis
+hands it — so the extracted fingerprint was measured but never applied.
+
+**Level 3 — author vs. story voice.** One analysis reads one story = that story's
+*narrator* voice, not the author's. Capturing *Hemingway* means aggregating across
+a **corpus** of his work and selecting *characteristic* passages — where today
+`_exemplars()` just grabs the first and last paragraph. That's the v2 "author
+fingerprint across a body of work" (§9).
+
+**The three moves, in order:**
+
+1. **Wire `StyleProfile.exemplars` → the Author** (Endless side). Small, concrete,
+   highest-leverage — it's the actual broken link, the difference between terse and
+   *Hemingway*-terse. *(Shipped: Endless v0.5, author prompt v2 — see that repo's
+   design doc §16.)*
+2. **Add syntactic axes** — a subordination/coordination ratio and a punctuation
+   profile — to push the axes from skeleton toward fingerprint, so the deterministic
+   read distinguishes parataxis from hypotaxis rather than only length.
+3. **Corpus aggregation + characteristic-passage selection** — analyze many works
+   by one author, aggregate the axes, and pick representative exemplars, to model an
+   *author's* voice rather than a single story's. This is the §9 v2 work.
+
 ---
 
 ## 9. Build phases
