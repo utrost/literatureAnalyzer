@@ -1,0 +1,22 @@
+# Config for the LLM-powered --deep passes only. The deterministic core
+# (arc + style) needs no config and no model. Copy to config.yaml and point
+# these at a pulled Ollama model (or a cloud provider via LiteLLM).
+#
+# provider: ollama is auto-normalized to ollama_chat (same fix as Endless —
+# /api/generate skips chat templates).
+
+deep:
+  lector:
+    provider: ollama
+    model: qwen2.5:14b
+    endpoint: http://localhost:11434
+    temperature: 0.2
+    max_tokens: 4000
+    thinking: false
+  beat_labeler:
+    provider: ollama
+    model: qwen2.5:14b
+    endpoint: http://localhost:11434
+    temperature: 0.2
+    max_tokens: 4000
+    thinking: false

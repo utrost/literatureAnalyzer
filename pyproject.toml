@@ -1,0 +1,39 @@
+[project]
+name = "literature-analyzer"
+version = "0.0.1"
+description = "Deconstruct human-written stories into shape, style, world, and beats — the inverse of the Endless story engine."
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic>=2.7",
+    "typer>=0.12",
+    "pyyaml>=6.0",
+]
+
+# The deterministic core (arc + metrics) needs nothing above. LLM-powered
+# extraction (Lector, beat labeler) lives behind `--deep` and this extra so
+# the base install stays light and the offline test suite has no heavy deps.
+[project.optional-dependencies]
+deep = [
+    "litellm>=1.50",
+    "instructor>=1.6",
+    "structlog>=24.1",
+]
+
+[project.scripts]
+deconstruct = "lit_analyzer.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+# packages= bundles every file under the package, prompts/*.md included.
+packages = ["src/lit_analyzer"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
