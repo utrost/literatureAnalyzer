@@ -1,0 +1,139 @@
+{
+  "beats": [
+    {
+      "id": "equilibrium",
+      "shape_function": "Establishes the cozy, mundane domestic setting and introduces the supernatural element through Sergeant-Major Morris.",
+      "target_words": 650,
+      "pov": "Third-person limited (omniscient focus on Mr. White)",
+      "required_events": [
+        "The White family is introduced in a warm parlour playing chess and knitting.",
+        "Sergeant-Major Morris arrives, bringing stories of India and the Monkey's Paw.",
+        "Morris explains the paw's origin: a spell by a fakir to show fate rules lives.",
+        "Morris warns that those who interfere with fate do so to their sorrow.",
+        "Morris attempts to burn the paw but fails when Mr. White saves it.",
+        "Mr. White takes possession of the cursed object."
+      ],
+      "forbidden_events": [],
+      "mood": "Cozy, curious, slightly ominous",
+      "rationale": "This section sets up the status quo and introduces the central conflict (the paw) and its rules. It ends when Morris leaves and the family is left alone with the talisman.",
+      "tropes": [
+        "cursed_object",
+        "warning_ignored"
+      ]
+    },
+    {
+      "id": "disruption",
+      "shape_function": "The first wish is made, leading to a tragic coincidence that disrupts the family's happiness.",
+      "target_words": 550,
+      "pov": "Third-person limited (focus on Mr. White and Mrs. White)",
+      "required_events": [
+        "Herbert suggests wishing for money to pay off the house.",
+        "Mr. White makes the first wish for two hundred pounds.",
+        "The paw twists in his hand, causing him physical shock.",
+        "Time passes; Herbert leaves for work.",
+        "A visitor from 'Maw and Meggins' arrives with bad news.",
+        "Herbert is killed in a factory accident (caught in machinery).",
+        "The compensation offered is exactly two hundred pounds."
+      ],
+      "forbidden_events": [],
+      "mood": "Irony, horror, grief",
+      "rationale": "This beat covers the execution of the first wish and its immediate, devastating consequence. The 'disruption' is the death of Herbert, which fulfills the warning that interfering with fate leads to sorrow.",
+      "tropes": [
+        "poetic_justice",
+        "cursed_object"
+      ]
+    },
+    {
+      "id": "dark_night_of_the_soul",
+      "shape_function": "The parents mourn their loss; the mother's grief turns to desperate madness as she demands the second wish.",
+      "target_words": 450,
+      "pov": "Third-person limited (focus on Mrs. White's descent into hysteria)",
+      "required_events": [
+        "Herbert is buried; the house falls into silence and shadow.",
+        "Days pass with resignation and apathy.",
+        "Mrs. White wakes Mr. White, hysterical, demanding the paw.",
+        "She insists on using the second wish to bring Herbert back.",
+        "Mr. White resists, fearing what a mutilated corpse would look like.",
+        "Mrs. White forces him to retrieve the paw."
+      ],
+      "forbidden_events": [],
+      "mood": "Despair, tension, dread",
+      "rationale": "This is the emotional low point where the protagonist (Mr. White) is forced into a terrible choice by his wife's grief. The beat ends when he retrieves the paw to make the second wish.",
+      "tropes": [
+        "dark_night_of_the_soul",
+        "temptation"
+      ]
+    },
+    {
+      "id": "turn",
+      "shape_function": "The second wish is made, and the supernatural threat manifests at the door.",
+      "target_words": 350,
+      "pov": "Third-person limited (focus on Mr. White's terror)",
+      "required_events": [
+        "Mr. White makes the second wish for his son to be alive again.",
+        "The paw falls; silence ensues.",
+        "Strange noises and a stealthy knock are heard at the front door.",
+        "Mrs. White recognizes the knock as her son's and tries to open the door.",
+        "Mr. White restrains her, terrified of what is outside."
+      ],
+      "forbidden_events": [],
+      "mood": "Terror, suspense, claustrophobic",
+      "rationale": "This beat represents the climax of the rising action. The wish has been made, and the 'turn' is the arrival of the consequence at the threshold. The tension peaks as Mrs. White tries to let the horror in.",
+      "tropes": [
+        "race_against_time",
+        "haunted_house"
+      ]
+    },
+    {
+      "id": "resolution",
+      "shape_function": "The third wish is made to undo the second, resolving the conflict through negation and loss.",
+      "target_words": 200,
+      "pov": "Third-person limited (focus on Mr. White's relief)",
+      "required_events": [
+        "Mrs. White breaks free and goes downstairs to open the door.",
+        "Mr. White scrambles for the paw in the dark.",
+        "He makes the third wish before the door is fully opened.",
+        "The knocking ceases instantly.",
+        "The street is revealed to be empty and deserted."
+      ],
+      "forbidden_events": [],
+      "mood": "Relief, emptiness, chilling finality",
+      "rationale": "This is the resolution. The conflict (the return of the son) is resolved by the third wish, which negates the previous one. The story ends with the realization that the horror has been averted but at the cost of the second son's soul and the family's sanity.",
+      "tropes": [
+        "pyrrhic_victory",
+        "cursed_object"
+      ]
+    }
+  ],
+  "meta": {
+    "title": "The Monkey's Paw",
+    "author": "W. W. Jacobs",
+    "classified_shape": "icarus"
+  },
+  "_meta": {
+    "type": "beat_template",
+    "asset_id": "the_monkeys_paw_5beat",
+    "source_story": "The Monkeys Paw",
+    "source_file": "examples/the_monkeys_paw.txt",
+    "extracted_at": "2026-07-06T19:16:36Z",
+    "shape": "icarus",
+    "tags": [],
+    "genre": [
+      "horror",
+      "gothic",
+      "mystery"
+    ],
+    "structural_template": "three_act",
+    "tropes": [
+      "cursed_object",
+      "dark_night_of_the_soul",
+      "haunted_house",
+      "poetic_justice",
+      "pyrrhic_victory",
+      "race_against_time",
+      "temptation",
+      "warning_ignored"
+    ],
+    "notes": "The story follows a classic three-act structure. Act I (Setup) introduces the White family, their isolated home, and the introduction of the cursed Monkey's Paw by Sergeant-Major Morris, establishing the central conflict and the rules of the magic. Act II (Confrontation) sees the first wish granted in a tragic manner through the death of Herbert, which shifts the tone from skepticism to horror and grief, setting up the final conflict. Act III (Resolution) involves Mrs. White's desperate second wish for her son's return and Mr. White's frantic third wish to undo it, resolving the tension with a chilling ambiguity as the entity is sent away."
+  }
+}

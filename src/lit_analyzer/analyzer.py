@@ -9,7 +9,7 @@ directly — the roles do — so this module imports cleanly with no LLM deps.
 from __future__ import annotations
 
 from . import arc, metrics
-from .schemas import BeatPlan, StoryAnalysis, WorldSeed
+from .schemas import BeatPlan, StoryAnalysis, WorldSeed, StoryClassification
 
 
 def analyze(
@@ -20,13 +20,14 @@ def analyze(
     deep_config: "object | None" = None,
     world: WorldSeed | None = None,
     beats: BeatPlan | None = None,
+    classification: StoryClassification | None = None,
 ) -> StoryAnalysis:
     """Deconstruct ``text`` into a StoryAnalysis.
 
-    The deterministic passes (arc, metrics) always run. The world graph and
-    beats are filled in one of three ways, checked in order:
+    The deterministic passes (arc, metrics) always run. The world graph,
+    beats, and classification are filled in one of three ways, checked in order:
 
-    1. A supplied ``world`` / ``beats`` wins outright — this is the hook the
+    1. A supplied ``world`` / ``beats`` / ``classification`` wins outright — this is the hook the
        store uses to inject cached artifacts, and that a user uses to inject a
        hand-edited ``world.json`` (modify-then-reuse). No model is called.
     2. Otherwise, if ``deep_config`` is set, the LLM roles compute them. The
@@ -57,5 +58,12 @@ def analyze(
         from .roles import beat_labeler  # deferred
 
         analysis.beats = beat_labeler.label_beats(deep_config, text=text, shape=shape.best)
+
+    if classification is not None:
+        analysis.classification = classification
+    elif deep_config is not None:
+        from .roles import classifier  # deferred
+
+        analysis.classification = classifier.classify_story(deep_config, text=text)
 
     return analysis

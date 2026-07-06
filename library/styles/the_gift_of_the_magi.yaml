@@ -1,0 +1,74 @@
+id: style_the_gift_of_the_magi
+name: the_gift_of_the_magi
+axes:
+  sentence_length_mean: 13
+  sentence_length_variance: medium
+  diction_register: colloquial
+  latinate_ratio: low
+  psychic_distance: medium
+  show_tell_ratio: 0.99
+  description_density: sparse
+  dialogue_attribution: elaborate
+authored_brief: Sentences average about 13 words with medium length variance. Diction
+  is colloquial with low Latinate density and sparse use of modifiers. Narration sits
+  at medium psychic distance and leans toward showing (show/tell 0.99). Dialogue attribution
+  reads as elaborate.
+exemplars:
+- 'One dollar and eighty-seven cents. That was all. And sixty cents of it
+
+  was in pennies. Pennies saved one and two at a time by bulldozing the
+
+  grocer and the vegetable man and the butcher until one’s cheeks burned
+
+  with the silent imputation of parsimony that such close dealing
+
+  implied. Three times Della counted it. One dollar and eighty-seven
+
+  cents. And the next day would be Christmas.'
+- 'The magi, as you know, were wise men—wonderfully wise men—who brought
+
+  gifts to the Babe in the manger. They invented the art of giving
+
+  Christmas presents. Being wise, their gifts were no doubt wise ones,
+
+  possibly bearing the privilege of exchange in case of duplication. And
+
+  here I have lamely related to you the uneventful chronicle of two
+
+  foolish children in a flat who most unwisely sacrificed for each other
+
+  the greatest treasures of their house. But in a last word to the wise
+
+  of these days let it be said that of all who give gifts these two were
+
+  the wisest. Of all who give and receive gifts, such as they are wisest.
+
+  Everywhere they are wisest. They are the magi.'
+meta: null
+_meta:
+  type: style
+  asset_id: the_gift_of_the_magi
+  source_story: The Gift Of The Magi
+  source_file: examples/the_gift_of_the_magi.txt
+  extracted_at: '2026-07-06T19:20:28Z'
+  shape: rags_to_riches
+  tags: []
+  genre:
+  - romance
+  - drama
+  - literary
+  structural_template: three_act
+  tropes:
+  - macguffin
+  - mistaken_identity
+  - noble_sacrifice
+  - poetic_justice
+  - pyrrhic_victory
+  - temptation
+  notes: The story follows a classic three-act structure. Act One establishes the
+    setting (poverty), the characters (Della and Jim), and the inciting incident (the
+    need for Christmas money). Act Two is the rising action where Della sells her
+    hair to buy a gift for Jim, followed by the climax when Jim returns home and reacts
+    to her short hair. Act Three provides the resolution/twist, revealing that Jim
+    sold his watch to buy combs for Della's hair, leading to the thematic conclusion
+    about the wisdom of their mutual sacrifice.

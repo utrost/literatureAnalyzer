@@ -1,0 +1,130 @@
+{
+  "beats": [
+    {
+      "id": "equilibrium",
+      "shape_function": "Establishes the narrator's cold, calculated intent for revenge and the target's vanity.",
+      "target_words": 350,
+      "pov": "Montresor (First Person)",
+      "required_events": [
+        "Narrator states his vow to punish Fortunato with impunity.",
+        "Narrator describes Fortunato's pride in wine connoisseurship as his weak point.",
+        "Narrator encounters Fortunato during carnival and feigns friendship."
+      ],
+      "forbidden_events": [],
+      "mood": "Calculated, ominous, deceptive",
+      "rationale": "This section sets the stage by defining the protagonist's motivation (revenge for an insult) and the antagonist's flaw (pride in wine), establishing the 'rags to riches' equivalent of social standing which Fortunato holds over Montresor.",
+      "tropes": [
+        "nemesis",
+        "tragic_flaw"
+      ]
+    },
+    {
+      "id": "disruption",
+      "shape_function": "The trap is sprung; the protagonist lures the victim into the isolated location using their specific weakness.",
+      "target_words": 450,
+      "pov": "Montresor (First Person)",
+      "required_events": [
+        "Montresor mentions a pipe of Amontillado and expresses doubt about its authenticity.",
+        "Fortunato takes the bait, dismissing Luchesi as an ignoramus.",
+        "Montresor leads Fortunato into the catacombs, ignoring feigned concerns about dampness and cold.",
+        "Montresor offers wine to further intoxicate Fortunato."
+      ],
+      "forbidden_events": [],
+      "mood": "Tense, manipulative, claustrophobic",
+      "rationale": "The narrative shifts from exposition to action. The 'disruption' is the successful execution of the lure, moving the victim from safety into the trap.",
+      "tropes": [
+        "forbidden_knowledge",
+        "macguffin"
+      ]
+    },
+    {
+      "id": "turn",
+      "shape_function": "The point of no return; the protagonist reveals his true nature and secures the victim.",
+      "target_words": 300,
+      "pov": "Montresor (First Person)",
+      "required_events": [
+        "Montresor produces a trowel, revealing he is a 'mason' in the context of burial/masonry rather than the Freemasons.",
+        "Fortunato realizes the trap but is too intoxicated to resist effectively.",
+        "Montresor chains Fortunato to the niche wall."
+      ],
+      "forbidden_events": [],
+      "mood": "Shock, horror, sudden violence",
+      "rationale": "This is the turning point where the deception ends and the physical act of revenge begins. The power dynamic shifts completely as Fortunato is immobilized.",
+      "tropes": [
+        "betrayal",
+        "secret_identity"
+      ]
+    },
+    {
+      "id": "bottom",
+      "shape_function": "The execution; the protagonist walls up the victim while experiencing moments of hesitation and fear.",
+      "target_words": 400,
+      "pov": "Montresor (First Person)",
+      "required_events": [
+        "Montresor begins to brick up the niche.",
+        "Fortunato moans, then screams in terror.",
+        "Montresor hesitates and trembles but is reassured by the solidity of the wall.",
+        "Montresor continues building despite the screams."
+      ],
+      "forbidden_events": [],
+      "mood": "Torturous, frantic, macabre",
+      "rationale": "This beat represents the 'dark night' or the lowest point for the victim, and the peak of tension for the narrator as he commits the act. It is the core of the revenge quest.",
+      "tropes": [
+        "locked_room",
+        "gothic_decay"
+      ]
+    },
+    {
+      "id": "resolution",
+      "shape_function": "The final sealing and the narrator's cold reflection on the completed act.",
+      "target_words": 250,
+      "pov": "Montresor (First Person)",
+      "required_events": [
+        "Fortunato laughs nervously, then pleads with 'For the love of God'.",
+        "Montresor ignores the plea and places the final stone.",
+        "Montresor plaster the wall and re-erect the bones.",
+        "Narrator concludes that no mortal has disturbed them for fifty years."
+      ],
+      "forbidden_events": [],
+      "mood": "Cold, triumphant, eerie",
+      "rationale": "The story resolves with the completion of the murder. The final lines provide closure to the revenge quest, emphasizing the permanence of the act and the narrator's lack of remorse.",
+      "tropes": [
+        "poetic_justice",
+        "noble_sacrifice"
+      ]
+    }
+  ],
+  "meta": {
+    "story_title": "The Cask of Amontillado",
+    "author": "Edgar Allan Poe",
+    "classified_shape": "rags_to_riches"
+  },
+  "_meta": {
+    "type": "beat_template",
+    "asset_id": "the_cask_of_amontillado_5beat",
+    "source_story": "The Cask Of Amontillado",
+    "source_file": "examples/the_cask_of_amontillado.txt",
+    "extracted_at": "2026-07-06T19:17:44Z",
+    "shape": "rags_to_riches",
+    "tags": [],
+    "genre": [
+      "horror",
+      "gothic",
+      "mystery"
+    ],
+    "structural_template": "three_act",
+    "tropes": [
+      "betrayal",
+      "forbidden_knowledge",
+      "gothic_decay",
+      "locked_room",
+      "macguffin",
+      "nemesis",
+      "noble_sacrifice",
+      "poetic_justice",
+      "secret_identity",
+      "tragic_flaw"
+    ],
+    "notes": "The story follows a classic three-act structure. Act I (Setup) introduces the narrator's motive for revenge against Fortunato and establishes the setting during the carnival. Act II (Confrontation) details the journey into the catacombs, where the narrator manipulates Fortunato with wine and false concerns about his health, leading to the entrapment. Act III (Resolution) depicts the brutal act of walling up the niche and the final sealing of the tomb, concluding with the narrator's reflection fifty years later. While it contains elements of a thriller due to the suspense of the murder, the linear progression from motive to execution fits the traditional three-act framework best among the provided options."
+  }
+}

@@ -1,0 +1,241 @@
+id: style_story
+name: story
+axes:
+  sentence_length_mean: 6
+  sentence_length_variance: low
+  diction_register: colloquial
+  latinate_ratio: low
+  psychic_distance: close
+  show_tell_ratio: 0.91
+  description_density: sparse
+  dialogue_attribution: elaborate
+authored_brief: Sentences average about 6 words with low length variance. Diction
+  is colloquial with low Latinate density and sparse use of modifiers. Narration sits
+  at close psychic distance and leans toward showing (show/tell 0.91). Dialogue attribution
+  reads as elaborate.
+exemplars:
+- 'Herbert laughed at my hesitation.
+
+  He leaned back in his chair.
+
+  His eyes sparkled with mischief.
+
+  "We need two hundred pounds," he said.
+
+  The words hung in the warm air.
+
+  Morris turned pale and shook his head.
+
+  "Let it lie," he begged us quietly.
+
+  I felt a sudden urge to test it.
+
+  I grabbed the shriveled paw from the table.
+
+  It twisted like a snake in my grip.
+
+  My heart beat hard against my ribs.
+
+  "I wish for two hundred pounds," I said.
+
+  The fire popped loudly in the grate.
+
+  Morris fled into the cold night air.
+
+  We laughed at his superstition together.
+
+  Hours passed before the doorbell rang again.
+
+  A man in a silk hat stood there.
+
+  He wore the stiff uniform of Maw and Meggins.
+
+  His face was tight with professional courtesy.
+
+  He handed me a piece of paper.
+
+  The offer was exactly two hundred pounds.
+
+  My hands trembled as I read the sum.
+
+  It was the exact amount we needed.
+
+  Morris had warned us, but fate had spoken.
+
+  I felt a strange relief wash over me.
+
+  The debts were gone. The house was safe.
+
+  Fate seemed to favor us now.
+
+  Money flowed like water into our lives.
+
+  We were lifted above our poor station.
+
+  The paw lay silent on the mantel.
+
+  It did not twist or move again.
+
+  I felt triumphant and secure once more.'
+- 'The silence held us fast.
+
+  It was heavy and thick.
+
+  Like a shroud of lead.
+
+  I looked at Mrs. White.
+
+  Her hand hung in the air.
+
+  She stared at the door.
+
+  Then she turned to me.
+
+  Her eyes were hollow pits.
+
+  The madness had drained away.
+
+  Only grief remained behind.
+
+  It sat cold and deep.
+
+  She did not speak a word.
+
+  She sank into her chair.
+
+  Her shoulders slumped in defeat.
+
+  I let go of the paw.
+
+  It lay dead on the floor.
+
+  A withered scrap of wood.
+
+  No power lived within it now.
+
+  The threat had passed us by.
+
+  The thing outside was gone.
+
+  Or perhaps it never came.
+
+  The wind howled low and mournful.
+
+  It rattled the window panes.
+
+  I walked to the front door.
+
+  My legs felt weak and numb.
+
+  I peered through the glass.
+
+  The path was dark and empty.
+
+  No shadow stood upon the stone.
+
+  Only the rain fell down.
+
+  It washed the world clean.
+
+  I turned back to my wife.
+
+  She sat alone in the firelight.
+
+  Her face was pale as ash.
+
+  But she was quiet now.
+
+  The frantic energy was gone.
+
+  We both knew the truth.
+
+  Herbert was safe in his grave.
+
+  He would not return here.
+
+  The danger had passed us by.
+
+  A heavy peace settled down.
+
+  It wrapped around our hearts.
+
+  I felt a tear roll down.
+
+  It was not for fear now.
+
+  It was for what we lost.
+
+  Mrs. White wiped her cheek.
+
+  She looked at the fire.
+
+  The embers glowed red and dim.
+
+  They crackled softly in the grate.
+
+  We did not speak of it.
+
+  There were no words left.
+
+  Only the silence remained.
+
+  It was a bitter comfort.
+
+  But it was safe now.
+
+  The house stood firm around us.
+
+  Laburnam Villa was secure again.
+
+  No spirits would enter here.
+
+  Fate had claimed its due.
+
+  We bowed to that decree.
+
+  I took her hand in mine.
+
+  Her fingers were cold and stiff.
+
+  She did not pull away.
+
+  She held my grip tight.
+
+  We sat in the dark room.
+
+  The fire burned down low.
+
+  The night was long ahead.
+
+  But we would face it together.
+
+  Without fear of the knock.
+
+  Without dread of the door.
+
+  The paw lay on the floor.
+
+  A useless, shriveled thing now.
+
+  I kicked it into the grate.
+
+  It curled in the heat.
+
+  Then it turned to ash.
+
+  We watched it burn away.
+
+  The last remnant was gone.
+
+  Fate ruled our lives now.
+
+  And we accepted that rule.'
+_meta:
+  type: style
+  asset_id: story
+  source_story: Story
+  source_file: /Users/uwetrostheide/Developer/utrost/Endless/out/runs/20260706-205650/story.txt
+  extracted_at: '2026-07-06T18:58:50Z'
+  shape: man_in_hole
+  tags: []
+  genre: []

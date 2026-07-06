@@ -26,6 +26,7 @@ class DeepConfig(BaseModel):
 
     lector: ModelConfig
     beat_labeler: ModelConfig
+    classifier: ModelConfig
 
 
 class Config(BaseModel):

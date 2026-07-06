@@ -20,3 +20,10 @@ deep:
     temperature: 0.2
     max_tokens: 4000
     thinking: false
+  classifier:
+    provider: ollama
+    model: qwen2.5:14b
+    endpoint: http://localhost:11434
+    temperature: 0.2
+    max_tokens: 2000
+    thinking: false

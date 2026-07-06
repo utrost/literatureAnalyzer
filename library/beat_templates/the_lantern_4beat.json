@@ -1,0 +1,91 @@
+{
+  "beats": [
+    {
+      "id": "equilibrium",
+      "shape_function": "Establishes the protagonist's dedication to her duty and the community's reliance on her light.",
+      "target_words": 75,
+      "pov": "Third-person limited (Mara)",
+      "required_events": [
+        "Mara maintains the lighthouse with pride and care.",
+        "The town relies on the light for safety."
+      ],
+      "forbidden_events": [],
+      "mood": "Serene, dutiful, warm",
+      "rationale": "This segment establishes the status quo and the protagonist's connection to her role before any conflict arises.",
+      "tropes": [
+        "haunted_house"
+      ]
+    },
+    {
+      "id": "disruption",
+      "shape_function": "The inciting incident: a catastrophic storm destroys the light, followed by the institutional abandonment of the lighthouse.",
+      "target_words": 110,
+      "pov": "Third-person limited (Mara)",
+      "required_events": [
+        "A severe storm cracks the lens and extinguishes the light.",
+        "The council decides to replace the lighthouse with an electric beacon, leaving Mara powerless."
+      ],
+      "forbidden_events": [],
+      "mood": "Desperate, hopeless, cold",
+      "rationale": "This beat introduces the central problem (broken light) and raises the stakes by removing external support, creating the 'hole' the protagonist must climb out of.",
+      "tropes": [
+        "ruined_kingdom"
+      ]
+    },
+    {
+      "id": "turn",
+      "shape_function": "The discovery of the solution and the arduous effort to implement it, reversing the despair.",
+      "target_words": 100,
+      "pov": "Third-person limited (Mara)",
+      "required_events": [
+        "Mara remembers and retrieves the grandfather's spare lens from the cellar.",
+        "She physically struggles up the stairs and repairs the lamp through sheer determination."
+      ],
+      "forbidden_events": [],
+      "mood": "Determined, tense, hopeful",
+      "rationale": "This is the turning point where the protagonist takes agency. She finds the 'key' (the lens) and performs the action that resolves the immediate crisis.",
+      "tropes": [
+        "cursed_object"
+      ]
+    },
+    {
+      "id": "resolution",
+      "shape_function": "The restoration of order; the light is fixed, the threat is neutralized, and the status quo is preserved.",
+      "target_words": 65,
+      "pov": "Third-person limited (Mara)",
+      "required_events": [
+        "The light shines again, saving the boats.",
+        "The council abandons their plan to replace the lighthouse.",
+        "Mara returns to her routine, secure in her duty."
+      ],
+      "forbidden_events": [],
+      "mood": "Triumphant, peaceful, resolved",
+      "rationale": "This final beat shows the consequences of the turn: the immediate problem is solved, and the protagonist's world is restored to its original state, now validated by her effort.",
+      "tropes": []
+    }
+  ],
+  "meta": {
+    "shape": "man_in_hole",
+    "title": "The Lantern"
+  },
+  "_meta": {
+    "type": "beat_template",
+    "asset_id": "the_lantern_4beat",
+    "source_story": "The Lantern",
+    "source_file": "examples/the_lantern.txt",
+    "extracted_at": "2026-07-06T19:17:13Z",
+    "shape": "man_in_hole",
+    "tags": [],
+    "genre": [
+      "literary",
+      "drama"
+    ],
+    "structural_template": "three_act",
+    "tropes": [
+      "cursed_object",
+      "haunted_house",
+      "ruined_kingdom"
+    ],
+    "notes": "The story follows a clear three-act structure. Act One establishes the status quo (Mara tending the light) and introduces the inciting incident (the storm destroys the lens). Act Two presents the rising action and conflict, where Mara faces the despair of the council's decision to abandon the lighthouse, leading to a 'dark night of the soul' moment of failure. The climax occurs when she discovers the grandfather's spare lens and undertakes the arduous task of repairing it. Act Three provides the resolution: the light is restored, the community celebrates, and the status quo is reaffirmed with a deeper sense of continuity."
+  }
+}

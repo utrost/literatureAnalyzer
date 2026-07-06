@@ -1,0 +1,97 @@
+{
+  "characters": [
+    {
+      "id": "mara",
+      "name": "Mara",
+      "appearance": "Hands cut by old brass; hands shaking from exertion.",
+      "wants": "To keep the lighthouse light turning and ensure the safety of the fishing boats, preserving her family's legacy.",
+      "emotional_state": "Resolute and relieved. She moves from despair (feeling like ash) to determination, ending in a state of quiet satisfaction and duty fulfilled.",
+      "secret": null,
+      "archetype": "protagonist"
+    },
+    {
+      "id": "father",
+      "name": "Mara's Father",
+      "appearance": "Deceased; remembered for his hands on the brass.",
+      "wants": "To maintain the lighthouse (implied through legacy).",
+      "emotional_state": "Absent, but represented by the weight of expectation and legacy Mara feels.",
+      "secret": null,
+      "archetype": null
+    },
+    {
+      "id": "grandfather",
+      "name": "Mara's Grandfather",
+      "appearance": "Deceased; left sealed crates in the cellar.",
+      "wants": "To preserve the lens for a future emergency (implied).",
+      "emotional_state": "Absent, but represented by foresight and preparation.",
+      "secret": null,
+      "archetype": null
+    },
+    {
+      "id": "harbor_council",
+      "name": "The Harbor Council",
+      "appearance": "A collective body; no individual description.",
+      "wants": "To replace the old lighthouse with an electric beacon on the headland and save money.",
+      "emotional_state": "Indifferent and pragmatic initially, then quietly defeated or convinced by the light's return.",
+      "secret": null,
+      "archetype": "threshold_guardian"
+    }
+  ],
+  "locations": [
+    {
+      "id": "lighthouse_interior",
+      "name": "The Lighthouse",
+      "description": "A tower with a gallery, ninety-seven steps, a cellar, and a lamp room. It is described as cold during the storm and dark when the lens breaks."
+    },
+    {
+      "id": "town_below",
+      "name": "The Town Below",
+      "description": "The settlement near the lighthouse where people sleep easy because of the light."
+    },
+    {
+      "id": "harbor",
+      "name": "The Harbor",
+      "description": "Where fishing boats wait and blow horns; located near the reef."
+    },
+    {
+      "id": "far_headland",
+      "name": "The Far Headland",
+      "description": "A location where the council planned to build a new electric beacon, but which they eventually abandoned."
+    }
+  ],
+  "chekhov_objects": [
+    {
+      "id": "spare_lens",
+      "name": "The Spare Lens",
+      "description": "A lens cut and polished a lifetime ago by Mara's grandfather, packed in straw in sealed crates in the cellar. It is cracked in the story but replaced by this spare to restore the light."
+    },
+    {
+      "id": "broken_lens",
+      "name": "The Broken Lens",
+      "description": "The original great lens that cracked from base to crown during the storm, rendering the lighthouse dark and unusable without a glazier."
+    }
+  ],
+  "secrets": [],
+  "protagonist_id": "mara",
+  "meta": null,
+  "_meta": {
+    "type": "world",
+    "asset_id": "the_lantern",
+    "source_story": "The Lantern",
+    "source_file": "examples/the_lantern.txt",
+    "extracted_at": "2026-07-06T19:17:13Z",
+    "shape": "man_in_hole",
+    "tags": [],
+    "genre": [
+      "literary",
+      "drama"
+    ],
+    "structural_template": "three_act",
+    "tropes": [
+      "cursed_object",
+      "haunted_house",
+      "ruined_kingdom"
+    ],
+    "notes": "The story follows a clear three-act structure. Act One establishes the status quo (Mara tending the light) and introduces the inciting incident (the storm destroys the lens). Act Two presents the rising action and conflict, where Mara faces the despair of the council's decision to abandon the lighthouse, leading to a 'dark night of the soul' moment of failure. The climax occurs when she discovers the grandfather's spare lens and undertakes the arduous task of repairing it. Act Three provides the resolution: the light is restored, the community celebrates, and the status quo is reaffirmed with a deeper sense of continuity."
+  }
+}

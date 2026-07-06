@@ -1,0 +1,70 @@
+id: style_the_monkeys_paw
+name: the_monkeys_paw
+axes:
+  sentence_length_mean: 12
+  sentence_length_variance: high
+  diction_register: colloquial
+  latinate_ratio: low
+  psychic_distance: medium
+  show_tell_ratio: 0.98
+  description_density: medium
+  dialogue_attribution: elaborate
+authored_brief: Sentences average about 12 words with high length variance. Diction
+  is colloquial with low Latinate density and medium use of modifiers. Narration sits
+  at medium psychic distance and leans toward showing (show/tell 0.98). Dialogue attribution
+  reads as elaborate.
+exemplars:
+- 'Without, the night was cold and wet, but in the small parlour of
+
+  Laburnam Villa the blinds were drawn and the fire burned brightly.
+
+  Father and son were at chess, the former, who possessed ideas about the
+
+  game involving radical changes, putting his king into such sharp and
+
+  unnecessary perils that it even provoked comment from the white-haired
+
+  old lady knitting placidly by the fire.'
+- 'The knocking ceased suddenly, although the echoes of it were still in
+
+  the house. He heard the chair drawn back, and the door opened. A cold
+
+  wind rushed up the staircase, and a long loud wail of disappointment
+
+  and misery from his wife gave him courage to run down to her side, and
+
+  then to the gate beyond. The street lamp flickering opposite shone on a
+
+  quiet and deserted road.'
+meta: null
+_meta:
+  type: style
+  asset_id: the_monkeys_paw
+  source_story: The Monkeys Paw
+  source_file: examples/the_monkeys_paw.txt
+  extracted_at: '2026-07-06T19:16:36Z'
+  shape: icarus
+  tags: []
+  genre:
+  - horror
+  - gothic
+  - mystery
+  structural_template: three_act
+  tropes:
+  - cursed_object
+  - dark_night_of_the_soul
+  - haunted_house
+  - poetic_justice
+  - pyrrhic_victory
+  - race_against_time
+  - temptation
+  - warning_ignored
+  notes: The story follows a classic three-act structure. Act I (Setup) introduces
+    the White family, their isolated home, and the introduction of the cursed Monkey's
+    Paw by Sergeant-Major Morris, establishing the central conflict and the rules
+    of the magic. Act II (Confrontation) sees the first wish granted in a tragic manner
+    through the death of Herbert, which shifts the tone from skepticism to horror
+    and grief, setting up the final conflict. Act III (Resolution) involves Mrs. White's
+    desperate second wish for her son's return and Mr. White's frantic third wish
+    to undo it, resolving the tension with a chilling ambiguity as the entity is sent
+    away.

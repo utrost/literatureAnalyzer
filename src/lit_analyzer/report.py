@@ -23,6 +23,9 @@ def render(analysis: StoryAnalysis) -> str:
     lines.append("")
     lines.append(f"- **Words:** {a.word_count}")
     lines.append(f"- **Shape:** {a.shape.best}")
+    if getattr(a, "classification", None) is not None:
+        lines.append(f"- **Genre:** {', '.join(a.classification.genre)}")
+        lines.append(f"- **Structural Template:** {a.classification.structural_template}")
     lines.append("")
 
     lines.append("## Emotional arc")
@@ -62,7 +65,8 @@ def render(analysis: StoryAnalysis) -> str:
         lines.append("")
         for c in a.world.characters:
             star = " ⭐" if c.id == a.world.protagonist_id else ""
-            lines.append(f"- **{c.name}**{star} (`{c.id}`) — wants: {c.wants}; state: {c.emotional_state}")
+            arch = f" ({c.archetype})" if c.archetype else ""
+            lines.append(f"- **{c.name}**{star} (`{c.id}`){arch} — wants: {c.wants}; state: {c.emotional_state}")
         if a.world.locations:
             lines.append("")
             lines.append("Locations: " + ", ".join(loc.name for loc in a.world.locations))
@@ -75,7 +79,8 @@ def render(analysis: StoryAnalysis) -> str:
         lines.append("")
         for b in a.beats.beats:
             lines.append(f"### {b.id} — {b.shape_function}")
-            lines.append(f"*{b.mood}* · POV: {b.pov} · ~{b.target_words} words")
+            tropes_str = f" · Tropes: {', '.join(f'`{t}`' for t in b.tropes)}" if b.tropes else ""
+            lines.append(f"*{b.mood}* · POV: {b.pov} · ~{b.target_words} words{tropes_str}")
             lines.append("")
             for ev in b.required_events:
                 lines.append(f"- {ev}")

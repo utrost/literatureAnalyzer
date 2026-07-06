@@ -14,7 +14,6 @@ import typer
 from . import analyzer, report
 from .arc import DEFAULT_SEGMENTS
 
-
 def _deconstruct(
     file: Path = typer.Argument(
         None, help="Path to a plain-text story to deconstruct. Omit when using --from."
@@ -189,6 +188,7 @@ def _deep_analyze(
     meta = store.read_meta()
 
     cached_world = None if fresh else store.load_world()
+    cached_classification = None if fresh else store.load_classification()
     cached_beats = None
     if not fresh and meta.get("segments") == segments:
         cached_beats = store.load_beats()
@@ -200,10 +200,12 @@ def _deep_analyze(
         deep_config=cfg.deep,
         world=cached_world,
         beats=cached_beats,
+        classification=cached_classification,
     )
 
     store.save_world(analysis.world)
     store.save_beats(analysis.beats)
+    store.save_classification(analysis.classification)
     store.save_analysis(analysis)
     store.write_meta(
         source=str(file),
@@ -212,9 +214,22 @@ def _deep_analyze(
         shape=analysis.shape.best,
     )
 
+    # Auto-deposit to the library
+    from .library import AssetLibrary
+    try:
+        lib = AssetLibrary.open()
+        deposited = lib.deposit_analysis(analysis)
+        typer.echo(
+            f"Library: auto-deposited assets {list(deposited.keys())} to {lib.root}",
+            err=True,
+        )
+    except Exception as e:
+        typer.echo(f"Library warning: failed to auto-deposit assets: {e}", err=True)
+
     typer.echo(
         f"deep: world={'cached' if cached_world else 'computed'}, "
-        f"beats={'cached' if cached_beats else 'computed'} "
+        f"beats={'cached' if cached_beats else 'computed'}, "
+        f"classification={'cached' if cached_classification else 'computed'} "
         f"→ {store.root}",
         err=True,
     )
@@ -255,8 +270,124 @@ def _transpose(analysis, setting, directives, renames, as_style, config_path):
     return result
 
 
+library_app = typer.Typer(name="library", help="Browse and search the asset library.")
+
+
+@library_app.command(name="list")
+def library_list(
+    asset_type: str = typer.Option(
+        None, "--type", "-t", help="Filter by asset type: style, world, beat_template"
+    ),
+    genre: str = typer.Option(None, "--genre", "-g", help="Filter by genre"),
+    author: str = typer.Option(None, "--author", "-a", help="Filter by author"),
+    tag: str = typer.Option(None, "--tag", help="Filter by tag"),
+    shape: str = typer.Option(None, "--shape", help="Filter by shape"),
+    trope: str = typer.Option(None, "--trope", help="Filter by trope"),
+):
+    """List assets stored in the library, with optional filtering."""
+    from .library import AssetLibrary
+
+    lib = AssetLibrary.open()
+    assets = lib.list_assets(
+        asset_type=asset_type, genre=genre, author=author, tag=tag, shape=shape, trope=trope
+    )
+    if not assets:
+        typer.echo("No assets found.")
+        return
+    for a in assets:
+        source_info = (
+            f" (from '{a.source_story}' by {a.source_author or 'unknown'})"
+            if a.source_story
+            else ""
+        )
+        typer.echo(f"[{a.type}] {a.asset_id}{source_info}")
+
+
+@library_app.command(name="show")
+def library_show(
+    asset_type: str = typer.Argument(..., help="Asset type: style, world, beat_template"),
+    asset_id: str = typer.Argument(..., help="Asset ID"),
+):
+    """Show details of a specific asset from the library."""
+    from .library import AssetLibrary
+    import json
+    import yaml
+
+    lib = AssetLibrary.open()
+    path = lib.asset_path(asset_type, asset_id)
+    if not path or not path.exists():
+        typer.echo(
+            f"Asset '{asset_id}' of type '{asset_type}' not found in library.", err=True
+        )
+        raise typer.Exit(code=1)
+    typer.echo(f"File: {path}\n")
+    if path.suffix == ".json":
+        typer.echo(json.dumps(json.loads(path.read_text()), indent=2))
+    else:
+        typer.echo(path.read_text())
+
+
+@library_app.command(name="search")
+def library_search(
+    query: str = typer.Argument(..., help="Search query string"),
+):
+    """Search for assets in the library by query string."""
+    from .library import AssetLibrary
+
+    lib = AssetLibrary.open()
+    assets = lib.search(query)
+    if not assets:
+        typer.echo("No matching assets found.")
+        return
+    for a in assets:
+        source_info = (
+            f" (from '{a.source_story}' by {a.source_author or 'unknown'})"
+            if a.source_story
+            else ""
+        )
+        typer.echo(f"[{a.type}] {a.asset_id}{source_info}")
+
+
+corpus_app = typer.Typer(name="corpus", help="Analyze and aggregate style across a corpus of texts.")
+
+
+@corpus_app.command(name="build")
+def corpus_build(
+    directory: Path = typer.Argument(..., help="Directory containing plain-text files to analyze"),
+    author: str = typer.Option(..., "--author", "-a", help="Name of the author"),
+):
+    """Analyze all text files in a directory and build/deposit a composite author style profile."""
+    from .corpus import build_author_profile
+    from .library import AssetLibrary
+
+    if not directory.exists() or not directory.is_dir():
+        typer.echo(f"Error: directory '{directory}' does not exist or is not a directory.", err=True)
+        raise typer.Exit(code=1)
+
+    files = [f for f in directory.iterdir() if f.is_file() and f.suffix in (".txt", ".md")]
+    if not files:
+        typer.echo(f"No .txt or .md files found in directory '{directory}'.", err=True)
+        raise typer.Exit(code=1)
+
+    typer.echo(f"Analyzing {len(files)} files in '{directory}' for author '{author}'...", err=True)
+    try:
+        profile = build_author_profile(files, author_name=author)
+        lib = AssetLibrary.open()
+        dest = lib.deposit_author_style(profile, author_name=author)
+        typer.echo(f"Success! Deposited consolidated author style to: {dest}", err=True)
+    except Exception as exc:
+        typer.echo(f"Error building author profile: {exc}", err=True)
+        raise typer.Exit(code=1)
+
+
 def main() -> None:
-    typer.run(_deconstruct)
+    import sys
+    if len(sys.argv) > 1 and sys.argv[1] == "library":
+        library_app(args=sys.argv[2:])
+    elif len(sys.argv) > 1 and sys.argv[1] == "corpus":
+        corpus_app(args=sys.argv[2:])
+    else:
+        typer.run(_deconstruct)
 
 
 if __name__ == "__main__":

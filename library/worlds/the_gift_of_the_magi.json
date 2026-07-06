@@ -1,0 +1,112 @@
+{
+  "characters": [
+    {
+      "id": "della",
+      "name": "Della Dillingham Young",
+      "appearance": "Slender; formerly had beautiful, knee-length brown hair which she cut off and sold; after cutting, her head was covered with tiny, close-lying curls making her look like a truant schoolboy or Coney Island chorus girl.",
+      "wants": "To buy a worthy Christmas present for Jim using only $1.87.",
+      "emotional_state": "Anxious and desperate at the start; relieved and loving by the end, though initially terrified by Jim's reaction to her hair.",
+      "secret": null,
+      "archetype": "protagonist"
+    },
+    {
+      "id": "jim",
+      "name": "Jim Dillingham Young",
+      "appearance": "Twenty-two years old; thin and very serious; burdened with a family; needs a new overcoat and is without gloves.",
+      "wants": "To buy a worthy Christmas present for Della.",
+      "emotional_state": "Serious and initially stunned/confused by Della's appearance, then deeply moved and loving.",
+      "secret": null,
+      "archetype": "protagonist"
+    },
+    {
+      "id": "madame_sofronie",
+      "name": "Madame Sofronie",
+      "appearance": "Large, too white, chilly; hardly looked the part of 'Sofronie'.",
+      "wants": "To buy hair.",
+      "emotional_state": "Professional and detached.",
+      "secret": null,
+      "archetype": "threshold_guardian"
+    }
+  ],
+  "locations": [
+    {
+      "id": "youngs_flat",
+      "name": "The Dillingham Young Flat",
+      "description": "A furnished flat renting for $8 per week; shabby, with a vestibule containing a letter-box that no letter would go into and an electric button that no finger could ring. Contains a pier glass between the windows."
+    },
+    {
+      "id": "street",
+      "name": "The Street",
+      "description": "Outside the flat, where Della goes to find a buyer for her hair."
+    },
+    {
+      "id": "mme_sofronies_shop",
+      "name": "Mme. Sofronie's Shop",
+      "description": "Located one flight up from the street; sells 'Hair Goods of All Kinds'."
+    }
+  ],
+  "chekhov_objects": [
+    {
+      "id": "dellas_hair",
+      "name": "Della's Hair",
+      "description": "Beautiful, knee-length brown hair that Della sold for $20 to buy a gift for Jim."
+    },
+    {
+      "id": "jim_watch",
+      "name": "Jim's Gold Watch",
+      "description": "A family heirloom (father's and grandfather's) with an old leather strap; Jim sold it to buy combs for Della."
+    },
+    {
+      "id": "platinum_fob_chain",
+      "name": "Platinum Fob Chain",
+      "description": "Simple, chaste, and valuable chain bought by Della for $21 to go with Jim's watch."
+    },
+    {
+      "id": "tortoise_shell_combs",
+      "name": "Tortoise Shell Combs",
+      "description": "Beautiful combs made of pure tortoise shell with jewelled rims, bought by Jim for Della but useless because she sold her hair."
+    }
+  ],
+  "secrets": [
+    {
+      "id": "jim_sold_watch",
+      "content": "Jim sold his gold watch to get money to buy Della the tortoise shell combs.",
+      "known_by": [
+        "jim"
+      ]
+    },
+    {
+      "id": "della_sold_hair",
+      "content": "Della cut off and sold her hair to get money to buy Jim a platinum fob chain.",
+      "known_by": [
+        "della"
+      ]
+    }
+  ],
+  "protagonist_id": "della",
+  "meta": null,
+  "_meta": {
+    "type": "world",
+    "asset_id": "the_gift_of_the_magi",
+    "source_story": "The Gift Of The Magi",
+    "source_file": "examples/the_gift_of_the_magi.txt",
+    "extracted_at": "2026-07-06T19:20:28Z",
+    "shape": "rags_to_riches",
+    "tags": [],
+    "genre": [
+      "romance",
+      "drama",
+      "literary"
+    ],
+    "structural_template": "three_act",
+    "tropes": [
+      "macguffin",
+      "mistaken_identity",
+      "noble_sacrifice",
+      "poetic_justice",
+      "pyrrhic_victory",
+      "temptation"
+    ],
+    "notes": "The story follows a classic three-act structure. Act One establishes the setting (poverty), the characters (Della and Jim), and the inciting incident (the need for Christmas money). Act Two is the rising action where Della sells her hair to buy a gift for Jim, followed by the climax when Jim returns home and reacts to her short hair. Act Three provides the resolution/twist, revealing that Jim sold his watch to buy combs for Della's hair, leading to the thematic conclusion about the wisdom of their mutual sacrifice."
+  }
+}

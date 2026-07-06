@@ -1,0 +1,53 @@
+id: style_the_lantern
+name: the_lantern
+axes:
+  sentence_length_mean: 15
+  sentence_length_variance: medium
+  diction_register: colloquial
+  latinate_ratio: low
+  psychic_distance: medium
+  show_tell_ratio: 0.83
+  description_density: sparse
+  dialogue_attribution: minimal
+authored_brief: Sentences average about 15 words with medium length variance. Diction
+  is colloquial with low Latinate density and sparse use of modifiers. Narration sits
+  at medium psychic distance and leans toward showing (show/tell 0.83). Dialogue attribution
+  reads as minimal.
+exemplars:
+- Mara kept the lighthouse the way her father had kept it, and his father before him.
+  Every evening she climbed the ninety-seven steps, trimmed the wick, and set the
+  great lamp burning. The fishing boats knew her light. The town below slept easy
+  because it turned, steady and warm, through every dark hour. She loved the work.
+  She loved the quiet. She wanted nothing more than for the light to go on turning
+  after she was gone.
+- That evening the light turned again. Mara stood in the gallery and watched the beam
+  sweep out across the water, steady and warm, and the boats in the harbor blew their
+  horns one after another until the whole bay was singing. The council came the next
+  week and saw the light and quietly forgot about the headland. Mara climbed the steps
+  that night the way she always had, and the town below slept easy, and the light
+  went on turning.
+meta: null
+_meta:
+  type: style
+  asset_id: the_lantern
+  source_story: The Lantern
+  source_file: examples/the_lantern.txt
+  extracted_at: '2026-07-06T19:17:13Z'
+  shape: man_in_hole
+  tags: []
+  genre:
+  - literary
+  - drama
+  structural_template: three_act
+  tropes:
+  - cursed_object
+  - haunted_house
+  - ruined_kingdom
+  notes: 'The story follows a clear three-act structure. Act One establishes the status
+    quo (Mara tending the light) and introduces the inciting incident (the storm destroys
+    the lens). Act Two presents the rising action and conflict, where Mara faces the
+    despair of the council''s decision to abandon the lighthouse, leading to a ''dark
+    night of the soul'' moment of failure. The climax occurs when she discovers the
+    grandfather''s spare lens and undertakes the arduous task of repairing it. Act
+    Three provides the resolution: the light is restored, the community celebrates,
+    and the status quo is reaffirmed with a deeper sense of continuity.'

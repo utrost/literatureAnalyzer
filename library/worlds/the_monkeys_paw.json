@@ -1,0 +1,110 @@
+{
+  "characters": [
+    {
+      "id": "mr_white",
+      "name": "Mr. White",
+      "appearance": "Thin grey beard, middle-aged, dry lips, white-haired old man.",
+      "wants": "Initially wants to dismiss the monkey's paw as a fairy tale; later desperately wants to undo the death of his son and prevent the return of Herbert's mutilated corpse.",
+      "emotional_state": "Moves from amused skepticism to horror, grief, and finally terrified desperation.",
+      "secret": null,
+      "archetype": "protagonist"
+    },
+    {
+      "id": "herbert_white",
+      "name": "Herbert White",
+      "appearance": "Son of Mr. White, described as a 'slip of a youth' in the past, now an adult who plays the piano.",
+      "wants": "To be rich and happy; specifically wishes for two hundred pounds to clear his father's house debts.",
+      "emotional_state": "Frivolous, skeptical, and playful at the start; deceased by the middle of the story.",
+      "secret": null,
+      "archetype": "ally"
+    },
+    {
+      "id": "mrs_white",
+      "name": "Mrs. White",
+      "appearance": "White-haired old lady, initially knitting placidly, later hysterical and desperate.",
+      "wants": "To be happy and free of debt; ultimately wants to bring her son Herbert back to life.",
+      "emotional_state": "Moves from polite curiosity to grief-stricken hysteria and finally despair.",
+      "secret": null,
+      "archetype": "ally"
+    },
+    {
+      "id": "sergeant_major_morris",
+      "name": "Sergeant-Major Morris",
+      "appearance": "Tall, burly man, beady of eye, rubicund (red) of visage, blotchy face.",
+      "wants": "To warn the Whites against using the paw and to get rid of it; regrets having used his wishes.",
+      "emotional_state": "Solemn, grave, and wary of the paw's power.",
+      "secret": "He used all three wishes on the paw; the third wish was for death, which is how he acquired it.",
+      "archetype": "herald"
+    },
+    {
+      "id": "visitor_from_maw_and_meggins",
+      "name": "Visitor from Maw and Meggins",
+      "appearance": "Well-dressed man wearing a silk hat of glossy newness, ill at ease.",
+      "wants": "To deliver the news of Herbert's death and the company's compensation offer while maintaining professional distance.",
+      "emotional_state": "Sympathetic but detached and uncomfortable.",
+      "secret": null,
+      "archetype": "herald"
+    }
+  ],
+  "locations": [
+    {
+      "id": "laburnam_villa_parlour",
+      "name": "Laburnam Villa Parlour",
+      "description": "A small parlour with blinds drawn and a fire burning brightly, located in a remote area with a boggy pathway and torrent-like road."
+    },
+    {
+      "id": "laburnam_villa_bedroom",
+      "name": "Laburnam Villa Bedroom",
+      "description": "The bedroom of Mr. and Mrs. White, where they wake to find the monkey's paw and where the final confrontation with the knocking occurs."
+    },
+    {
+      "id": "laburnam_villa_front_door",
+      "name": "Laburnam Villa Front Door",
+      "description": "The entrance to the house, subject to heavy knocks from the entity outside during the climax."
+    }
+  ],
+  "chekhov_objects": [
+    {
+      "id": "monkey_paw",
+      "name": "Monkey's Paw",
+      "description": "An ordinary little paw dried to a mummy, placed under a spell by an old fakir to grant three wishes but cause sorrow. It twists in the hand like a snake when used."
+    }
+  ],
+  "secrets": [
+    {
+      "id": "morris_wishes",
+      "content": "Sergeant-Major Morris used all three wishes on the monkey's paw; the third wish was for death, which is how he obtained the paw.",
+      "known_by": [
+        "sergeant_major_morris"
+      ]
+    }
+  ],
+  "protagonist_id": "mr_white",
+  "meta": null,
+  "_meta": {
+    "type": "world",
+    "asset_id": "the_monkeys_paw",
+    "source_story": "The Monkeys Paw",
+    "source_file": "examples/the_monkeys_paw.txt",
+    "extracted_at": "2026-07-06T19:16:36Z",
+    "shape": "icarus",
+    "tags": [],
+    "genre": [
+      "horror",
+      "gothic",
+      "mystery"
+    ],
+    "structural_template": "three_act",
+    "tropes": [
+      "cursed_object",
+      "dark_night_of_the_soul",
+      "haunted_house",
+      "poetic_justice",
+      "pyrrhic_victory",
+      "race_against_time",
+      "temptation",
+      "warning_ignored"
+    ],
+    "notes": "The story follows a classic three-act structure. Act I (Setup) introduces the White family, their isolated home, and the introduction of the cursed Monkey's Paw by Sergeant-Major Morris, establishing the central conflict and the rules of the magic. Act II (Confrontation) sees the first wish granted in a tragic manner through the death of Herbert, which shifts the tone from skepticism to horror and grief, setting up the final conflict. Act III (Resolution) involves Mrs. White's desperate second wish for her son's return and Mr. White's frantic third wish to undo it, resolving the tension with a chilling ambiguity as the entity is sent away."
+  }
+}

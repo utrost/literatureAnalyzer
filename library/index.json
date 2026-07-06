@@ -1,0 +1,434 @@
+{
+  "assets": [
+    {
+      "type": "beat_template",
+      "asset_id": "the_gift_of_the_magi_4beat",
+      "source_story": "The Gift Of The Magi",
+      "source_file": "examples/the_gift_of_the_magi.txt",
+      "source_author": null,
+      "source_era": null,
+      "extracted_from": null,
+      "extracted_at": "2026-07-06T18:54:08Z",
+      "shape": "rags_to_riches",
+      "tags": [],
+      "genre": [],
+      "structural_template": null,
+      "tropes": [],
+      "notes": null
+    },
+    {
+      "type": "style",
+      "asset_id": "story",
+      "source_story": "Story",
+      "source_file": "/Users/uwetrostheide/Developer/utrost/Endless/out/runs/20260706-205650/story.txt",
+      "source_author": null,
+      "source_era": null,
+      "extracted_from": null,
+      "extracted_at": "2026-07-06T18:58:50Z",
+      "shape": "man_in_hole",
+      "tags": [],
+      "genre": [],
+      "structural_template": null,
+      "tropes": [],
+      "notes": null
+    },
+    {
+      "type": "world",
+      "asset_id": "story",
+      "source_story": "Story",
+      "source_file": "/Users/uwetrostheide/Developer/utrost/Endless/out/runs/20260706-205650/story.txt",
+      "source_author": null,
+      "source_era": null,
+      "extracted_from": null,
+      "extracted_at": "2026-07-06T18:58:50Z",
+      "shape": "man_in_hole",
+      "tags": [],
+      "genre": [],
+      "structural_template": null,
+      "tropes": [],
+      "notes": null
+    },
+    {
+      "type": "beat_template",
+      "asset_id": "story_4beat",
+      "source_story": "Story",
+      "source_file": "/Users/uwetrostheide/Developer/utrost/Endless/out/runs/20260706-205650/story.txt",
+      "source_author": null,
+      "source_era": null,
+      "extracted_from": null,
+      "extracted_at": "2026-07-06T18:58:50Z",
+      "shape": "man_in_hole",
+      "tags": [],
+      "genre": [],
+      "structural_template": null,
+      "tropes": [],
+      "notes": null
+    },
+    {
+      "type": "beat_template",
+      "asset_id": "the_lantern_5beat",
+      "source_story": "The Lantern",
+      "source_file": "examples/the_lantern.txt",
+      "source_author": null,
+      "source_era": null,
+      "extracted_from": null,
+      "extracted_at": "2026-07-06T19:06:02Z",
+      "shape": "man_in_hole",
+      "tags": [],
+      "genre": [
+        "literary",
+        "drama"
+      ],
+      "structural_template": null,
+      "tropes": [],
+      "notes": "The story follows a clear three-act structure. Act I establishes the status quo of Mara's dedication to the lighthouse and introduces the inciting incident: the storm destroys the lens and the council decides to abandon the tower. Act II constitutes the confrontation, where Mara faces the despair of failure but discovers the ancestral solution (the spare lens) and undertakes the arduous task of repairing it. Act III provides the resolution as the light is restored, the town is saved, and the status quo is reaffirmed with a deeper sense of continuity and legacy."
+    },
+    {
+      "type": "style",
+      "asset_id": "the_monkeys_paw",
+      "source_story": "The Monkeys Paw",
+      "source_file": "examples/the_monkeys_paw.txt",
+      "source_author": null,
+      "source_era": null,
+      "extracted_from": null,
+      "extracted_at": "2026-07-06T19:16:36Z",
+      "shape": "icarus",
+      "tags": [],
+      "genre": [
+        "horror",
+        "gothic",
+        "mystery"
+      ],
+      "structural_template": "three_act",
+      "tropes": [
+        "cursed_object",
+        "dark_night_of_the_soul",
+        "haunted_house",
+        "poetic_justice",
+        "pyrrhic_victory",
+        "race_against_time",
+        "temptation",
+        "warning_ignored"
+      ],
+      "notes": "The story follows a classic three-act structure. Act I (Setup) introduces the White family, their isolated home, and the introduction of the cursed Monkey's Paw by Sergeant-Major Morris, establishing the central conflict and the rules of the magic. Act II (Confrontation) sees the first wish granted in a tragic manner through the death of Herbert, which shifts the tone from skepticism to horror and grief, setting up the final conflict. Act III (Resolution) involves Mrs. White's desperate second wish for her son's return and Mr. White's frantic third wish to undo it, resolving the tension with a chilling ambiguity as the entity is sent away."
+    },
+    {
+      "type": "world",
+      "asset_id": "the_monkeys_paw",
+      "source_story": "The Monkeys Paw",
+      "source_file": "examples/the_monkeys_paw.txt",
+      "source_author": null,
+      "source_era": null,
+      "extracted_from": null,
+      "extracted_at": "2026-07-06T19:16:36Z",
+      "shape": "icarus",
+      "tags": [],
+      "genre": [
+        "horror",
+        "gothic",
+        "mystery"
+      ],
+      "structural_template": "three_act",
+      "tropes": [
+        "cursed_object",
+        "dark_night_of_the_soul",
+        "haunted_house",
+        "poetic_justice",
+        "pyrrhic_victory",
+        "race_against_time",
+        "temptation",
+        "warning_ignored"
+      ],
+      "notes": "The story follows a classic three-act structure. Act I (Setup) introduces the White family, their isolated home, and the introduction of the cursed Monkey's Paw by Sergeant-Major Morris, establishing the central conflict and the rules of the magic. Act II (Confrontation) sees the first wish granted in a tragic manner through the death of Herbert, which shifts the tone from skepticism to horror and grief, setting up the final conflict. Act III (Resolution) involves Mrs. White's desperate second wish for her son's return and Mr. White's frantic third wish to undo it, resolving the tension with a chilling ambiguity as the entity is sent away."
+    },
+    {
+      "type": "beat_template",
+      "asset_id": "the_monkeys_paw_5beat",
+      "source_story": "The Monkeys Paw",
+      "source_file": "examples/the_monkeys_paw.txt",
+      "source_author": null,
+      "source_era": null,
+      "extracted_from": null,
+      "extracted_at": "2026-07-06T19:16:36Z",
+      "shape": "icarus",
+      "tags": [],
+      "genre": [
+        "horror",
+        "gothic",
+        "mystery"
+      ],
+      "structural_template": "three_act",
+      "tropes": [
+        "cursed_object",
+        "dark_night_of_the_soul",
+        "haunted_house",
+        "poetic_justice",
+        "pyrrhic_victory",
+        "race_against_time",
+        "temptation",
+        "warning_ignored"
+      ],
+      "notes": "The story follows a classic three-act structure. Act I (Setup) introduces the White family, their isolated home, and the introduction of the cursed Monkey's Paw by Sergeant-Major Morris, establishing the central conflict and the rules of the magic. Act II (Confrontation) sees the first wish granted in a tragic manner through the death of Herbert, which shifts the tone from skepticism to horror and grief, setting up the final conflict. Act III (Resolution) involves Mrs. White's desperate second wish for her son's return and Mr. White's frantic third wish to undo it, resolving the tension with a chilling ambiguity as the entity is sent away."
+    },
+    {
+      "type": "style",
+      "asset_id": "the_lantern",
+      "source_story": "The Lantern",
+      "source_file": "examples/the_lantern.txt",
+      "source_author": null,
+      "source_era": null,
+      "extracted_from": null,
+      "extracted_at": "2026-07-06T19:17:13Z",
+      "shape": "man_in_hole",
+      "tags": [],
+      "genre": [
+        "literary",
+        "drama"
+      ],
+      "structural_template": "three_act",
+      "tropes": [
+        "cursed_object",
+        "haunted_house",
+        "ruined_kingdom"
+      ],
+      "notes": "The story follows a clear three-act structure. Act One establishes the status quo (Mara tending the light) and introduces the inciting incident (the storm destroys the lens). Act Two presents the rising action and conflict, where Mara faces the despair of the council's decision to abandon the lighthouse, leading to a 'dark night of the soul' moment of failure. The climax occurs when she discovers the grandfather's spare lens and undertakes the arduous task of repairing it. Act Three provides the resolution: the light is restored, the community celebrates, and the status quo is reaffirmed with a deeper sense of continuity."
+    },
+    {
+      "type": "world",
+      "asset_id": "the_lantern",
+      "source_story": "The Lantern",
+      "source_file": "examples/the_lantern.txt",
+      "source_author": null,
+      "source_era": null,
+      "extracted_from": null,
+      "extracted_at": "2026-07-06T19:17:13Z",
+      "shape": "man_in_hole",
+      "tags": [],
+      "genre": [
+        "literary",
+        "drama"
+      ],
+      "structural_template": "three_act",
+      "tropes": [
+        "cursed_object",
+        "haunted_house",
+        "ruined_kingdom"
+      ],
+      "notes": "The story follows a clear three-act structure. Act One establishes the status quo (Mara tending the light) and introduces the inciting incident (the storm destroys the lens). Act Two presents the rising action and conflict, where Mara faces the despair of the council's decision to abandon the lighthouse, leading to a 'dark night of the soul' moment of failure. The climax occurs when she discovers the grandfather's spare lens and undertakes the arduous task of repairing it. Act Three provides the resolution: the light is restored, the community celebrates, and the status quo is reaffirmed with a deeper sense of continuity."
+    },
+    {
+      "type": "beat_template",
+      "asset_id": "the_lantern_4beat",
+      "source_story": "The Lantern",
+      "source_file": "examples/the_lantern.txt",
+      "source_author": null,
+      "source_era": null,
+      "extracted_from": null,
+      "extracted_at": "2026-07-06T19:17:13Z",
+      "shape": "man_in_hole",
+      "tags": [],
+      "genre": [
+        "literary",
+        "drama"
+      ],
+      "structural_template": "three_act",
+      "tropes": [
+        "cursed_object",
+        "haunted_house",
+        "ruined_kingdom"
+      ],
+      "notes": "The story follows a clear three-act structure. Act One establishes the status quo (Mara tending the light) and introduces the inciting incident (the storm destroys the lens). Act Two presents the rising action and conflict, where Mara faces the despair of the council's decision to abandon the lighthouse, leading to a 'dark night of the soul' moment of failure. The climax occurs when she discovers the grandfather's spare lens and undertakes the arduous task of repairing it. Act Three provides the resolution: the light is restored, the community celebrates, and the status quo is reaffirmed with a deeper sense of continuity."
+    },
+    {
+      "type": "style",
+      "asset_id": "the_cask_of_amontillado",
+      "source_story": "The Cask Of Amontillado",
+      "source_file": "examples/the_cask_of_amontillado.txt",
+      "source_author": null,
+      "source_era": null,
+      "extracted_from": null,
+      "extracted_at": "2026-07-06T19:17:44Z",
+      "shape": "rags_to_riches",
+      "tags": [],
+      "genre": [
+        "horror",
+        "gothic",
+        "mystery"
+      ],
+      "structural_template": "three_act",
+      "tropes": [
+        "betrayal",
+        "forbidden_knowledge",
+        "gothic_decay",
+        "locked_room",
+        "macguffin",
+        "nemesis",
+        "noble_sacrifice",
+        "poetic_justice",
+        "secret_identity",
+        "tragic_flaw"
+      ],
+      "notes": "The story follows a classic three-act structure. Act I (Setup) introduces the narrator's motive for revenge against Fortunato and establishes the setting during the carnival. Act II (Confrontation) details the journey into the catacombs, where the narrator manipulates Fortunato with wine and false concerns about his health, leading to the entrapment. Act III (Resolution) depicts the brutal act of walling up the niche and the final sealing of the tomb, concluding with the narrator's reflection fifty years later. While it contains elements of a thriller due to the suspense of the murder, the linear progression from motive to execution fits the traditional three-act framework best among the provided options."
+    },
+    {
+      "type": "world",
+      "asset_id": "the_cask_of_amontillado",
+      "source_story": "The Cask Of Amontillado",
+      "source_file": "examples/the_cask_of_amontillado.txt",
+      "source_author": null,
+      "source_era": null,
+      "extracted_from": null,
+      "extracted_at": "2026-07-06T19:17:44Z",
+      "shape": "rags_to_riches",
+      "tags": [],
+      "genre": [
+        "horror",
+        "gothic",
+        "mystery"
+      ],
+      "structural_template": "three_act",
+      "tropes": [
+        "betrayal",
+        "forbidden_knowledge",
+        "gothic_decay",
+        "locked_room",
+        "macguffin",
+        "nemesis",
+        "noble_sacrifice",
+        "poetic_justice",
+        "secret_identity",
+        "tragic_flaw"
+      ],
+      "notes": "The story follows a classic three-act structure. Act I (Setup) introduces the narrator's motive for revenge against Fortunato and establishes the setting during the carnival. Act II (Confrontation) details the journey into the catacombs, where the narrator manipulates Fortunato with wine and false concerns about his health, leading to the entrapment. Act III (Resolution) depicts the brutal act of walling up the niche and the final sealing of the tomb, concluding with the narrator's reflection fifty years later. While it contains elements of a thriller due to the suspense of the murder, the linear progression from motive to execution fits the traditional three-act framework best among the provided options."
+    },
+    {
+      "type": "beat_template",
+      "asset_id": "the_cask_of_amontillado_5beat",
+      "source_story": "The Cask Of Amontillado",
+      "source_file": "examples/the_cask_of_amontillado.txt",
+      "source_author": null,
+      "source_era": null,
+      "extracted_from": null,
+      "extracted_at": "2026-07-06T19:17:44Z",
+      "shape": "rags_to_riches",
+      "tags": [],
+      "genre": [
+        "horror",
+        "gothic",
+        "mystery"
+      ],
+      "structural_template": "three_act",
+      "tropes": [
+        "betrayal",
+        "forbidden_knowledge",
+        "gothic_decay",
+        "locked_room",
+        "macguffin",
+        "nemesis",
+        "noble_sacrifice",
+        "poetic_justice",
+        "secret_identity",
+        "tragic_flaw"
+      ],
+      "notes": "The story follows a classic three-act structure. Act I (Setup) introduces the narrator's motive for revenge against Fortunato and establishes the setting during the carnival. Act II (Confrontation) details the journey into the catacombs, where the narrator manipulates Fortunato with wine and false concerns about his health, leading to the entrapment. Act III (Resolution) depicts the brutal act of walling up the niche and the final sealing of the tomb, concluding with the narrator's reflection fifty years later. While it contains elements of a thriller due to the suspense of the murder, the linear progression from motive to execution fits the traditional three-act framework best among the provided options."
+    },
+    {
+      "type": "style",
+      "asset_id": "the_gift_of_the_magi",
+      "source_story": "The Gift Of The Magi",
+      "source_file": "examples/the_gift_of_the_magi.txt",
+      "source_author": null,
+      "source_era": null,
+      "extracted_from": null,
+      "extracted_at": "2026-07-06T19:20:28Z",
+      "shape": "rags_to_riches",
+      "tags": [],
+      "genre": [
+        "romance",
+        "drama",
+        "literary"
+      ],
+      "structural_template": "three_act",
+      "tropes": [
+        "macguffin",
+        "mistaken_identity",
+        "noble_sacrifice",
+        "poetic_justice",
+        "pyrrhic_victory",
+        "temptation"
+      ],
+      "notes": "The story follows a classic three-act structure. Act One establishes the setting (poverty), the characters (Della and Jim), and the inciting incident (the need for Christmas money). Act Two is the rising action where Della sells her hair to buy a gift for Jim, followed by the climax when Jim returns home and reacts to her short hair. Act Three provides the resolution/twist, revealing that Jim sold his watch to buy combs for Della's hair, leading to the thematic conclusion about the wisdom of their mutual sacrifice."
+    },
+    {
+      "type": "world",
+      "asset_id": "the_gift_of_the_magi",
+      "source_story": "The Gift Of The Magi",
+      "source_file": "examples/the_gift_of_the_magi.txt",
+      "source_author": null,
+      "source_era": null,
+      "extracted_from": null,
+      "extracted_at": "2026-07-06T19:20:28Z",
+      "shape": "rags_to_riches",
+      "tags": [],
+      "genre": [
+        "romance",
+        "drama",
+        "literary"
+      ],
+      "structural_template": "three_act",
+      "tropes": [
+        "macguffin",
+        "mistaken_identity",
+        "noble_sacrifice",
+        "poetic_justice",
+        "pyrrhic_victory",
+        "temptation"
+      ],
+      "notes": "The story follows a classic three-act structure. Act One establishes the setting (poverty), the characters (Della and Jim), and the inciting incident (the need for Christmas money). Act Two is the rising action where Della sells her hair to buy a gift for Jim, followed by the climax when Jim returns home and reacts to her short hair. Act Three provides the resolution/twist, revealing that Jim sold his watch to buy combs for Della's hair, leading to the thematic conclusion about the wisdom of their mutual sacrifice."
+    },
+    {
+      "type": "beat_template",
+      "asset_id": "the_gift_of_the_magi_5beat",
+      "source_story": "The Gift Of The Magi",
+      "source_file": "examples/the_gift_of_the_magi.txt",
+      "source_author": null,
+      "source_era": null,
+      "extracted_from": null,
+      "extracted_at": "2026-07-06T19:20:28Z",
+      "shape": "rags_to_riches",
+      "tags": [],
+      "genre": [
+        "romance",
+        "drama",
+        "literary"
+      ],
+      "structural_template": "three_act",
+      "tropes": [
+        "macguffin",
+        "mistaken_identity",
+        "noble_sacrifice",
+        "poetic_justice",
+        "pyrrhic_victory",
+        "temptation"
+      ],
+      "notes": "The story follows a classic three-act structure. Act One establishes the setting (poverty), the characters (Della and Jim), and the inciting incident (the need for Christmas money). Act Two is the rising action where Della sells her hair to buy a gift for Jim, followed by the climax when Jim returns home and reacts to her short hair. Act Three provides the resolution/twist, revealing that Jim sold his watch to buy combs for Della's hair, leading to the thematic conclusion about the wisdom of their mutual sacrifice."
+    },
+    {
+      "type": "style",
+      "asset_id": "author_edgar_allan_poe",
+      "source_story": "Corpus: Edgar Allan Poe",
+      "source_file": null,
+      "source_author": "Edgar Allan Poe",
+      "source_era": null,
+      "extracted_from": null,
+      "extracted_at": "2026-07-06T19:43:09Z",
+      "shape": null,
+      "tags": [],
+      "genre": [],
+      "structural_template": null,
+      "tropes": [],
+      "notes": "Consolidated composite style profile for Edgar Allan Poe."
+    }
+  ],
+  "updated_at": "2026-07-06T19:43:09Z"
+}

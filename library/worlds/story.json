@@ -1,0 +1,81 @@
+{
+  "characters": [
+    {
+      "id": "henry_white",
+      "name": "Henry White",
+      "appearance": "A man who feels the cold and experiences physical reactions to fear, such as trembling hands and a hammering heart.",
+      "wants": "Security for his wife and son; initially money to pay debts, later the return of his son, and finally peace from the supernatural threat.",
+      "emotional_state": "Despairing, terrified, and ultimately resigned to grief and fate.",
+      "secret": null
+    },
+    {
+      "id": "mrs_white",
+      "name": "Mrs. White",
+      "appearance": "A woman whose face turns white as moonlight or ash; her eyes burn with frantic fire or become hollow pits.",
+      "wants": "To bring her son Herbert back to life.",
+      "emotional_state": "Initially placid, then desperate and mad with grief, finally defeated and hollow.",
+      "secret": null
+    },
+    {
+      "id": "herbert_white",
+      "name": "Herbert White",
+      "appearance": "Described as having sparkling eyes with mischief; later revealed to be dead with mangled fingers.",
+      "wants": "To laugh at his father's hesitation and play the piano; implicitly wants security for his family.",
+      "emotional_state": "Mischief and laughter (early); dead and silent (later).",
+      "secret": null
+    },
+    {
+      "id": "morris",
+      "name": "Morris",
+      "appearance": "Tall, burly, with a red face from cold travel; eyes wide with fear later on.",
+      "wants": "To warn the Whites about the Monkey's Paw and have them leave it alone.",
+      "emotional_state": "Grave, serious, fearful of the consequences.",
+      "secret": null
+    }
+  ],
+  "locations": [
+    {
+      "id": "laburnam_villa",
+      "name": "Laburnam Villa",
+      "description": "A house with heavy debts, a fireplace grate, a mantel, and a front door. It is described as quiet, dark, and eventually secure but haunted by grief."
+    },
+    {
+      "id": "hallway",
+      "name": "Hallway",
+      "description": "An endless and dark space leading to the front door where the knocking occurs."
+    }
+  ],
+  "chekhov_objects": [
+    {
+      "id": "monkeys_paw",
+      "name": "The Monkey's Paw",
+      "description": "A dried mummy paw, shriveled and twisted like a snake, said to be enchanted by a fakir. It grants three wishes but brings sorrowful consequences."
+    },
+    {
+      "id": "letter_from_maw_and_meggins",
+      "name": "Letter from Maw and Meggins",
+      "description": "A paper containing the news of Herbert's death by machinery and an offer of two hundred pounds in compensation."
+    }
+  ],
+  "secrets": [
+    {
+      "id": "herberts_death",
+      "content": "Herbert White died when his fingers were caught in machinery, mangled beyond recognition.",
+      "known_by": [
+        "henry_white",
+        "morris"
+      ]
+    }
+  ],
+  "protagonist_id": "henry_white",
+  "_meta": {
+    "type": "world",
+    "asset_id": "story",
+    "source_story": "Story",
+    "source_file": "/Users/uwetrostheide/Developer/utrost/Endless/out/runs/20260706-205650/story.txt",
+    "extracted_at": "2026-07-06T18:58:50Z",
+    "shape": "man_in_hole",
+    "tags": [],
+    "genre": []
+  }
+}

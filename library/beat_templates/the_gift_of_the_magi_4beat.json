@@ -1,0 +1,71 @@
+{
+  "beats": [
+    {
+      "id": "equilibrium",
+      "shape_function": "Establishes the dire financial situation and Della's despair over the lack of funds for a Christmas gift.",
+      "target_words": 280,
+      "pov": "Omniscient narrator focusing on Della",
+      "required_events": [
+        "Della counts her meager savings ($1.87) and despairs about buying Jim a present.",
+        "The narrative establishes the poverty of their apartment and their former prosperity.",
+        "Della looks at her reflection in the pier glass, noting her beautiful hair."
+      ],
+      "forbidden_events": [],
+      "mood": "Desperate, impoverished, anxious",
+      "rationale": "This segment sets the status quo of poverty and introduces the central problem (no money for a gift) and the protagonist's primary asset (her hair)."
+    },
+    {
+      "id": "disruption",
+      "shape_function": "Della makes the irreversible decision to sell her hair to buy Jim a gift.",
+      "target_words": 250,
+      "pov": "Omniscient narrator focusing on Della",
+      "required_events": [
+        "Della decides to sell her hair and goes to Madame Sofronie's shop.",
+        "She sells her hair for twenty dollars.",
+        "She uses the money to buy a platinum fob chain for Jim's watch."
+      ],
+      "forbidden_events": [],
+      "mood": "Determined, frantic, hopeful",
+      "rationale": "This is the inciting action of the plot. Della moves from despair to action, sacrificing her physical beauty (hair) to solve the financial problem, setting up the first half of the ironic twist."
+    },
+    {
+      "id": "turn",
+      "shape_function": "Della prepares for Jim's return, hiding her sacrifice, while Jim arrives with his own secret.",
+      "target_words": 350,
+      "pov": "Omniscient narrator focusing on Della and Jim",
+      "required_events": [
+        "Della curls her short hair and waits anxiously for Jim.",
+        "Jim arrives home and stares at Della in silence, terrifying her.",
+        "Della reveals she cut and sold her hair.",
+        "Jim reveals he sold his watch to buy combs for her hair."
+      ],
+      "forbidden_events": [],
+      "mood": "Tense, fearful, then shocked",
+      "rationale": "This beat contains the climax of the narrative irony. The tension builds as Jim reacts strangely, leading to the mutual revelation that both have sacrificed their greatest treasures for the other's gift."
+    },
+    {
+      "id": "resolution",
+      "shape_function": "The couple accepts the futility of the material gifts but celebrates the wisdom of their love.",
+      "target_words": 200,
+      "pov": "Omniscient narrator focusing on the couple",
+      "required_events": [
+        "Della and Jim exchange gifts (combs and chain) which are now unusable.",
+        "Jim suggests putting the presents away for later use.",
+        "The narrator concludes that they are the true 'Magi' because their love is the greatest gift."
+      ],
+      "forbidden_events": [],
+      "mood": "Bittersweet, affectionate, reflective",
+      "rationale": "This segment resolves the immediate conflict by showing the emotional reconciliation and provides the thematic conclusion, recontextualizing the 'foolish' sacrifices as acts of supreme wisdom."
+    }
+  ],
+  "_meta": {
+    "type": "beat_template",
+    "asset_id": "the_gift_of_the_magi_4beat",
+    "source_story": "The Gift Of The Magi",
+    "source_file": "examples/the_gift_of_the_magi.txt",
+    "extracted_at": "2026-07-06T18:54:08Z",
+    "shape": "rags_to_riches",
+    "tags": [],
+    "genre": []
+  }
+}

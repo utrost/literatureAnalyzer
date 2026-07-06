@@ -1,0 +1,100 @@
+{
+  "characters": [
+    {
+      "id": "montresor",
+      "name": "Montresor",
+      "appearance": "The narrator; wears a tight-fitting parti-striped dress and a conical cap with bells (initially described as Fortunato's attire, but Montresor also wears motley/mask later? No, text says 'He [Fortunato] had on a tight-fitting... I was so pleased...'). Correction: Montresor puts on a mask of black silk and draws a roquelaire closely about his person. He is skilled in Italian vintages.",
+      "wants": "To punish Fortunato with impunity for an insult, ensuring the victim knows who is punishing them.",
+      "emotional_state": "Coldly calculating, feigning warmth and concern while harboring deep-seated hatred and a desire for revenge.",
+      "secret": null,
+      "archetype": "protagonist"
+    },
+    {
+      "id": "fortunato",
+      "name": "Fortunato",
+      "appearance": "Wears motley: a tight-fitting parti-striped dress, a conical cap with bells. He is intoxicated, has a cough, and wears a mask of black silk (wait, text says Fortunato puts on the mask? 'Putting on a mask of black silk... I suffered him to hurry me'. It implies Montresor puts it on. Fortunato's appearance is defined by his motley dress and cap).",
+      "wants": "To verify the authenticity of a cask of Amontillado wine; to prove his connoisseurship.",
+      "emotional_state": "Initially jovial and intoxicated, then bewildered, fearful, and finally desperate as he realizes his fate.",
+      "secret": null,
+      "archetype": "shadow"
+    }
+  ],
+  "locations": [
+    {
+      "id": "montresor_palazzo",
+      "name": "Montresor's Palazzo",
+      "description": "A house where attendants have absconded during carnival. It contains several suites of rooms and sconces holding flambeaux."
+    },
+    {
+      "id": "catacombs",
+      "name": "The Catacombs of the Montresors",
+      "description": "Extensive underground vaults encrusted with nitre, located below the river's bed. They contain walls of piled bones, casks, and deep crypts lined with human remains."
+    },
+    {
+      "id": "the_niche",
+      "name": "The Interior Recess",
+      "description": "A small chamber (4ft wide, 3ft deep, 6-7ft high) in the fourth side of a crypt, backed by solid granite. It contains two iron staples and is where Fortunato is chained and walled up."
+    }
+  ],
+  "chekhov_objects": [
+    {
+      "id": "amontillado",
+      "name": "The Cask of Amontillado",
+      "description": "A pipe of wine that serves as the bait to lure Fortunato into the catacombs. Its authenticity is disputed by Montresor."
+    },
+    {
+      "id": "trowel",
+      "name": "The Trowel",
+      "description": "A mason's tool hidden beneath Montresor's roquelaire, used to build the wall that seals Fortunato in the niche. It is presented as a 'sign' of being a mason."
+    },
+    {
+      "id": "chain_and_padlock",
+      "name": "Chain and Padlock",
+      "description": "Iron chain and padlock attached to staples in the granite wall of the niche, used to fetter Fortunato."
+    },
+    {
+      "id": "flambeaux",
+      "name": "Flambeaux",
+      "description": "Torches taken from sconces, carried by Montresor and Fortunato to light their way through the dark catacombs."
+    }
+  ],
+  "secrets": [
+    {
+      "id": "montresors_revenge_plan",
+      "content": "Montresor has planned to murder Fortunato and wall him up alive in the catacombs, using the pretense of wine tasting as a lure.",
+      "known_by": [
+        "montresor"
+      ]
+    }
+  ],
+  "protagonist_id": "montresor",
+  "meta": null,
+  "_meta": {
+    "type": "world",
+    "asset_id": "the_cask_of_amontillado",
+    "source_story": "The Cask Of Amontillado",
+    "source_file": "examples/the_cask_of_amontillado.txt",
+    "extracted_at": "2026-07-06T19:17:44Z",
+    "shape": "rags_to_riches",
+    "tags": [],
+    "genre": [
+      "horror",
+      "gothic",
+      "mystery"
+    ],
+    "structural_template": "three_act",
+    "tropes": [
+      "betrayal",
+      "forbidden_knowledge",
+      "gothic_decay",
+      "locked_room",
+      "macguffin",
+      "nemesis",
+      "noble_sacrifice",
+      "poetic_justice",
+      "secret_identity",
+      "tragic_flaw"
+    ],
+    "notes": "The story follows a classic three-act structure. Act I (Setup) introduces the narrator's motive for revenge against Fortunato and establishes the setting during the carnival. Act II (Confrontation) details the journey into the catacombs, where the narrator manipulates Fortunato with wine and false concerns about his health, leading to the entrapment. Act III (Resolution) depicts the brutal act of walling up the niche and the final sealing of the tomb, concluding with the narrator's reflection fifty years later. While it contains elements of a thriller due to the suspense of the murder, the linear progression from motive to execution fits the traditional three-act framework best among the provided options."
+  }
+}

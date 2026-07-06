@@ -109,8 +109,10 @@ def _world_divergence(a: WorldSeed, b: WorldSeed) -> WorldDivergence:
     prot_b = next((c.name.lower() for c in b.characters if c.id == b.protagonist_id), None)
     prot_match = prot_a is not None and prot_a == prot_b
 
-    char_overlap = _jaccard(names_a, names_b)
-    loc_overlap = _jaccard(locs_a, locs_b)
+    # Directional containment (recall): do all original elements (b) exist in the candidate (a)?
+    # Fleshing out or adding extra backstory elements should not penalize the score.
+    char_overlap = len(names_a & names_b) / len(names_b) if names_b else 1.0
+    loc_overlap = len(locs_a & locs_b) / len(locs_b) if locs_b else 1.0
     similarity = _mean([char_overlap, loc_overlap, 1.0 if prot_match else 0.0])
     return WorldDivergence(
         characters_a=len(a.characters),

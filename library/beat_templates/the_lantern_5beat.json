@@ -1,0 +1,88 @@
+{
+  "beats": [
+    {
+      "id": "equilibrium",
+      "shape_function": "Establishes the protagonist's routine, pride in her work, and the community's reliance on her light.",
+      "target_words": 75,
+      "pov": "Mara (third-person limited)",
+      "required_events": [
+        "Mara maintains the lighthouse daily as a family tradition.",
+        "The town relies on her light for safety and sleep.",
+        "Mara expresses deep satisfaction with her role and the continuity of the light."
+      ],
+      "forbidden_events": [],
+      "mood": "Serene, proud, dutiful",
+      "rationale": "This section sets the baseline status quo before any conflict arises, defining Mara's identity as the keeper and the lighthouse's function for the town."
+    },
+    {
+      "id": "disruption",
+      "shape_function": "A catastrophic storm destroys the lens, creating an immediate physical crisis.",
+      "target_words": 65,
+      "pov": "Mara (third-person limited)",
+      "required_events": [
+        "A severe storm damages the lighthouse structure and breaks the lens.",
+        "The lamp goes dark, leaving the reef dangerous for boats.",
+        "Mara feels the weight of responsibility as the light fails."
+      ],
+      "forbidden_events": [],
+      "mood": "Chaotic, desperate, heavy",
+      "rationale": "This is the inciting incident where the stable equilibrium is shattered by an external force (the storm), creating the central problem that must be solved."
+    },
+    {
+      "id": "bottom",
+      "shape_function": "The situation worsens as institutional support is withdrawn, leading to emotional despair.",
+      "target_words": 70,
+      "pov": "Mara (third-person limited)",
+      "required_events": [
+        "The harbor council refuses to pay for repairs and plans to replace the lighthouse with an electric beacon.",
+        "Mara walks the dark gallery, feeling she has failed her father and the town.",
+        "She experiences profound hopelessness ('ash') regarding the future of the light."
+      ],
+      "forbidden_events": [],
+      "mood": "Despairing, defeated, lonely",
+      "rationale": "This beat represents the 'all is lost' moment. The physical damage is compounded by social abandonment, pushing Mara to her lowest emotional point before she finds a solution."
+    },
+    {
+      "id": "turn",
+      "shape_function": "The protagonist discovers a hidden resource and takes decisive action to solve the problem.",
+      "target_words": 85,
+      "pov": "Mara (third-person limited)",
+      "required_events": [
+        "Mara remembers the grandfather's unopened cellar crates.",
+        "She finds the spare lens inside.",
+        "She physically carries the pieces up and repairs the lamp through hard labor."
+      ],
+      "forbidden_events": [],
+      "mood": "Determined, focused, resilient",
+      "rationale": "This is the turning point where the protagonist moves from passive despair to active problem-solving using a previously unknown resource, shifting the narrative trajectory toward resolution."
+    },
+    {
+      "id": "resolution",
+      "shape_function": "The light is restored, the community accepts it, and the equilibrium is renewed.",
+      "target_words": 60,
+      "pov": "Mara (third-person limited)",
+      "required_events": [
+        "The light turns again, signaling safety to the boats.",
+        "The council abandons their plan for a new beacon upon seeing the working light.",
+        "Mara returns to her routine, and the town sleeps safely once more."
+      ],
+      "forbidden_events": [],
+      "mood": "Triumphant, peaceful, satisfied",
+      "rationale": "This final beat resolves the conflict: the light is fixed, the threat of replacement is removed, and the story returns to a state similar to the beginning but with Mara's competence reaffirmed."
+    }
+  ],
+  "_meta": {
+    "type": "beat_template",
+    "asset_id": "the_lantern_5beat",
+    "source_story": "The Lantern",
+    "source_file": "examples/the_lantern.txt",
+    "extracted_at": "2026-07-06T19:06:02Z",
+    "shape": "man_in_hole",
+    "tags": [],
+    "genre": [
+      "literary",
+      "drama"
+    ],
+    "notes": "The story follows a clear three-act structure. Act I establishes the status quo of Mara's dedication to the lighthouse and introduces the inciting incident: the storm destroys the lens and the council decides to abandon the tower. Act II constitutes the confrontation, where Mara faces the despair of failure but discovers the ancestral solution (the spare lens) and undertakes the arduous task of repairing it. Act III provides the resolution as the light is restored, the town is saved, and the status quo is reaffirmed with a deeper sense of continuity and legacy."
+  }
+}

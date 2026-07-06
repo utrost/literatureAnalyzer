@@ -1,0 +1,40 @@
+id: style_author_edgar_allan_poe
+name: author_edgar_allan_poe
+axes:
+  sentence_length_mean: 11
+  sentence_length_variance: high
+  diction_register: colloquial
+  latinate_ratio: low
+  psychic_distance: medium
+  show_tell_ratio: 0.96
+  description_density: medium
+  dialogue_attribution: elaborate
+authored_brief: Sentences average about 11 words with high length variance. Diction
+  is colloquial with low Latinate density and medium use of modifiers. Narration sits
+  at medium psychic distance and leans toward showing (show/tell 0.96). Dialogue attribution
+  reads as elaborate.
+exemplars:
+- 'The old man turned and regarded her, and his voice shook. “He has been
+
+  dead ten days, and besides he—I would not tell you else, but—I could
+
+  only recognize him by his clothing. If he was too terrible for you to
+
+  see then, how now?”'
+- '"A huge human foot d''or, in a field azure; the foot crushes a serpent
+
+  rampant whose fangs are imbedded in the heel."'
+- '“To look at,” said the sergeant-major, fumbling in his pocket, “it’s
+
+  just an ordinary little paw, dried to a mummy.”'
+meta: null
+_meta:
+  type: style
+  asset_id: author_edgar_allan_poe
+  source_story: 'Corpus: Edgar Allan Poe'
+  source_author: Edgar Allan Poe
+  extracted_at: '2026-07-06T19:43:09Z'
+  tags: []
+  genre: []
+  tropes: []
+  notes: Consolidated composite style profile for Edgar Allan Poe.

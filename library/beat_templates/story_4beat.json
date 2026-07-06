@@ -1,0 +1,78 @@
+{
+  "beats": [
+    {
+      "id": "equilibrium_and_disruption",
+      "shape_function": "Establishes the family's poverty and introduces the cursed Monkey's Paw, creating a tension between desire for wealth and warning of danger.",
+      "target_words": 145,
+      "pov": "Henry White (first-person)",
+      "required_events": [
+        "The White family is introduced in their modest home; Herbert plays piano while Mrs. White knits.",
+        "Morris arrives with the Monkey's Paw, warning that it brings sorrow and death.",
+        "Herbert mocks the paw and wishes for 200 pounds to pay off debts.",
+        "Henry makes the wish despite Morris's frantic warning.",
+        "Morris flees; the family laughs at his superstition."
+      ],
+      "forbidden_events": [],
+      "mood": "Domestic warmth undercut by ominous foreboding",
+      "rationale": "This section establishes the 'hole' (poverty/desire) and the 'fall' (the wish), setting up the central conflict of the man-in-the-hole structure."
+    },
+    {
+      "id": "turn_and_bottom",
+      "shape_function": "The wish is granted through a horrific twist; the protagonist hits rock bottom as he learns his son is dead.",
+      "target_words": 130,
+      "pov": "Henry White (first-person)",
+      "required_events": [
+        "Time passes; the house grows dark and cold.",
+        "A visitor arrives from Maw and Meggins with a letter.",
+        "Henry reads that Herbert is dead, killed in machinery.",
+        "The 200 pounds is revealed as compensation for the death.",
+        "Henry collapses in grief as the reality of the curse sets in."
+      ],
+      "forbidden_events": [],
+      "mood": "Shock, horror, and despair",
+      "rationale": "This is the 'bottom' of the arc. The initial desire (money) has been fulfilled but at the ultimate cost (son's life), plunging the protagonist into the deepest part of the hole."
+    },
+    {
+      "id": "climax_and_turn",
+      "shape_function": "The wife demands the second wish to reverse death; the protagonist resists as a supernatural threat arrives at the door.",
+      "target_words": 160,
+      "pov": "Henry White (first-person)",
+      "required_events": [
+        "Mrs. White insists Henry use the paw to bring Herbert back.",
+        "Henry makes the second wish: 'Bring Herbert back.'",
+        "A heavy, rhythmic knocking begins at the front door.",
+        "Mrs. White tries to open the door, believing it is Herbert.",
+        "Henry physically restrains her, fearing what is outside."
+      ],
+      "forbidden_events": [],
+      "mood": "Tension, panic, and frantic desperation",
+      "rationale": "This is the climax. The 'hole' has become a trap. The protagonist must make a choice that defines the resolution: to succumb to the madness or fight back against the supernatural consequence."
+    },
+    {
+      "id": "resolution",
+      "shape_function": "The protagonist makes the final wish to send the entity away; the threat vanishes, leaving only grief and acceptance.",
+      "target_words": 180,
+      "pov": "Henry White (first-person)",
+      "required_events": [
+        "Mrs. White threatens to kill Henry if he doesn't open the door.",
+        "Henry uses the final wish: 'Let the dead rest' / 'Return no more.'",
+        "The knocking stops instantly; silence returns.",
+        "Henry checks the window and sees nothing but rain.",
+        "The paw burns in the fire; the family accepts their fate together."
+      ],
+      "forbidden_events": [],
+      "mood": "Relief, sorrow, and eerie peace",
+      "rationale": "This is the resolution. The immediate threat is neutralized. The 'man' has survived the hole, but he is changed forever, accepting the 'rule' of fate."
+    }
+  ],
+  "_meta": {
+    "type": "beat_template",
+    "asset_id": "story_4beat",
+    "source_story": "Story",
+    "source_file": "/Users/uwetrostheide/Developer/utrost/Endless/out/runs/20260706-205650/story.txt",
+    "extracted_at": "2026-07-06T18:58:50Z",
+    "shape": "man_in_hole",
+    "tags": [],
+    "genre": []
+  }
+}

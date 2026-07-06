@@ -12,11 +12,13 @@ from ..config import DeepConfig
 from ..llm import call_structured, load_prompt
 from ..schemas import BeatPlan
 
+from ..tropes import format_taxonomy_for_prompt
+
 _PROMPT_FILE = "beat_labeler.v1.md"
 
 
 def label_beats(cfg: DeepConfig, *, text: str, shape: str) -> BeatPlan:
-    system = load_prompt(_PROMPT_FILE)
+    system = load_prompt(_PROMPT_FILE) + "\n\n# Available Tropes\n" + format_taxonomy_for_prompt()
     user = f"Classified shape: {shape}\n\nStory:\n\n{text}\n"
     return call_structured(
         cfg.beat_labeler,

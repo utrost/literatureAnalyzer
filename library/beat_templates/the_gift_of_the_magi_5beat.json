@@ -1,0 +1,119 @@
+{
+  "beats": [
+    {
+      "id": "equilibrium",
+      "shape_function": "Establishes the dire financial situation and Della's love for Jim, creating the central problem of finding a gift.",
+      "target_words": 280,
+      "pov": "Omniscient Narrator (focused on Della)",
+      "required_events": [
+        "Della counts her meager savings ($1.87) and despairs over the lack of funds for Christmas.",
+        "The narrator establishes the poverty of the Dillingham Youngs' flat and their former prosperity.",
+        "Della looks at her long, beautiful hair in the mirror, establishing it as her most prized possession alongside Jim's watch."
+      ],
+      "forbidden_events": [],
+      "mood": "Desperate, impoverished, yet loving",
+      "rationale": "This segment sets the status quo (poverty) and the inciting incident (need for a gift), defining the 'rags' aspect of the shape.",
+      "tropes": [
+        "macguffin"
+      ]
+    },
+    {
+      "id": "disruption",
+      "shape_function": "Della makes the irreversible decision to sacrifice her greatest treasure (her hair) to solve the problem.",
+      "target_words": 250,
+      "pov": "Omniscient Narrator (focused on Della)",
+      "required_events": [
+        "Della decides to sell her hair.",
+        "She goes to Madame Sofronie and sells her hair for $20.",
+        "She uses the money to buy a platinum fob chain for Jim's watch, completing her sacrifice."
+      ],
+      "forbidden_events": [],
+      "mood": "Determined, anxious, hopeful",
+      "rationale": "This is the point of no return. The 'riches' (money/gift) are acquired only through a significant loss, driving the plot toward the climax.",
+      "tropes": [
+        "temptation"
+      ]
+    },
+    {
+      "id": "turn",
+      "shape_function": "Jim returns home and reacts with shock to Della's changed appearance, creating tension before the reveal.",
+      "target_words": 200,
+      "pov": "Omniscient Narrator (focused on Della and Jim)",
+      "required_events": [
+        "Della prepares for Jim's arrival, worried about his reaction to her short hair.",
+        "Jim enters and stares at Della in silence, terrifying her with his unreadable expression.",
+        "Della confesses she cut and sold her hair to buy him a gift."
+      ],
+      "forbidden_events": [],
+      "mood": "Tense, fearful, awkward",
+      "rationale": "The climax of the emotional conflict. The audience knows Della's sacrifice, but Jim's reaction is unknown, creating suspense.",
+      "tropes": [
+        "mistaken_identity"
+      ]
+    },
+    {
+      "id": "bottom",
+      "shape_function": "The gifts are exchanged, revealing the tragic irony that both sacrifices were rendered useless by the other's sacrifice.",
+      "target_words": 250,
+      "pov": "Omniscient Narrator (focused on Della and Jim)",
+      "required_events": [
+        "Jim gives Della the combs he bought for her hair.",
+        "Della realizes the combs are useless because she sold her hair.",
+        "Jim reveals he sold his watch to buy money for the combs."
+      ],
+      "forbidden_events": [],
+      "mood": "Hysterical, ironic, poignant",
+      "rationale": "The 'bottom' of the rags-to-richest arc is actually the peak of their poverty/loss. They have lost their treasures (hair/watch) to buy gifts for those treasures (combs/watch chain). It is a pyrrhic victory in material terms.",
+      "tropes": [
+        "poetic_justice",
+        "pyrrhic_victory"
+      ]
+    },
+    {
+      "id": "resolution",
+      "shape_function": "The narrator reframes the 'foolish' sacrifices as the ultimate wisdom, completing the thematic resolution.",
+      "target_words": 150,
+      "pov": "Omniscient Narrator (direct address to reader)",
+      "required_events": [
+        "Jim suggests putting the gifts away for now.",
+        "The narrator compares Jim and Della to the Magi, declaring them the wisest of all givers.",
+        "The story concludes that their love is the true treasure."
+      ],
+      "forbidden_events": [],
+      "mood": "Reflective, warm, wise",
+      "rationale": "This beat resolves the emotional arc by redefining 'riches' not as material wealth, but as selfless love. It provides the moral closure of the rags-to-richest shape.",
+      "tropes": [
+        "noble_sacrifice"
+      ]
+    }
+  ],
+  "meta": {
+    "title": "The Gift of the Magi",
+    "author": "O. Henry",
+    "classified_shape": "rags_to_riches"
+  },
+  "_meta": {
+    "type": "beat_template",
+    "asset_id": "the_gift_of_the_magi_5beat",
+    "source_story": "The Gift Of The Magi",
+    "source_file": "examples/the_gift_of_the_magi.txt",
+    "extracted_at": "2026-07-06T19:20:28Z",
+    "shape": "rags_to_riches",
+    "tags": [],
+    "genre": [
+      "romance",
+      "drama",
+      "literary"
+    ],
+    "structural_template": "three_act",
+    "tropes": [
+      "macguffin",
+      "mistaken_identity",
+      "noble_sacrifice",
+      "poetic_justice",
+      "pyrrhic_victory",
+      "temptation"
+    ],
+    "notes": "The story follows a classic three-act structure. Act One establishes the setting (poverty), the characters (Della and Jim), and the inciting incident (the need for Christmas money). Act Two is the rising action where Della sells her hair to buy a gift for Jim, followed by the climax when Jim returns home and reacts to her short hair. Act Three provides the resolution/twist, revealing that Jim sold his watch to buy combs for Della's hair, leading to the thematic conclusion about the wisdom of their mutual sacrifice."
+  }
+}

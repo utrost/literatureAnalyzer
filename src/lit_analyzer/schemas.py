@@ -55,11 +55,13 @@ class StyleAxes(BaseModel):
 
 
 class StyleProfile(BaseModel):
+    model_config = {"populate_by_name": True}
     id: str
     name: str
     axes: StyleAxes
     authored_brief: str
     exemplars: list[str] = Field(default_factory=list)
+    meta: dict | None = Field(default=None, alias="_meta")
 
 
 # ---------- World graph -----------------------------------------------------
@@ -72,6 +74,7 @@ class Character(BaseModel):
     wants: str
     emotional_state: str
     secret: str | None = None
+    archetype: str | None = Field(default=None, description="Archetype matching this character (e.g. 'protagonist', 'mentor', 'shadow', 'herald', 'threshold_guardian', 'trickster', 'shapeshifter', 'ally')")
 
 
 class Location(BaseModel):
@@ -93,11 +96,13 @@ class Secret(BaseModel):
 
 
 class WorldSeed(BaseModel):
+    model_config = {"populate_by_name": True}
     characters: list[Character]
     locations: list[Location]
     chekhov_objects: list[ChekhovObject] = Field(default_factory=list)
     secrets: list[Secret] = Field(default_factory=list)
     protagonist_id: str
+    meta: dict | None = Field(default=None, alias="_meta")
 
 
 # ---------- Beats -----------------------------------------------------------
@@ -112,10 +117,13 @@ class Beat(BaseModel):
     forbidden_events: list[str] = Field(default_factory=list)
     mood: str
     rationale: str | None = None
+    tropes: list[str] = Field(default_factory=list, description="Tropes present in this beat, from our taxonomy (e.g. 'faustian_bargain', 'noble_sacrifice')")
 
 
 class BeatPlan(BaseModel):
+    model_config = {"populate_by_name": True}
     beats: list[Beat]
+    meta: dict | None = Field(default=None, alias="_meta")
 
 
 # ============================================================================
@@ -160,11 +168,17 @@ class StyleEvidence(BaseModel):
     first_person_ratio: float
 
 
+class StoryClassification(BaseModel):
+    genre: list[str] = Field(default_factory=list, description="Primary genres, e.g. ['horror', 'mystery']")
+    structural_template: str = Field(description="Plot framework name, e.g. 'three_act', 'heros_journey', 'save_the_cat', 'kishotenketsu'")
+    notes: str | None = None
+
+
 class StoryAnalysis(BaseModel):
     """Top-level deconstruction of one story.
 
-    ``style`` and ``shape`` are always present (deterministic passes). ``world``
-    and ``beats`` are filled only by the LLM-powered ``--deep`` passes and are
+    ``style`` and ``shape`` are always present (deterministic passes). ``world``,
+    ``beats`` and ``classification`` are filled only by the LLM-powered ``--deep`` passes and are
     ``None`` otherwise.
     """
 
@@ -175,6 +189,7 @@ class StoryAnalysis(BaseModel):
     shape: ShapeMatch
     world: WorldSeed | None = None
     beats: BeatPlan | None = None
+    classification: StoryClassification | None = None
 
 
 # ---------- Divergence (the fidelity critic, §8.5) --------------------------

@@ -29,7 +29,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from .schemas import BeatPlan, StoryAnalysis, WorldSeed
+from .schemas import BeatPlan, StoryAnalysis, WorldSeed, StoryClassification
 
 DEFAULT_STORE_DIR = Path("out/analyses")
 
@@ -66,6 +66,15 @@ class AnalysisStore:
     def save_beats(self, beats: BeatPlan | None) -> None:
         if beats is not None:
             (self.root / "beats.json").write_text(beats.model_dump_json(indent=2))
+
+    # ---- classification ----------------------------------------------------
+    def load_classification(self) -> StoryClassification | None:
+        p = self.root / "classification.json"
+        return StoryClassification.model_validate_json(p.read_text()) if p.exists() else None
+
+    def save_classification(self, classification: StoryClassification | None) -> None:
+        if classification is not None:
+            (self.root / "classification.json").write_text(classification.model_dump_json(indent=2))
 
     # ---- full analysis -----------------------------------------------------
     def load_analysis(self) -> StoryAnalysis | None:

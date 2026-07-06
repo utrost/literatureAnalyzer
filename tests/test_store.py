@@ -4,6 +4,7 @@ from lit_analyzer.schemas import (
     BeatPlan,
     Character,
     WorldSeed,
+    StoryClassification,
 )
 from lit_analyzer.store import AnalysisStore, content_key
 
@@ -26,6 +27,14 @@ def _beats():
     )
 
 
+def _classification():
+    return StoryClassification(
+        genre=["horror"],
+        structural_template="three_act",
+        notes="A test classification",
+    )
+
+
 def test_content_key_stable_and_text_sensitive():
     assert content_key("hello world") == content_key("hello world")
     assert content_key("hello world") != content_key("hello worlds")
@@ -37,8 +46,10 @@ def test_store_roundtrips_world_and_beats(tmp_path):
     assert store.load_world() is None  # empty to start
     store.save_world(_world())
     store.save_beats(_beats())
+    store.save_classification(_classification())
     assert store.load_world() == _world()
     assert store.load_beats() == _beats()
+    assert store.load_classification() == _classification()
 
 
 def test_store_key_isolates_different_texts(tmp_path):
@@ -73,6 +84,8 @@ def test_injected_world_and_beats_skip_the_llm(lantern_text):
         deep_config=object(),  # truthy sentinel; must not be consulted
         world=_world(),
         beats=_beats(),
+        classification=_classification(),
     )
     assert result.world == _world()
     assert result.beats == _beats()
+    assert result.classification == _classification()

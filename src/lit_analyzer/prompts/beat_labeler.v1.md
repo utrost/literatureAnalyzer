@@ -12,5 +12,6 @@ For each beat, produce:
 - **forbidden_events** — leave empty unless the beat pointedly withholds something.
 - **mood** — the emotional register of the beat.
 - **rationale** — one line: why this segment is one beat and where its boundaries fall.
+- **tropes** — a list of trope IDs present in this beat, chosen ONLY from the list of `# Available Tropes` provided below (e.g. `['faustian_bargain', 'cursed_object']`).
 
 Segment honestly. If the story has five movements, return five beats; do not force it to a fixed count. Keep the beats in reading order.
