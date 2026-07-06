@@ -29,7 +29,8 @@ src/lit_analyzer/
 ├── cli.py              # Typer entrypoint — `deconstruct <FILE>`
 ├── analyzer.py         # spine: runs deterministic passes, optional --deep passes
 ├── segment.py          # words / sentences / paragraphs / windows (deterministic)
-├── lexicon.py          # tiny built-in sentiment lexicon (bag-of-words)
+├── sentiment.py        # VADER sentiment (deterministic), lexicon fallback
+├── lexicon.py          # tiny built-in sentiment lexicon (bag-of-words fallback)
 ├── arc.py              # arc sampling + shape classification (deterministic)
 ├── metrics.py          # prose → StyleProfile (deterministic)
 ├── compare.py          # fidelity critic: two StoryAnalysis → Divergence (§8.5)

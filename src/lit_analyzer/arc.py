@@ -14,8 +14,7 @@ from __future__ import annotations
 
 import math
 
-from . import segment
-from .lexicon import polarity
+from . import segment, sentiment
 from .schemas import ArcSample, ShapeMatch, ShapeScore
 
 # name -> beat valences (from Endless's data/shapes/*.yaml). Contract-shared.
@@ -32,14 +31,8 @@ DEFAULT_SEGMENTS = 12
 
 
 def _raw_valences(text: str, n: int) -> list[float]:
-    """Mean word polarity per window, in [-1, 1] before smoothing."""
-    vals: list[float] = []
-    for win in segment.windows(text, n):
-        toks = segment.words(win)
-        scores = [polarity(t) for t in toks]
-        hits = [s for s in scores if s != 0]
-        vals.append(sum(hits) / len(hits) if hits else 0.0)
-    return vals
+    """Sentiment per window, in [-1, 1] before smoothing (VADER; §9 v0.5)."""
+    return [sentiment.valence(win) for win in segment.windows(text, n)]
 
 
 def _smooth(vals: list[float]) -> list[float]:

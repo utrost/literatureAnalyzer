@@ -191,12 +191,14 @@ test suite runs offline in a fraction of a second.
 
 Being honest about the proxies, so nobody mistakes them for more than they are:
 
-- **Sentiment is bag-of-words** off a ~250-word built-in lexicon. It traces the
-  gross shape of an arc and reliably separates rising from falling stories, but
-  it under-reads a "bottom" when the despairing passage still contains warm
-  words (a grief scene full of "loved" and "home" reads less low than it is).
-  On the bundled `the_lantern.txt` it ranks the three rise-ending shapes on top
-  — directionally right — but places cinderella above man_in_hole.
+- **Sentiment now uses VADER** (`sentiment.py`), a deterministic offline model
+  that handles negation ("no hope"), intensifiers, and punctuation — the §9 v0.5
+  upgrade over the old bag-of-words lexicon (kept as a zero-dependency fallback in
+  `lexicon.py`). This fixed the known miss: `the_lantern.txt` now classifies as
+  **man_in_hole** (its true shape) where the bag of words placed cinderella above
+  it. VADER is tuned for short modern text, so it still *under-reads some
+  literary-positive phrasing* ("the whole bay was singing" scores neutral) — the
+  residual crudeness, now on the positive side rather than the negated one.
 - **Several style axes are heuristic defaults.** Diction register and psychic
   distance are hard deterministically; they get pronoun/contraction-based
   guesses. The raw numbers are exposed as `StyleEvidence` so the guess is never
@@ -519,11 +521,12 @@ both repos — see [`BOOK_SCALE_ROADMAP.md`](./BOOK_SCALE_ROADMAP.md).*
   in a new setting and voice, keeping shape/beats/relationships fixed (§8.7).
   Control levers: `--transpose`, `--directive`, `--rename`, `--as-style`.
 
-**v0.5 — Sharper measurement.** Replace the bag-of-words lexicon with a real
-sentiment model (VADER, NRC-VAD, or a cheap LLM sentiment pass) and measure
-whether classification accuracy on hand-labeled stories improves. Better
-sentence segmentation. An LLM-authored style brief in `--deep` that reads richer
-than the templated one. This is the analog of Endless's v0.5 "quality close."
+**v0.5 — Sharper measurement.** ✅ *Sentiment upgraded:* the bag-of-words lexicon
+is replaced by VADER (`sentiment.py`), which handles negation/intensifiers and
+fixed the `the_lantern.txt` misclassification (§7). **Still open:** a small
+hand-labeled eval set to *measure* classification accuracy (not just eyeball it),
+better sentence segmentation, and an LLM-authored style brief in `--deep` that
+reads richer than the templated one. The analog of Endless's v0.5 "quality close."
 
 **v1 — Round-trip fidelity (the fidelity critic).** ✅ *The critic shipped:*
 `compare()` (`--compare`) diffs two `StoryAnalysis` into a `Divergence` — the
