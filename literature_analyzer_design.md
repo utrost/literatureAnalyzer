@@ -277,6 +277,55 @@ The rule of thumb: **deepen the contract before widening into analysis-only**, a
 deconstructs a story into exactly what its sibling can rebuild is worth more than
 one that reports a dozen disconnected views.
 
+### 8.5 Closing the loop: the fidelity critic
+
+Deconstructor (this tool) plus narrator (Endless) is two thirds of a loop. The
+missing third is a **critic** that compares the original story to Endless's
+regeneration. The instinct is to make that a third project. It shouldn't be —
+"critic" is two different faculties, and both already have a home.
+
+**Faculty 1 — fidelity: did the structure survive?** This does *not* compare the
+two texts word-for-word; regeneration is *supposed* to produce different prose.
+It compares their **deconstructions**:
+
+```
+analyze(original)     → StoryAnalysis A
+analyze(regenerated)  → StoryAnalysis B
+compare(A, B)         → Divergence
+```
+
+`compare` is a diff over `StoryAnalysis` — this tool's *own output type* — so it
+lives here. Every dimension already carries a natural distance: shape → distance
+between the two arc curves (the machinery is already in `arc.py`); style →
+per-axis deltas; world → character/location overlap (did the protagonist
+survive? who was dropped or invented?); beats → do the counts and functions line
+up? The aggregate is the round-trip distance — the honest end-to-end metric for
+*both* projects at once (§9, v1).
+
+**Faculty 2 — quality: is the regeneration any good?** Subjective judgment against
+a rubric — and **Endless already owns it**: the `evals/` harness with the
+LLM-as-judge (arc, stakes, continuity, prose, POV, would-finish). Quality judgment
+belongs where generation lives.
+
+| Faculty | Question | Home | Status |
+|---|---|---|---|
+| Fidelity | did the structure survive the round-trip? | **here** — `compare()` + loop harness | new, small |
+| Quality | is the regenerated story good? | **Endless** — eval harness / judge | ✅ exists |
+
+So: no third repo. A third project would duplicate Endless's judge and add a
+*third* schema contract to keep in sync — cost, no benefit. The **round-trip
+harness** (analyze → invoke Endless → analyze → compare) belongs here, because
+this tool owns two of the three steps and is already defined as Endless's inverse;
+Endless stays clean and never depends on the analyzer.
+
+**The honest caveat.** A large round-trip distance says the loop failed but *not
+which side failed* — either the analyzer mis-read the original, or Endless didn't
+honor the structure it was handed. Distance alone can't attribute blame.
+Disentangling the two is the real subtlety: feed Endless a *known* structure and
+measure how well the analyzer recovers it, isolating the analyzer's half from the
+generator's. That controlled half-loop is how the fidelity critic earns trust
+before it's pointed at the full round-trip.
+
 ---
 
 ## 9. Build phases
@@ -294,12 +343,14 @@ whether classification accuracy on hand-labeled stories improves. Better
 sentence segmentation. An LLM-authored style brief in `--deep` that reads richer
 than the templated one. This is the analog of Endless's v0.5 "quality close."
 
-**v1 — Round-trip fidelity.** Close the loop for real: analyze a story, feed the
-output to Endless, generate, re-analyze the generated story, and measure how
-close the second analysis lands to the first. That round-trip distance is the
-honest end-to-end metric for both projects at once. Add a corpus + a small
-labeled eval set so classification and style measurement can be scored, not
-vibed — the mirror of Endless's eval harness.
+**v1 — Round-trip fidelity (the fidelity critic).** Close the loop for real: build
+the `compare()` diff over `StoryAnalysis` and the round-trip harness (analyze →
+invoke Endless → analyze → compare) described in §8.5. That round-trip distance is
+the honest end-to-end metric for both projects at once. Quality judgment is *not*
+duplicated here — it stays in Endless's eval harness. Start with the controlled
+half-loop (known structure in, measure recovery) to isolate the analyzer's error
+from the generator's before trusting the full round-trip. Add a corpus + a small
+labeled eval set so classification and style measurement can be scored, not vibed.
 
 **v2 — Comparative deconstruction.** Analyze many stories, cluster by shape and
 style, surface an author's fingerprint across a body of work. Diff two stories'
