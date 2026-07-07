@@ -75,6 +75,42 @@ def test_emit_requires_deep_artifacts(tmp_path, lantern_text):
         bridge.emit_endless(shallow, tmp_path)
 
 
+def test_emit_doc_is_one_file_with_readable_and_embedded_parts(tmp_path, lantern_text):
+    dest = tmp_path / "handoff.md"
+    result = bridge.emit_endless_doc(_deep_analysis(lantern_text), dest)
+    text = dest.read_text()
+    # human dossier on top
+    assert text.startswith("# Deconstruction: the_lantern.txt")
+    assert "## Endless handoff" in text
+    # every canonical artifact embedded with sentinel markers
+    for name in ("meta.json", "world.json", "plan.json", "styles/the_lantern.yaml"):
+        assert f"<!-- endless:begin {name} -->" in text
+        assert f"<!-- endless:end {name} -->" in text
+    assert result.style_name == "the_lantern"
+
+
+def test_emit_doc_embedded_world_roundtrips(tmp_path, lantern_text):
+    import re
+
+    dest = tmp_path / "handoff.md"
+    bridge.emit_endless_doc(_deep_analysis(lantern_text), dest)
+    text = dest.read_text()
+    m = re.search(
+        r"<!-- endless:begin world\.json -->\s*```json\n(.*?)\n```\s*<!-- endless:end world\.json -->",
+        text,
+        re.DOTALL,
+    )
+    assert m is not None
+    world = WorldSeed.model_validate_json(m.group(1))
+    assert world.protagonist_id == "mara"
+
+
+def test_emit_doc_requires_deep_artifacts(tmp_path, lantern_text):
+    shallow = analyzer.analyze(lantern_text, source="x")
+    with pytest.raises(ValueError, match="--deep"):
+        bridge.emit_endless_doc(shallow, tmp_path / "h.md")
+
+
 def test_from_reload_roundtrips(tmp_path, lantern_text):
     # save then reload an analysis.json — no recompute path
     analysis = _deep_analysis(lantern_text)

@@ -45,6 +45,13 @@ class EmitResult:
     style_path: Path
 
 
+@dataclass
+class EmitDocResult:
+    path: Path
+    run_id: str
+    style_name: str
+
+
 def emit_endless(
     analysis: StoryAnalysis, dest: Path, *, style_name: str | None = None
 ) -> EmitResult:
@@ -99,6 +106,82 @@ def emit_endless(
         run_dir=run_dir,
         style_path=style_path,
     )
+
+
+def _meta(analysis: StoryAnalysis, run_id: str, name: str) -> dict:
+    return {
+        "run_id": run_id,
+        "created_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "seed": f"deconstructed from {analysis.source}",
+        "shape": analysis.shape.best,
+        "style": name,
+        "total_words": analysis.word_count,
+        "polish": False,
+    }
+
+
+def _artifact(name: str, lang: str, body: str) -> str:
+    """One embedded artifact, wrapped in sentinel comments a loader can find.
+
+    The comments are invisible in a rendered view; the fenced block shows the
+    exact canonical JSON/YAML. So the one file is both human-readable and
+    losslessly machine-loadable — no prose parsing, the schema contract holds.
+    """
+    return f"<!-- endless:begin {name} -->\n```{lang}\n{body}\n```\n<!-- endless:end {name} -->"
+
+
+def emit_endless_doc(
+    analysis: StoryAnalysis, dest: Path, *, style_name: str | None = None
+) -> EmitDocResult:
+    """Emit a single Markdown handoff: the readable dossier + embedded artifacts.
+
+    The bundle (`emit_endless`) is a directory of machine files; this is the
+    one-file variant Endless ingests with `--from-doc`. The human dossier
+    (`report.render`) sits on top; the canonical `meta`/`world`/`plan`/`style`
+    are embedded verbatim in sentinel-wrapped fenced blocks below it.
+    """
+    if analysis.world is None or analysis.beats is None:
+        raise ValueError(
+            "emit-endless needs a world graph and beats — run the analysis with "
+            "--deep first (or pass a --from analysis.json that has them)."
+        )
+
+    from . import report  # local import: report is pure, but keep bridge lean
+
+    dest = Path(dest)
+    run_id = time.strftime("%Y%m%d-%H%M%S")
+    name = style_name or _slug(Path(analysis.source).stem)
+
+    style = analysis.style.model_copy(update={"id": f"style_{name}", "name": name})
+    meta = _meta(analysis, run_id, name)
+
+    parts = [
+        report.render(analysis),
+        "",
+        "---",
+        "",
+        "## Endless handoff",
+        "",
+        "The blocks below are the canonical artifacts Endless generates from — "
+        "the exact world, beats, style, and run header in its own schemas. "
+        f"Ingest this file with `uv run story --from-doc <this-file> --skip-preflight`.",
+        "",
+        _artifact("meta.json", "json", json.dumps(meta, indent=2)),
+        "",
+        _artifact("world.json", "json", analysis.world.model_dump_json(indent=2)),
+        "",
+        _artifact("plan.json", "json", analysis.beats.model_dump_json(indent=2)),
+        "",
+        _artifact(
+            f"styles/{name}.yaml",
+            "yaml",
+            yaml.safe_dump(style.model_dump(), sort_keys=False, allow_unicode=True).rstrip(),
+        ),
+        "",
+    ]
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    dest.write_text("\n".join(parts))
+    return EmitDocResult(path=dest, run_id=run_id, style_name=name)
 
 
 def _howto(name: str, run_id: str, source: str) -> str:

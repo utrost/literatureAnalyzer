@@ -148,6 +148,26 @@ its `data/styles/`, set `story.style` in Endless's config, and
 `story --resume <id>` — Endless skips seeding and planning (world and beats are
 already there) and writes a **new story in the deconstructed structure and voice**.
 
+**Or hand over one file** — add `--as-doc` to get a single self-contained
+Markdown handoff instead of a directory:
+
+```bash
+uv run deconstruct examples/the_lantern.txt --deep --emit-endless handoff.md --as-doc
+# handoff.md is the readable dossier (arc, style, world, beats — with Mermaid
+# diagrams) PLUS the canonical world/plan/style/meta embedded verbatim in
+# sentinel-wrapped fenced blocks. One file, both faces of the contract.
+```
+
+Endless ingests it in one step — no copies, no config edits:
+
+```bash
+cd $ENDLESS && uv run story --from-doc handoff.md --skip-preflight
+```
+
+It's lossless because the embedded blocks are the exact shared-contract types
+(re-validated on ingest), not prose to be parsed — the file is legible to a
+person and loadable by the machine at the same time.
+
 **Did the structure survive?** The fidelity critic diffs two analyses —
 *structures, not texts* (regeneration is meant to reword):
 

@@ -28,6 +28,11 @@ def _deconstruct(
         "--emit-endless",
         help="Also write an Endless-consumable handoff bundle (world/beats/style) to this dir. Needs --deep artifacts.",
     ),
+    as_doc: bool = typer.Option(
+        False,
+        "--as-doc",
+        help="With --emit-endless, write a single self-contained Markdown file (readable dossier + embedded artifacts) instead of a bundle directory. Endless ingests it with --from-doc.",
+    ),
     compare_to: Path = typer.Option(
         None,
         "--compare",
@@ -121,15 +126,24 @@ def _deconstruct(
         from . import bridge
 
         try:
-            result = bridge.emit_endless(analysis, emit_endless)
+            if as_doc:
+                doc = bridge.emit_endless_doc(analysis, emit_endless)
+                typer.echo(
+                    f"emitted Endless handoff doc → {doc.path} "
+                    f"(run {doc.run_id}, style '{doc.style_name}'); "
+                    f"ingest with `story --from-doc {doc.path} --skip-preflight`",
+                    err=True,
+                )
+            else:
+                result = bridge.emit_endless(analysis, emit_endless)
+                typer.echo(
+                    f"emitted Endless bundle → {result.dest} "
+                    f"(run {result.run_id}, style '{result.style_name}'); see HOWTO.md",
+                    err=True,
+                )
         except ValueError as exc:
             typer.echo(str(exc), err=True)
             raise typer.Exit(code=2)
-        typer.echo(
-            f"emitted Endless bundle → {result.dest} "
-            f"(run {result.run_id}, style '{result.style_name}'); see HOWTO.md",
-            err=True,
-        )
 
     if compare_to is not None:
         # Fidelity critic (§8.5): diff this analysis against a saved one.
