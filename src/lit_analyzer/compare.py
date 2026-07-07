@@ -255,7 +255,13 @@ def compare(a, b) -> Divergence:
     if beats is not None:
         sims.append(beats.similarity)
     if hierarchy is not None:
-        sims.append(hierarchy.similarity)
+        # Per-chapter *pacing* (beat counts) is reword-robust, so it counts toward
+        # overall. Per-chapter *arc* similarity is deliberately excluded: a chapter
+        # window is ~1/12 of a chapter, so its VADER curve is dominated by word
+        # choice — a faithful regeneration (which rewords by design) drifts the
+        # per-chapter arc even when the structure holds. It stays a diagnostic in
+        # the report (localizing where arcs move), not a headline penalty for
+        # rewording. The whole-text `shape` already scores arc fidelity robustly.
         if hierarchy.beat_similarity is not None:
             sims.append(hierarchy.beat_similarity)
 

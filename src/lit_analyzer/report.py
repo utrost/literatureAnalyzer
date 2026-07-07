@@ -262,10 +262,12 @@ def render_divergence(div: Divergence) -> str:
         )
     if div.hierarchy is not None:
         h = div.hierarchy
-        pacing = f", pacing {_pct(h.beat_similarity)}" if h.beat_similarity is not None else ""
+        # The hierarchy's headline is pacing (reword-robust); per-chapter arc is a
+        # diagnostic shown below, not folded into overall (see compare()).
+        headline = h.beat_similarity if h.beat_similarity is not None else h.similarity
         lines.append(
-            f"| hierarchy | {_pct(h.similarity)} | {h.count_a}→{h.count_b} chapters, "
-            f"alignment {_pct(h.alignment)}{pacing} |"
+            f"| hierarchy (pacing) | {_pct(headline)} | {h.count_a}→{h.count_b} chapters, "
+            f"alignment {_pct(h.alignment)}; per-chapter arc is diagnostic |"
         )
     lines.append("")
 
@@ -273,6 +275,13 @@ def render_divergence(div: Divergence) -> str:
     if div.hierarchy is not None and div.hierarchy.pairs:
         has_beats = any(p.beat_similarity is not None for p in div.hierarchy.pairs)
         lines.append("## Per-chapter fidelity")
+        lines.append("")
+        lines.append(
+            "> *Arc columns are diagnostic — they localize where chapter arcs move, "
+            "but don't count toward overall: a per-chapter sentiment curve is "
+            "reword-sensitive, and faithful regeneration rewords by design. "
+            "Pacing (beat counts) does count.*"
+        )
         lines.append("")
         head = "| # | A | B | shape A → B | arc dist | arc fidelity |"
         sep = "|---|---|---|---|---|---|"

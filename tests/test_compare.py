@@ -166,7 +166,23 @@ def test_render_shows_per_chapter_arc_table(lantern_text):
     b = _chaptered(lantern_text, "b", [("I", "man_in_hole", [0.2, -0.4, 0.5])])
     md = report.render_divergence(compare.compare(a, b))
     assert "## Per-chapter fidelity" in md
-    assert "| hierarchy |" in md
+    assert "| hierarchy (pacing) |" in md
+    assert "diagnostic" in md.lower()  # per-chapter arc is flagged as diagnostic
+
+
+def test_per_chapter_arc_is_excluded_from_overall(lantern_text):
+    # Two books with identical pacing + whole-text shape/style/world, but the
+    # per-chapter ARC drifts hard. overall must stay high — arc is diagnostic only.
+    good = [("I", "man_in_hole", [0.3, -0.5, 0.6]), ("II", "man_in_hole", [0.3, -0.5, 0.6])]
+    drift = [("I", "tragedy", [0.9, 0.2, -0.9]), ("II", "cinderella", [-0.9, 0.1, 0.9])]
+    a = _chaptered_with_beats(lantern_text, "a", good, [5, 5])
+    b = _chaptered_with_beats(lantern_text, "b", drift, [5, 5])
+    div = compare.compare(a, b)
+    # per-chapter arc tanks (different curves + names)...
+    assert div.hierarchy.similarity < 0.6
+    # ...but pacing is perfect and overall stays high (arc didn't drag it down)
+    assert div.hierarchy.beat_similarity == 1.0
+    assert div.overall > 0.85
 
 
 # ---- S3 increment 2: per-chapter beat alignment (pacing) ------------------------

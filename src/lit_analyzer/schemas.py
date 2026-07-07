@@ -358,9 +358,16 @@ class HierarchyDivergence(BaseModel):
     count_b: int
     alignment: float = Field(ge=0.0, le=1.0, description="Chapter-count agreement; 1.0 = equal counts.")
     pairs: list[SectionArcPair] = Field(default_factory=list)
-    similarity: float = Field(ge=0.0, le=1.0, description="Mean per-chapter arc similarity, scaled by alignment.")
+    similarity: float = Field(
+        ge=0.0, le=1.0,
+        description="Mean per-chapter arc similarity, scaled by alignment. DIAGNOSTIC "
+        "only — excluded from Divergence.overall because a per-chapter sentiment "
+        "curve is reword-sensitive and faithful regeneration rewords by design.",
+    )
     beat_similarity: float | None = Field(
-        default=None, ge=0.0, le=1.0, description="Mean per-chapter beat-count agreement, scaled by alignment."
+        default=None, ge=0.0, le=1.0,
+        description="Mean per-chapter beat-count agreement (reword-robust pacing), scaled "
+        "by alignment. This is the hierarchy's contribution to overall.",
     )
 
 
