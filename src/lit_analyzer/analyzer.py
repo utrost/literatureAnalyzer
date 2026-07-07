@@ -8,7 +8,7 @@ directly — the roles do — so this module imports cleanly with no LLM deps.
 
 from __future__ import annotations
 
-from . import arc, metrics, segment, structure
+from . import arc, metrics, structure
 from .schemas import (
     BeatPlan,
     SectionArc,
@@ -16,10 +16,6 @@ from .schemas import (
     StoryClassification,
     WorldSeed,
 )
-
-# Chapters shorter than this (words) aren't given their own arc — too little
-# signal to sample. They still appear in the structure tree.
-_MIN_SECTION_WORDS = 40
 
 
 def analyze(
@@ -112,10 +108,7 @@ def _chunked_world_diffs(deep_config, text: str, chunk_cache=None):
     from .roles import chunked_lector
 
     diffs = []
-    for i, (_title, body) in enumerate(segment.chapter_spans(text)):
-        if len(segment.words(body)) < _MIN_SECTION_WORDS:
-            continue
-        section_id = f"ch{i + 1}"
+    for section_id, _title, body in structure.chapters(text):
         entities = worldmerge.entities_summary(diffs)
 
         cached = None
@@ -141,19 +134,10 @@ def _chunked_world_diffs(deep_config, text: str, chunk_cache=None):
 
 def _section_arcs(text: str, *, segments: int) -> list[SectionArc]:
     """A ShapeMatch per chapter, for a chaptered text. Empty for a flat story."""
-    spans = segment.chapter_spans(text)
-    if len(spans) <= 1:
+    chs = structure.chapters(text)
+    if len(chs) <= 1:
         return []
-    arcs: list[SectionArc] = []
-    for i, (title, body) in enumerate(spans):
-        if len(segment.words(body)) < _MIN_SECTION_WORDS:
-            continue
-        arcs.append(
-            SectionArc(
-                section_id=f"ch{i + 1}",
-                level="chapter",
-                title=title,
-                shape=arc.classify(body, segments=segments),
-            )
-        )
-    return arcs
+    return [
+        SectionArc(section_id=cid, level="chapter", title=title, shape=arc.classify(body, segments=segments))
+        for cid, title, body in chs
+    ]

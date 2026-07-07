@@ -17,8 +17,11 @@ _SENTENCE_RE = re.compile(r"[^.!?]+(?:[.!?]+|$)")
 # A chapter/part heading: a line that is *only* "Chapter/Part/Book <x>", a lone
 # roman numeral, or a lone number (optionally with a trailing title). Conservative
 # on purpose — markerless prose stays one chapter rather than over-splitting.
+# A heading is a SHORT line: a division keyword + a brief title, a lone roman
+# numeral, or a lone number. The length cap ({0,40}) is what stops a prose line
+# that merely starts with "book"/"part" from being mistaken for a heading.
 _HEADING_RE = re.compile(
-    r"^[ \t]*(?:(?:chapter|part|book)\b[^\n]*|[IVXLCDM]{1,8}\.?|\d{1,3}\.?)[ \t]*$",
+    r"^[ \t]*(?:(?:chapter|part|book|stave|canto)\b[^\n]{0,40}|[IVXLCDM]{1,8}\.?|\d{1,3}\.?)[ \t]*$",
     re.IGNORECASE | re.MULTILINE,
 )
 

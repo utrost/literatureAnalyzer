@@ -51,6 +51,31 @@ def test_chapter_spans_detects_headings():
     assert all(body for _, body in spans)
 
 
+def test_heading_length_cap_ignores_prose_starting_with_keyword():
+    # A long prose line that merely starts with "book" must NOT be a heading.
+    long = " ".join(["word"] * 60)
+    text = f"CHAPTER I\n\n{long}\n\nbook of that description into this nowhere and studying it and making notes about it\n\n{long}"
+    titles = [t for t, _ in segment.chapter_spans(text)]
+    assert "CHAPTER I" in titles
+    assert not any(t and t.lower().startswith("book of that") for t in titles)
+
+
+def test_stave_headings_detected():
+    long = " ".join(["word"] * 60)
+    chs = structure.chapters(f"STAVE I: Marley\n\n{long}\n\nSTAVE II: Spirits\n\n{long}")
+    assert [c[0] for c in chs] == ["ch1", "ch2"]
+
+
+def test_front_matter_dropped_and_ids_sequential():
+    # A short preface before the first chapter isn't a chapter; ids stay clean.
+    long = " ".join(["word"] * 60)
+    text = f"A short preface of only a few words.\n\nCHAPTER I\n\n{long}\n\nCHAPTER II\n\n{long}"
+    tree = structure.build_structure(text)
+    assert tree.level == "book"
+    assert [c.id for c in tree.children] == ["ch1", "ch2"]  # sequential, preface dropped
+    assert [c.title for c in tree.children] == ["CHAPTER I", "CHAPTER II"]
+
+
 def test_build_structure_flat_vs_book():
     flat = structure.build_structure("no headings here, one chapter only.")
     assert flat.level == "chapter" and flat.children == []

@@ -148,19 +148,23 @@ If the ids fracture (Ada as `ada`, `the_apprentice`, `the_girl` in different
 chapters) that's the signal to strengthen `prompts/chunked_lector.v1.md` on
 id-reuse — and the eval's `missed_merges` will have already told you so.
 
-## Adding real-world texts
+## Real novellas (already included)
 
-The proxy in the hosted dev environment blocks external downloads, but your local
-machine doesn't. Any chaptered public-domain text works — good picks with a small
-recurring cast and clear chapter markers:
+Two real public-domain novellas ship in `examples/`, cleaned of Gutenberg
+boilerplate — run steps 1–6 on them exactly as on the clockmaker:
 
-```bash
-# A Christmas Carol (5 "Staves"; Scrooge + the ghosts recur)
-curl -L https://www.gutenberg.org/cache/epub/46/pg46.txt -o examples/a_christmas_carol.txt
-# Dr Jekyll and Mr Hyde (chaptered; the ultimate coreference test — Jekyll IS Hyde)
-curl -L https://www.gutenberg.org/cache/epub/43/pg43.txt -o examples/jekyll_and_hyde.txt
-```
+| file | structure | recurring cast |
+|---|---|---|
+| `a_christmas_carol.txt` | preface + 5 staves (~28k words) | Scrooge, Marley, Cratchit, the three Spirits |
+| `heart_of_darkness.txt` | 3 parts (~38k words) | Marlow, Kurtz, the manager |
 
-Trim Gutenberg's header/footer, then run steps 1–6. For the eval, write a small
-`*.gold.json` mapping the names/epithets each character appears under to a stable
-entity id (the Jekyll/Hyde case is a deliberately brutal test of resolution).
+These are the **scale + real-prose** tests (does resolution hold across a real
+28k-word book?). The **clockmaker** stays the primary *eval* fixture because it
+ships a verified `*.gold.json`; for the novellas, write your own small gold
+(names/epithets → entity id) if you want a resolution number.
+
+`examples/fetch_novellas.sh` fetches more (The Time Machine, Frankenstein, and
+Jekyll & Hyde — the last a deliberately brutal coreference case, since its
+chapters have bare titles and Jekyll *is* Hyde). Chapter detection recognizes
+`CHAPTER/PART/BOOK/STAVE/CANTO` plus lone roman numerals; texts whose chapters
+carry bare titles won't segment (analyzed as one chapter).

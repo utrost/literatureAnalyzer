@@ -14,22 +14,43 @@ from __future__ import annotations
 from . import segment
 from .schemas import Section
 
+# A real chapter has substantial text. Below this (words), a span is front matter
+# — a title page, preface line, or table-of-contents entry — not a chapter, and
+# it's dropped from the tree. Kept in sync with the analyzer's per-section filter.
+MIN_SECTION_WORDS = 40
+
+
+def chapters(text: str) -> list[tuple[str, str | None, str]]:
+    """The real chapters as ``(section_id, title, body)``, ids ``ch1..chN``.
+
+    Front matter (title page, preface, table-of-contents entries) is dropped by
+    the word-count filter, and ids are assigned sequentially over what remains —
+    so the ids are clean and are the *single source of truth* shared by
+    ``build_structure`` and the analyzer's per-chapter arcs and world diffs.
+    """
+    kept = [
+        (title, body)
+        for title, body in segment.chapter_spans(text)
+        if len(segment.words(body)) >= MIN_SECTION_WORDS
+    ]
+    return [(f"ch{i + 1}", title, body) for i, (title, body) in enumerate(kept)]
+
 
 def build_structure(text: str) -> Section:
     """Deterministic structural tree for ``text``.
 
-    One span -> a single chapter Section (flat). Multiple spans -> a book whose
-    children are the chapters, ids ``ch1..chN`` matching ``chapter_spans`` order.
+    One real chapter -> a flat single chapter Section; several -> a book.
     """
-    spans = segment.chapter_spans(text)
-    if len(spans) <= 1:
-        title = spans[0][0] if spans else None
+    chs = chapters(text)
+    if len(chs) <= 1:
+        title = chs[0][1] if chs else None
         return Section(id="ch1", level="chapter", title=title)
-    chapters = [
-        Section(id=f"ch{i + 1}", level="chapter", title=title)
-        for i, (title, _body) in enumerate(spans)
-    ]
-    return Section(id="book", level="book", title=None, children=chapters)
+    return Section(
+        id="book",
+        level="book",
+        title=None,
+        children=[Section(id=cid, level="chapter", title=title) for cid, title, _body in chs],
+    )
 
 
 def leaves(section: Section) -> list[Section]:
