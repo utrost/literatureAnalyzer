@@ -30,9 +30,16 @@ uv sync
 uv run deconstruct examples/the_lantern.txt
 ```
 
-Output is a Markdown report: the arc as a sparkline, the shape ranking, and the
-measured style axes. Add `-f json` for the raw `StoryAnalysis`, or `-o report.md`
-to write it to a file.
+Output is a Markdown report — a legible dossier of everything the deconstruction
+recovered: the emotional arc (an ASCII sparkline **and** a Mermaid `xychart` a
+GitHub/Obsidian viewer renders inline), the shape ranking, and the measured
+style axes. For a chaptered book run (`--deep`), it also renders the structural
+**hierarchy** (a Mermaid `graph` of book → chapters → beats) and the story-time
+**event log** (a Mermaid `timeline` of who's introduced, who changes, and when a
+secret is learned — the world as a history, not a snapshot), plus a per-chapter
+world roster. Diagrams are plain fenced ```mermaid blocks — no rendering
+dependency, still fully deterministic. Add `-f json` for the raw `StoryAnalysis`,
+or `-o report.md` to write it to a file.
 
 ## Deep mode (world + beats)
 

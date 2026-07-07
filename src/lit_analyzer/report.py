@@ -1,8 +1,16 @@
-"""Render a StoryAnalysis (or a Divergence) as human-readable Markdown."""
+"""Render a StoryAnalysis (or a Divergence) as human-readable Markdown.
+
+The report is the legible face of a deconstruction: everything the analyzer
+recovered, in one document a person can read (and Mermaid diagrams a GitHub /
+Obsidian viewer renders inline). It stays deterministic and dependency-free —
+diagrams are just fenced ```mermaid blocks of text, no rendering library.
+"""
 
 from __future__ import annotations
 
-from .schemas import Divergence, StoryAnalysis
+import re
+
+from .schemas import Divergence, Section, StoryAnalysis, WorldEvent
 
 _SPARK = "▁▂▃▄▅▆▇█"
 
@@ -14,6 +22,88 @@ def _sparkline(valences: list[float]) -> str:
         idx = int(round((v + 1) / 2 * (len(_SPARK) - 1)))
         out.append(_SPARK[max(0, min(len(_SPARK) - 1, idx))])
     return "".join(out)
+
+
+def _safe_id(raw: str) -> str:
+    """A Mermaid-safe node id (alphanumeric + underscore)."""
+    return re.sub(r"\W", "_", raw) or "n"
+
+
+def _mm(text: str) -> str:
+    """Sanitize a string for use inside a Mermaid label/entry.
+
+    Quotes, colons and semicolons are structural in several Mermaid grammars
+    (timeline entries split on ``:``), so neutralize them rather than risk a
+    diagram that won't parse.
+    """
+    return re.sub(r"[\":;]", " ", text or "").strip()
+
+
+def _mermaid_arc(valences: list[float], title: str = "Emotional arc") -> list[str]:
+    """A Mermaid xychart line of the arc — the sparkline, but rendered."""
+    data = ", ".join(f"{v:.2f}" for v in valences)
+    return [
+        "```mermaid",
+        "xychart-beta",
+        f'    title "{_mm(title)}"',
+        '    y-axis "valence" -1 --> 1',
+        f"    line [{data}]",
+        "```",
+    ]
+
+
+def _mermaid_section_tree(root: Section) -> list[str]:
+    """A Mermaid graph of the structural hierarchy (book → chapters → beats)."""
+    edges: list[str] = []
+
+    def walk(node: Section) -> None:
+        nid = _safe_id(node.id)
+        label = _mm(node.title or node.id)
+        edges.append(f'    {nid}["{label}"]')
+        for child in node.children:
+            edges.append(f"    {nid} --> {_safe_id(child.id)}")
+            walk(child)
+        for bid in node.beat_ids:
+            beat_node = _safe_id(f"beat_{node.id}_{bid}")
+            edges.append(f'    {beat_node}(["{_mm(bid)}"])')
+            edges.append(f"    {nid} --> {beat_node}")
+
+    walk(root)
+    return ["```mermaid", "graph TD", *edges, "```"]
+
+
+def _mermaid_timeline(events: list[WorldEvent], titles: dict[str, str]) -> list[str]:
+    """A Mermaid timeline of the story-time event log, grouped by section."""
+    lines = ["```mermaid", "timeline", "    title Story-time event log"]
+    current: str | None = None
+    for e in events:
+        if e.section_id != current:
+            current = e.section_id
+            lines.append(f"    section {_mm(titles.get(e.section_id, e.section_id))}")
+        entry = _mm(e.entity_id)
+        if e.note:
+            entry += f" ({_mm(e.note)})"
+        lines.append(f"        {_mm(e.kind)} : {entry}")
+    lines.append("```")
+    return lines
+
+
+def _section_titles(a: StoryAnalysis) -> dict[str, str]:
+    """Map section_id → human title, from section_arcs and the structure tree."""
+    titles: dict[str, str] = {}
+    for sa in a.section_arcs:
+        if sa.title:
+            titles[sa.section_id] = sa.title
+
+    def walk(node: Section) -> None:
+        if node.title:
+            titles.setdefault(node.id, node.title)
+        for child in node.children:
+            walk(child)
+
+    if a.structure is not None:
+        walk(a.structure)
+    return titles
 
 
 def render(analysis: StoryAnalysis) -> str:
@@ -30,9 +120,12 @@ def render(analysis: StoryAnalysis) -> str:
 
     lines.append("## Emotional arc")
     lines.append("")
+    curve = [s.valence for s in a.shape.curve]
     lines.append("```")
-    lines.append(_sparkline([s.valence for s in a.shape.curve]))
+    lines.append(_sparkline(curve))
     lines.append("```")
+    lines.append("")
+    lines.extend(_mermaid_arc(curve))
     lines.append("")
     lines.append("| shape | distance | confidence |")
     lines.append("|---|---|---|")
@@ -51,6 +144,12 @@ def render(analysis: StoryAnalysis) -> str:
             spark = _sparkline([s.valence for s in sa.shape.curve])
             lines.append(f"| {sa.section_id} | {sa.title or ''} | {sa.shape.best} | `{spark}` |")
         lines.append("")
+        # The hierarchy itself (book → chapters → beats), when it's more than one node.
+        if a.structure is not None and a.structure.children:
+            lines.append("### Hierarchy")
+            lines.append("")
+            lines.extend(_mermaid_section_tree(a.structure))
+            lines.append("")
 
     ax = a.style.axes
     lines.append("## Style")
@@ -83,6 +182,36 @@ def render(analysis: StoryAnalysis) -> str:
             lines.append("Locations: " + ", ".join(loc.name for loc in a.world.locations))
         if a.world.chekhov_objects:
             lines.append("Chekhov objects: " + ", ".join(o.name for o in a.world.chekhov_objects))
+        lines.append("")
+
+    # S1 (book scale): the story-time event log — the world as a history, not a
+    # snapshot. Only present for a chunked (chaptered, --deep) analysis.
+    if a.world_events:
+        titles = _section_titles(a)
+        lines.append("## World history (event log)")
+        lines.append("")
+        lines.extend(_mermaid_timeline(a.world_events, titles))
+        lines.append("")
+        lines.append("| # | section | event | entity | note |")
+        lines.append("|---|---|---|---|---|")
+        for e in a.world_events:
+            sect = titles.get(e.section_id, e.section_id)
+            lines.append(
+                f"| {e.seq} | {sect} | {e.kind} | `{e.entity_id}` ({e.entity_kind}) | {e.note or ''} |"
+            )
+        lines.append("")
+
+    # S1: per-chapter world observations behind the merged world — who each
+    # chapter introduced or touched, before resolution folded them together.
+    if a.world_diffs:
+        titles = _section_titles(a)
+        lines.append("## World by chapter")
+        lines.append("")
+        for d in a.world_diffs:
+            sect = titles.get(d.section_id, d.section_id)
+            names = [f"`{c.id}`" for c in d.characters]
+            roster = ", ".join(names) if names else "—"
+            lines.append(f"- **{sect}** — characters: {roster}")
         lines.append("")
 
     if a.beats is not None:
