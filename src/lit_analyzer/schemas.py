@@ -321,12 +321,41 @@ class BeatDivergence(BaseModel):
     similarity: float = Field(ge=0.0, le=1.0)
 
 
+class SectionArcPair(BaseModel):
+    """One aligned chapter's arc, compared across two analyses (S3)."""
+
+    index: int = Field(ge=0, description="Reading-order position the two chapters were aligned at.")
+    title_a: str | None = None
+    title_b: str | None = None
+    best_a: str
+    best_b: str
+    same_best: bool
+    curve_distance: float = Field(ge=0.0, description="z-scored RMSE between the two chapter arcs.")
+    similarity: float = Field(ge=0.0, le=1.0)
+
+
+class HierarchyDivergence(BaseModel):
+    """Per-level (per-chapter) arc fidelity (S3, book scale).
+
+    Whole-text `shape` says the books rise-and-fall alike; this says whether they
+    do so *chapter by chapter*. Chapters are aligned by reading order; a count
+    mismatch is penalized via ``alignment`` (unaligned chapters score zero).
+    """
+
+    count_a: int
+    count_b: int
+    alignment: float = Field(ge=0.0, le=1.0, description="Chapter-count agreement; 1.0 = equal counts.")
+    pairs: list[SectionArcPair] = Field(default_factory=list)
+    similarity: float = Field(ge=0.0, le=1.0, description="Mean per-chapter arc similarity, scaled by alignment.")
+
+
 class Divergence(BaseModel):
     """How well a regeneration preserved a source story's structure.
 
     ``world`` and ``beats`` are present only when *both* compared analyses have
-    them (i.e. both were run with ``--deep``). ``overall`` is the mean of the
-    available per-dimension similarities.
+    them (i.e. both were run with ``--deep``). ``hierarchy`` is present only when
+    both are chaptered (both carry ``section_arcs``). ``overall`` is the mean of
+    the available per-dimension similarities.
     """
 
     source_a: str
@@ -335,4 +364,5 @@ class Divergence(BaseModel):
     style: StyleDivergence
     world: WorldDivergence | None = None
     beats: BeatDivergence | None = None
+    hierarchy: HierarchyDivergence | None = None
     overall: float = Field(ge=0.0, le=1.0)

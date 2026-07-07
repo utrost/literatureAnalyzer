@@ -260,7 +260,28 @@ def render_divergence(div: Divergence) -> str:
         lines.append(
             f"| beats | {_pct(b.similarity)} | {b.count_a}→{b.count_b} beats, id overlap {_pct(b.id_overlap)} |"
         )
+    if div.hierarchy is not None:
+        h = div.hierarchy
+        lines.append(
+            f"| hierarchy | {_pct(h.similarity)} | {h.count_a}→{h.count_b} chapters, "
+            f"alignment {_pct(h.alignment)} |"
+        )
     lines.append("")
+
+    # S3: per-chapter arc fidelity — does the book rise and fall alike chapter by chapter?
+    if div.hierarchy is not None and div.hierarchy.pairs:
+        lines.append("## Per-chapter arc fidelity")
+        lines.append("")
+        lines.append("| # | A | B | shape A → B | arc dist | fidelity |")
+        lines.append("|---|---|---|---|---|---|")
+        for p in div.hierarchy.pairs:
+            shp = "same" if p.same_best else f"{p.best_a} → {p.best_b}"
+            mark = "" if p.similarity >= 0.6 else " ⚠️"
+            lines.append(
+                f"| {p.index + 1} | {p.title_a or ''} | {p.title_b or ''} | {shp} | "
+                f"{p.curve_distance:.2f} | {_pct(p.similarity)}{mark} |"
+            )
+        lines.append("")
 
     lines.append("## Style axes")
     lines.append("")

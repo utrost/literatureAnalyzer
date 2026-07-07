@@ -19,6 +19,9 @@ from .schemas import (
     BeatDivergence,
     BeatPlan,
     Divergence,
+    HierarchyDivergence,
+    SectionArc,
+    SectionArcPair,
     ShapeDivergence,
     ShapeMatch,
     StyleDivergence,
@@ -48,7 +51,13 @@ def _mean(xs: list[float]) -> float:
     return sum(xs) / len(xs) if xs else 0.0
 
 
-def _shape_divergence(a: ShapeMatch, b: ShapeMatch) -> ShapeDivergence:
+def _arc_distance_similarity(a: ShapeMatch, b: ShapeMatch) -> tuple[bool, float, float]:
+    """(same_best, curve_distance, similarity) for two arcs.
+
+    Similarity is half credit for matching the named shape, half for arc-curve
+    closeness — so a `cinderella` vs `man_in_hole` round-trip (both rise-and-fall)
+    still scores well on the curve half instead of failing a binary match.
+    """
     ca = [s.valence for s in a.curve]
     cb = [s.valence for s in b.curve]
     n = min(len(ca), len(cb)) or 1
@@ -56,14 +65,55 @@ def _shape_divergence(a: ShapeMatch, b: ShapeMatch) -> ShapeDivergence:
         arc._zscore(arc._resample(ca, n)), arc._zscore(arc._resample(cb, n))
     )
     same = a.best == b.best
-    # half credit for matching the named shape, half for arc-curve closeness
     similarity = 0.5 * (1.0 if same else 0.0) + 0.5 * (1.0 / (1.0 + dist))
+    return same, dist, similarity
+
+
+def _shape_divergence(a: ShapeMatch, b: ShapeMatch) -> ShapeDivergence:
+    same, dist, similarity = _arc_distance_similarity(a, b)
     return ShapeDivergence(
         best_a=a.best,
         best_b=b.best,
         same_best=same,
         curve_distance=round(dist, 4),
         similarity=round(similarity, 4),
+    )
+
+
+def _hierarchy_divergence(
+    arcs_a: list[SectionArc], arcs_b: list[SectionArc]
+) -> HierarchyDivergence:
+    """Per-chapter arc fidelity, aligning chapters by reading order.
+
+    A count mismatch is penalized: only ``min(len_a, len_b)`` chapters align, and
+    the mean per-chapter similarity is scaled by ``alignment`` so extra/missing
+    chapters can't be hidden by the aligned ones scoring well.
+    """
+    ca, cb = len(arcs_a), len(arcs_b)
+    alignment = 1.0 - abs(ca - cb) / max(ca, cb, 1)
+    pairs: list[SectionArcPair] = []
+    for i in range(min(ca, cb)):
+        sa, sb = arcs_a[i], arcs_b[i]
+        same, dist, sim = _arc_distance_similarity(sa.shape, sb.shape)
+        pairs.append(
+            SectionArcPair(
+                index=i,
+                title_a=sa.title,
+                title_b=sb.title,
+                best_a=sa.shape.best,
+                best_b=sb.shape.best,
+                same_best=same,
+                curve_distance=round(dist, 4),
+                similarity=round(sim, 4),
+            )
+        )
+    mean_pair = _mean([p.similarity for p in pairs])
+    return HierarchyDivergence(
+        count_a=ca,
+        count_b=cb,
+        alignment=round(alignment, 4),
+        pairs=pairs,
+        similarity=round(mean_pair * alignment, 4),
     )
 
 
@@ -149,12 +199,20 @@ def compare(a, b) -> Divergence:
     style = _style_divergence(a.style, b.style)
     world = _world_divergence(a.world, b.world) if a.world and b.world else None
     beats = _beat_divergence(a.beats, b.beats) if a.beats and b.beats else None
+    # Hierarchy only when both are chaptered (a flat story has no section_arcs).
+    hierarchy = (
+        _hierarchy_divergence(a.section_arcs, b.section_arcs)
+        if a.section_arcs and b.section_arcs
+        else None
+    )
 
     sims = [shape.similarity, style.similarity]
     if world is not None:
         sims.append(world.similarity)
     if beats is not None:
         sims.append(beats.similarity)
+    if hierarchy is not None:
+        sims.append(hierarchy.similarity)
 
     return Divergence(
         source_a=a.source,
@@ -163,5 +221,6 @@ def compare(a, b) -> Divergence:
         style=style,
         world=world,
         beats=beats,
+        hierarchy=hierarchy,
         overall=round(_mean(sims), 4),
     )
