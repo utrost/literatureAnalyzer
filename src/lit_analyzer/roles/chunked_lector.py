@@ -12,7 +12,7 @@ from ..config import DeepConfig
 from ..llm import call_structured, load_prompt
 from ..schemas import WorldDiff
 
-_PROMPT_FILE = "chunked_lector.v1.md"
+_PROMPT_FILE = "chunked_lector.v2.md"
 
 
 def extract_chapter(

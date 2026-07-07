@@ -127,9 +127,20 @@ def resolution_map(diffs: list[WorldDiff]) -> dict[tuple[str, str], str]:
 
 
 def entities_summary(diffs: list[WorldDiff]) -> str:
-    """A compact 'entities so far' block to hand the next chapter's Lector, so it
-    reuses ids for recurring characters (the primary resolution mechanism)."""
+    """A compact 'entities so far' block to hand the next chapter's Lector.
+
+    Each line carries the id, name, archetype, and a short appearance/role hint —
+    enough for the model to recognize a character re-entering under an *epithet*
+    ("the old man" → the elderly clockmaker) and reuse the established id, which
+    is the primary coreference mechanism (worldmerge is only the exact-name
+    backstop).
+    """
     world = merge_world(diffs) if diffs else None
     if world is None or not world.characters:
         return "(none yet)"
-    return "\n".join(f"- {c.id}: {c.name}" for c in world.characters)
+    lines = []
+    for c in world.characters:
+        arch = f" [{c.archetype}]" if getattr(c, "archetype", None) else ""
+        hint = f" — {c.appearance[:100]}" if c.appearance else ""
+        lines.append(f"- {c.id}: {c.name}{arch}{hint}")
+    return "\n".join(lines)

@@ -107,8 +107,17 @@ PY
 - `over_merges > 0` → two distinct people were wrongly collapsed (watch for this
   if you add name-colliding characters).
 
-Record the numbers. Re-running after a prompt tweak (`prompts/chunked_lector.v1.md`)
-and comparing F1 / missed_merges is how you improve resolution with data.
+Record the numbers. Re-running after a prompt change and comparing F1 /
+missed_merges is how you improve resolution with data.
+
+**Measured baseline (qwen3.6:35b-mlx, chunked_lector v1):** `pair_f1 ≈ 0.85`,
+`over_merges 0`, `missed_merges 8` — all from "the old man" getting a separate
+`the_old_man` id instead of resolving to `silas_vane`. **`chunked_lector.v2`**
+targets exactly this: the entities-so-far block now carries each character's
+archetype + appearance, and the prompt has an explicit rule to resolve epithets
+("the old man", "the keeper") to an established id. Re-run steps 2 (with
+`--fresh`, to bypass the cache) and 5, and compare — a higher F1 / lower
+`missed_merges` means the coreference change worked.
 
 ## 6. Incremental cache — re-run should be cheap
 
