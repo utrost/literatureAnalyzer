@@ -322,7 +322,12 @@ class BeatDivergence(BaseModel):
 
 
 class SectionArcPair(BaseModel):
-    """One aligned chapter's arc, compared across two analyses (S3)."""
+    """One aligned chapter, compared across two analyses (S3).
+
+    Carries the chapter's arc fidelity (``similarity``) and — when both sides
+    grouped beats under chapters — the beat count on each side plus their
+    agreement (``beat_similarity``), so pacing drift localizes per chapter.
+    """
 
     index: int = Field(ge=0, description="Reading-order position the two chapters were aligned at.")
     title_a: str | None = None
@@ -331,15 +336,22 @@ class SectionArcPair(BaseModel):
     best_b: str
     same_best: bool
     curve_distance: float = Field(ge=0.0, description="z-scored RMSE between the two chapter arcs.")
-    similarity: float = Field(ge=0.0, le=1.0)
+    similarity: float = Field(ge=0.0, le=1.0, description="Per-chapter arc fidelity.")
+    beats_a: int | None = None
+    beats_b: int | None = None
+    beat_similarity: float | None = Field(
+        default=None, ge=0.0, le=1.0, description="Per-chapter beat-count agreement (pacing)."
+    )
 
 
 class HierarchyDivergence(BaseModel):
-    """Per-level (per-chapter) arc fidelity (S3, book scale).
+    """Per-level (per-chapter) fidelity (S3, book scale).
 
     Whole-text `shape` says the books rise-and-fall alike; this says whether they
     do so *chapter by chapter*. Chapters are aligned by reading order; a count
     mismatch is penalized via ``alignment`` (unaligned chapters score zero).
+    ``beat_similarity`` is present only when both analyses group beats under
+    chapters — it measures per-chapter pacing, distinct from the arc shape.
     """
 
     count_a: int
@@ -347,6 +359,9 @@ class HierarchyDivergence(BaseModel):
     alignment: float = Field(ge=0.0, le=1.0, description="Chapter-count agreement; 1.0 = equal counts.")
     pairs: list[SectionArcPair] = Field(default_factory=list)
     similarity: float = Field(ge=0.0, le=1.0, description="Mean per-chapter arc similarity, scaled by alignment.")
+    beat_similarity: float | None = Field(
+        default=None, ge=0.0, le=1.0, description="Mean per-chapter beat-count agreement, scaled by alignment."
+    )
 
 
 class Divergence(BaseModel):

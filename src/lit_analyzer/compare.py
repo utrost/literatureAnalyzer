@@ -80,21 +80,57 @@ def _shape_divergence(a: ShapeMatch, b: ShapeMatch) -> ShapeDivergence:
     )
 
 
-def _hierarchy_divergence(
-    arcs_a: list[SectionArc], arcs_b: list[SectionArc]
-) -> HierarchyDivergence:
-    """Per-chapter arc fidelity, aligning chapters by reading order.
+def _count_agreement(a: int, b: int) -> float:
+    """1.0 when equal, decaying with the relative gap. Symmetric."""
+    return 1.0 - abs(a - b) / max(a, b, 1)
 
-    A count mismatch is penalized: only ``min(len_a, len_b)`` chapters align, and
-    the mean per-chapter similarity is scaled by ``alignment`` so extra/missing
-    chapters can't be hidden by the aligned ones scoring well.
+
+def _beats_per_chapter(analysis) -> list[int] | None:
+    """Beat count under each chapter section, in reading order — or None.
+
+    None when the analysis isn't chaptered with beats grouped (a flat story, or
+    a structure whose leaves don't carry beat_ids). Reads the structure tree, so
+    it reflects how the analyzer actually grouped beats, not a re-derivation.
     """
+    if analysis.structure is None or analysis.beats is None:
+        return None
+    chapters = [s for s in _walk_chapters(analysis.structure)]
+    if not chapters:
+        return None
+    counts = [len(sec.beat_ids) for sec in chapters]
+    return counts if any(counts) else None
+
+
+def _walk_chapters(section):
+    if section.level == "chapter":
+        yield section
+        return
+    for child in section.children:
+        yield from _walk_chapters(child)
+
+
+def _hierarchy_divergence(a, b) -> HierarchyDivergence:
+    """Per-chapter fidelity — arc shape and (when available) beat pacing.
+
+    Chapters align by reading order. A count mismatch is penalized: only
+    ``min(len_a, len_b)`` chapters align, and every mean is scaled by
+    ``alignment`` so extra/missing chapters can't hide behind aligned ones.
+    """
+    arcs_a, arcs_b = a.section_arcs, b.section_arcs
     ca, cb = len(arcs_a), len(arcs_b)
-    alignment = 1.0 - abs(ca - cb) / max(ca, cb, 1)
+    alignment = _count_agreement(ca, cb)
+
+    beats_a = _beats_per_chapter(a)
+    beats_b = _beats_per_chapter(b)
+    have_beats = beats_a is not None and beats_b is not None
+
     pairs: list[SectionArcPair] = []
     for i in range(min(ca, cb)):
         sa, sb = arcs_a[i], arcs_b[i]
         same, dist, sim = _arc_distance_similarity(sa.shape, sb.shape)
+        ba = beats_a[i] if have_beats and i < len(beats_a) else None
+        bb = beats_b[i] if have_beats and i < len(beats_b) else None
+        beat_sim = round(_count_agreement(ba, bb), 4) if ba is not None and bb is not None else None
         pairs.append(
             SectionArcPair(
                 index=i,
@@ -105,15 +141,22 @@ def _hierarchy_divergence(
                 same_best=same,
                 curve_distance=round(dist, 4),
                 similarity=round(sim, 4),
+                beats_a=ba,
+                beats_b=bb,
+                beat_similarity=beat_sim,
             )
         )
-    mean_pair = _mean([p.similarity for p in pairs])
+
+    mean_arc = _mean([p.similarity for p in pairs])
+    beat_sims = [p.beat_similarity for p in pairs if p.beat_similarity is not None]
+    beat_similarity = round(_mean(beat_sims) * alignment, 4) if beat_sims else None
     return HierarchyDivergence(
         count_a=ca,
         count_b=cb,
         alignment=round(alignment, 4),
         pairs=pairs,
-        similarity=round(mean_pair * alignment, 4),
+        similarity=round(mean_arc * alignment, 4),
+        beat_similarity=beat_similarity,
     )
 
 
@@ -201,7 +244,7 @@ def compare(a, b) -> Divergence:
     beats = _beat_divergence(a.beats, b.beats) if a.beats and b.beats else None
     # Hierarchy only when both are chaptered (a flat story has no section_arcs).
     hierarchy = (
-        _hierarchy_divergence(a.section_arcs, b.section_arcs)
+        _hierarchy_divergence(a, b)
         if a.section_arcs and b.section_arcs
         else None
     )
@@ -213,6 +256,8 @@ def compare(a, b) -> Divergence:
         sims.append(beats.similarity)
     if hierarchy is not None:
         sims.append(hierarchy.similarity)
+        if hierarchy.beat_similarity is not None:
+            sims.append(hierarchy.beat_similarity)
 
     return Divergence(
         source_a=a.source,

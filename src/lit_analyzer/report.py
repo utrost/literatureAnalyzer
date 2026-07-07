@@ -262,25 +262,38 @@ def render_divergence(div: Divergence) -> str:
         )
     if div.hierarchy is not None:
         h = div.hierarchy
+        pacing = f", pacing {_pct(h.beat_similarity)}" if h.beat_similarity is not None else ""
         lines.append(
             f"| hierarchy | {_pct(h.similarity)} | {h.count_a}→{h.count_b} chapters, "
-            f"alignment {_pct(h.alignment)} |"
+            f"alignment {_pct(h.alignment)}{pacing} |"
         )
     lines.append("")
 
-    # S3: per-chapter arc fidelity — does the book rise and fall alike chapter by chapter?
+    # S3: per-chapter fidelity — does the book rise/fall (and pace) alike chapter by chapter?
     if div.hierarchy is not None and div.hierarchy.pairs:
-        lines.append("## Per-chapter arc fidelity")
+        has_beats = any(p.beat_similarity is not None for p in div.hierarchy.pairs)
+        lines.append("## Per-chapter fidelity")
         lines.append("")
-        lines.append("| # | A | B | shape A → B | arc dist | fidelity |")
-        lines.append("|---|---|---|---|---|---|")
+        head = "| # | A | B | shape A → B | arc dist | arc fidelity |"
+        sep = "|---|---|---|---|---|---|"
+        if has_beats:
+            head += " beats A → B | pacing |"
+            sep += "---|---|"
+        lines.append(head)
+        lines.append(sep)
         for p in div.hierarchy.pairs:
             shp = "same" if p.same_best else f"{p.best_a} → {p.best_b}"
             mark = "" if p.similarity >= 0.6 else " ⚠️"
-            lines.append(
+            row = (
                 f"| {p.index + 1} | {p.title_a or ''} | {p.title_b or ''} | {shp} | "
                 f"{p.curve_distance:.2f} | {_pct(p.similarity)}{mark} |"
             )
+            if has_beats:
+                bmark = "" if (p.beat_similarity or 0) >= 0.6 else " ⚠️"
+                beats = f"{p.beats_a} → {p.beats_b}" if p.beats_a is not None else "—"
+                pace = _pct(p.beat_similarity) + bmark if p.beat_similarity is not None else "—"
+                row += f" {beats} | {pace} |"
+            lines.append(row)
         lines.append("")
 
     lines.append("## Style axes")
