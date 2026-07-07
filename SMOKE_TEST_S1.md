@@ -35,7 +35,14 @@ uv run deconstruct examples/the_clockmaker_of_veil_street.txt
 ```
 
 **Expect:** a report with a **"Structure (per-chapter arc)"** table listing `ch1…ch5`
-(CHAPTER I…V), each with its own shape/sparkline, plus the whole-text shape.
+(CHAPTER I…V), each with its own shape/sparkline, plus the whole-text shape. The
+report also carries a Mermaid **`xychart`** of the arc and, under Structure, a
+Mermaid **`graph`** of the book → chapter → beat hierarchy. Write it to a file and
+open it on GitHub (or any Mermaid-aware viewer) to see the diagrams render:
+
+```bash
+uv run deconstruct examples/the_clockmaker_of_veil_street.txt -o clockmaker.report.md
+```
 
 ## 2. Deep run — the chunked path
 
@@ -47,6 +54,17 @@ uv run deconstruct examples/the_clockmaker_of_veil_street.txt --deep \
 Because the text is chaptered, `analyze()` routes through the **chunked Lector**
 (one call per chapter, fed the entities-so-far) and merges the results. The
 per-chapter `WorldDiff`s and the derived event log are in the JSON.
+
+Render the same deep analysis as the **Markdown dossier** to eyeball it whole:
+
+```bash
+uv run deconstruct --from clockmaker.json -o clockmaker.deep.md
+```
+
+**Expect:** on top of the arc/style/world sections, a **"World history (event
+log)"** with a Mermaid **`timeline`** (introduced / state_changed / secret_learned,
+grouped by chapter) plus a full event table, and a **"World by chapter"** roster.
+This is steps 3–4 below, but legible — the world as a *history*, rendered.
 
 ## 3. Check entity ids are consistent across chapters
 
@@ -135,11 +153,48 @@ unchanged). `--fresh` forces full recompute. Inspect the cache:
 sqlite3 out/analyses/chunks.sqlite "SELECT count(*) FROM chapter_diffs;"
 ```
 
-## 7. (Optional) close the loop with Endless
+## 7. Close the loop with Endless — the one-file handoff
 
-The S1 world can still feed the round-trip: `--emit-endless out/handoff/`, copy
-into Endless, `story --resume <id>`, then re-analyze and `--compare`. See
-`USER_GUIDE.md` Part 4.
+The S1 world feeds the round-trip. The **new** path is a single self-contained
+document instead of a bundle + copy dance: `--emit-endless <file> --as-doc`.
+
+```bash
+uv run deconstruct examples/the_clockmaker_of_veil_street.txt --deep \
+  --emit-endless clockmaker.handoff.md --as-doc
+```
+
+**Expect:** one Markdown file — the readable dossier (arc, style, world, event-log
+timeline, all the diagrams) on top, then an **"## Endless handoff"** section whose
+fenced blocks are wrapped in `<!-- endless:begin world.json -->` … `end` sentinels.
+Confirm all four artifacts are embedded:
+
+```bash
+grep -o 'endless:begin [^ ]*' clockmaker.handoff.md
+# → meta.json, world.json, plan.json, styles/the_clockmaker_of_veil_street.yaml
+```
+
+Then in an **Endless** checkout, author straight from that one file — no copies,
+no config edits:
+
+```bash
+cd $ENDLESS
+uv run story --from-doc /path/to/clockmaker.handoff.md --skip-preflight
+```
+
+**Expect:** an `ingested … → run <id>, style '…', shape '…'` line, then normal
+generation — Endless skips seeding and planning (the embedded `world.json` /
+`plan.json` are unpacked into `out/runs/<id>/`) and writes a **new story in the
+deconstructed structure and voice**. The style is installed into Endless's
+`data/styles/` automatically. Lossless: the embedded blocks are the exact
+shared-contract types, re-validated on ingest — the file is legible to *you* and
+loadable by the machine at once.
+
+**Close it fully (optional):** re-analyze the generated story and `--compare` it
+to `clockmaker.json` for a round-trip fidelity number. See `USER_GUIDE.md` Part 4.
+
+> The old **bundle** form still works when you'd rather have loose files: drop
+> `--as-doc` and `--emit-endless out/handoff/` writes `runs/<id>/{meta,world,plan}.json`
+> + `styles/<name>.yaml` + a `HOWTO.md` with the manual copy steps.
 
 ---
 
@@ -150,8 +205,10 @@ into Endless, `story --resume <id>`, then re-analyze and `--compare`. See
 | structure | 5 chapters, each with a per-chapter arc |
 | ids across chapters | Ada/Silas/Bram each one id throughout |
 | event log | Ada `state_changed` several times; `secret_learned` in ch3 |
+| report | Markdown dossier renders the arc `xychart`, hierarchy `graph`, and event-log `timeline` |
 | eval | `pair_f1` high; any `missed_merges` traceable to "the old man" |
 | incremental | step-6 re-run near-instant; edit last chapter → 1 re-extract |
+| handoff | `--as-doc` embeds all four artifacts; Endless `--from-doc` ingests and authors from them |
 
 If the ids fracture (Ada as `ada`, `the_apprentice`, `the_girl` in different
 chapters) that's the signal to strengthen `prompts/chunked_lector.v1.md` on
