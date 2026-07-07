@@ -86,3 +86,54 @@ def test_transposition_defaults():
     assert spec.directives == []
     assert spec.renames == {}
     assert spec.style is None
+
+
+# ---- S3 increment 3: persistent entity map for book-scale transposition ---------
+
+from lit_analyzer.schemas import WorldDiff
+from lit_analyzer.transform import apply_entity_map_to_diffs, build_entity_map
+
+
+def _reskinned(_world):
+    """The world after a reskin: same ids, new names (cyberpunk retelling)."""
+    return WorldSeed(
+        characters=[
+            Character(id="jim", name="N-7", appearance="a droid", wants="freedom", emotional_state="hopeful"),
+            Character(id="huck", name="Kade", appearance="a youth", wants="to escape", emotional_state="restless"),
+        ],
+        locations=[Location(id="river", name="The Conduit", description="a data-stream")],
+        chekhov_objects=[ChekhovObject(id="raft", name="skiff", description="mag-lev")],
+        protagonist_id="huck",
+    )
+
+
+def test_build_entity_map_records_every_entity_by_id():
+    emap = build_entity_map(_world(), _reskinned(_world()))
+    assert emap.name_for("jim") == "N-7"
+    assert emap.name_for("river") == "The Conduit"
+    assert emap.name_for("raft") == "skiff"
+    # original names preserved for inspection
+    m = {x.id: x for x in emap.mappings}
+    assert m["jim"].original_name == "Jim" and m["jim"].new_name == "N-7"
+    assert {x.kind for x in emap.mappings} == {"character", "location", "object"}
+
+
+def test_apply_entity_map_renames_every_chapter_diff_consistently():
+    emap = build_entity_map(_world(), _reskinned(_world()))
+    # Jim appears (as "Jim") in two different chapters' diffs
+    diffs = [
+        WorldDiff(section_id="ch1", characters=[Character(id="jim", name="Jim", appearance="", wants="", emotional_state="hopeful")]),
+        WorldDiff(section_id="ch4", characters=[Character(id="jim", name="Jim", appearance="", wants="", emotional_state="weary")]),
+    ]
+    out = apply_entity_map_to_diffs(diffs, emap)
+    # same id → same new name in BOTH chapters (the whole point)
+    assert [d.characters[0].name for d in out] == ["N-7", "N-7"]
+    # per-chapter state is untouched — only the name is remapped
+    assert [d.characters[0].emotional_state for d in out] == ["hopeful", "weary"]
+
+
+def test_unmapped_id_in_a_diff_is_left_alone():
+    emap = build_entity_map(_world(), _reskinned(_world()))
+    diffs = [WorldDiff(section_id="ch2", characters=[Character(id="ghost", name="Ghost", appearance="", wants="", emotional_state="")])]
+    out = apply_entity_map_to_diffs(diffs, emap)
+    assert out[0].characters[0].name == "Ghost"  # not in the map → unchanged

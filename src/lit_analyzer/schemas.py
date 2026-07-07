@@ -248,6 +248,34 @@ class WorldEvent(BaseModel):
     note: str | None = None
 
 
+class EntityMapping(BaseModel):
+    """One entity's rename under a transposition (S3): id + old → new name."""
+
+    id: str
+    kind: Literal["character", "location", "object"]
+    original_name: str
+    new_name: str
+
+
+class EntityMap(BaseModel):
+    """The global, stable id → new-name table from a transposition (S3).
+
+    Built once from the reskinned merged world, then applied deterministically to
+    the merged world *and* every per-chapter ``WorldDiff`` — so a character reskins
+    identically in every chapter instead of the model renaming it differently
+    chunk to chunk. Persisted on the transposed ``StoryAnalysis`` so the mapping
+    is inspectable and reproducible.
+    """
+
+    mappings: list[EntityMapping] = Field(default_factory=list)
+
+    def name_for(self, entity_id: str) -> str | None:
+        for m in self.mappings:
+            if m.id == entity_id:
+                return m.new_name
+        return None
+
+
 class StoryAnalysis(BaseModel):
     """Top-level deconstruction of one story.
 
@@ -272,6 +300,9 @@ class StoryAnalysis(BaseModel):
     # and the story-time event log derived from them. Empty for whole-text extraction.
     world_diffs: list[WorldDiff] = Field(default_factory=list)
     world_events: list[WorldEvent] = Field(default_factory=list)
+    # S3 (transposition): the global id → new-name table, present only on a
+    # transposed analysis. Applied identically across world + world_diffs.
+    entity_map: EntityMap | None = None
 
 
 # ---------- Divergence (the fidelity critic, §8.5) --------------------------

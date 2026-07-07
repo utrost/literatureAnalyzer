@@ -184,6 +184,17 @@ def render(analysis: StoryAnalysis) -> str:
             lines.append("Chekhov objects: " + ", ".join(o.name for o in a.world.chekhov_objects))
         lines.append("")
 
+    # S3: the transposition's global rename table, when present.
+    if getattr(a, "entity_map", None) is not None and a.entity_map.mappings:
+        lines.append("## Entity map (transposition)")
+        lines.append("")
+        lines.append("| id | kind | original | → new |")
+        lines.append("|---|---|---|---|")
+        for m in a.entity_map.mappings:
+            arrow = "→ **" + m.new_name + "**" if m.new_name != m.original_name else "(unchanged)"
+            lines.append(f"| `{m.id}` | {m.kind} | {m.original_name} | {arrow} |")
+        lines.append("")
+
     # S1 (book scale): the story-time event log — the world as a history, not a
     # snapshot. Only present for a chunked (chaptered, --deep) analysis.
     if a.world_events:
