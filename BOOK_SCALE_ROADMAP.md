@@ -46,7 +46,7 @@ The prerequisite everything else depends on. Additive schema work; no scale yet.
 - **Shared contract (done):** `Section` (book/part/chapter/scene tree), `BeatPlan.structure: Section | None` (None = flat), and `Shape.children` for nested arcs — added verbatim to both repos. Every field defaults to None/empty, so all existing flows are unchanged.
 - **Analyzer (done):** `segment.chapter_spans` + `structure.build_structure` produce a `Section` tree (markerless → one chapter); `analyze()` attaches `structure` and per-chapter `section_arcs` (multi-scale arc) deterministically; the report shows a per-chapter arc table.
 - **Endless (done):** schema synced; the orchestrator still iterates `plan.beats`, so flat generation is untouched and a structured plan round-trips (tests confirm).
-- **Deferred to S1:** mapping beats → sections (populating `beat_ids`) needs the LLM beats and the chunked Lector; per-level *generation* is S2. S0 lays the structure; S1/S2 fill and consume it.
+- **Beats → sections bridge (✅ done in S1):** a chaptered book now gets beats labeled *per chapter*, namespaced by section (`ch1_eq`), and nested under the structure (each chapter's `beat_ids` populated) — a hierarchical `BeatPlan`. The flat `beats` list is unchanged for existing consumers; Endless still iterates it. Per-level *generation* remains S2.
 - **Exit (met):** schemas + segmentation landed; all existing tests pass unchanged; a chaptered text yields a real tree + per-chapter arcs, a short story a one-node tree.
 
 ### Phase S1 — Chunked analysis + world graph *(Analyzer)* → **R2 novella** — 🚧 in progress

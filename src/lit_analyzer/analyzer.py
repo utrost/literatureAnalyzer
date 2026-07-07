@@ -78,9 +78,14 @@ def analyze(
     if beats is not None:
         analysis.beats = beats
     elif deep_config is not None:
-        from .roles import beat_labeler  # deferred
+        if _is_chaptered(story_structure):
+            # S1 bridge: label beats per chapter and nest them under the
+            # structure (populate Section.beat_ids) -> a hierarchical BeatPlan.
+            analysis.beats = _hierarchical_beats(deep_config, text, section_arcs)
+        else:
+            from .roles import beat_labeler  # deferred
 
-        analysis.beats = beat_labeler.label_beats(deep_config, text=text, shape=shape.best)
+            analysis.beats = beat_labeler.label_beats(deep_config, text=text, shape=shape.best)
 
     if classification is not None:
         analysis.classification = classification
@@ -95,6 +100,35 @@ def analyze(
 def _is_chaptered(story_structure) -> bool:
     """True when the deterministic structure found more than one chapter."""
     return story_structure is not None and story_structure.level == "book"
+
+
+def _hierarchical_beats(deep_config, text: str, section_arcs) -> BeatPlan:
+    """Label beats per chapter and assemble a hierarchical BeatPlan (S1 bridge).
+
+    Each chapter is labeled against its own (multi-scale) arc; its beat ids are
+    namespaced by the section (``ch1_eq``) so they stay unique across the book.
+    The flat ``beats`` list (all chapters, reading order) is what existing
+    consumers use; ``structure`` groups them by populating each chapter's
+    ``beat_ids``. Endless still iterates the flat list; the hierarchy is there
+    for book-scale generation and round-trip comparison.
+    """
+    from .schemas import BeatPlan, Section
+    from .roles import beat_labeler
+
+    shape_by_section = {sa.section_id: sa.shape.best for sa in section_arcs}
+    flat: list = []
+    chapters: list[Section] = []
+    for section_id, title, body in structure.chapters(text):
+        plan = beat_labeler.label_beats(
+            deep_config, text=body, shape=shape_by_section.get(section_id, "man_in_hole")
+        )
+        beat_ids: list[str] = []
+        for b in plan.beats:
+            nb = b.model_copy(update={"id": f"{section_id}_{b.id}"})
+            flat.append(nb)
+            beat_ids.append(nb.id)
+        chapters.append(Section(id=section_id, level="chapter", title=title, beat_ids=beat_ids))
+    return BeatPlan(beats=flat, structure=Section(id="book", level="book", children=chapters))
 
 
 def _chunked_world_diffs(deep_config, text: str, chunk_cache=None):
