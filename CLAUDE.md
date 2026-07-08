@@ -8,7 +8,11 @@ A personal tool that **deconstructs** human-written stories into structure — t
 inverse of the [Endless](https://github.com/utrost/Endless) story engine.
 Endless goes structure → prose; this goes prose → structure: emotional arc
 (Shape), prose style (StyleProfile), world graph (WorldSeed), and functional
-beats (BeatPlan). Single user, single machine, local-first. Phase 0 is shipped.
+beats (BeatPlan). Single user, single machine, local-first via Ollama — or any
+hosted provider (OpenRouter/OpenAI/Anthropic) for the `--deep` passes, key in
+`.env`. Phase 0 shipped; book-scale analysis (S1: chunked extraction + world
+graph) and the hierarchical round-trip (S3: per-chapter `compare()`, persistent
+transposition entity map) are in.
 
 The design doc (`literature_analyzer_design.md`) is the canonical source of
 intent and is defined by inversion from Endless — read Endless's
@@ -20,7 +24,9 @@ intent and is defined by inversion from Endless — read Endless's
 `WorldSeed`, `BeatPlan` — so this tool's **output** is Endless's **input**. That
 copy is a contract. If you change one of these fields, change it in Endless too,
 or the round-trip breaks. The analysis-only types (`ArcSample`, `ShapeMatch`,
-`StyleEvidence`, `StoryAnalysis`) are ours to evolve freely.
+`StyleEvidence`, `StoryAnalysis`, plus the S1/S3 additions `Section`, `SectionArc`,
+`WorldDiff`, `WorldEvent`, the `Divergence`/`HierarchyDivergence` family, and the
+transposition `EntityMap`) are ours to evolve freely.
 
 ## Repo layout
 
@@ -39,10 +45,10 @@ src/lit_analyzer/
 ├── lexicon.py          # tiny built-in sentiment lexicon (bag-of-words fallback)
 ├── arc.py              # arc sampling + shape classification (deterministic)
 ├── metrics.py          # prose → StyleProfile (deterministic)
-├── compare.py          # fidelity critic: two StoryAnalysis → Divergence (§8.5)
-├── transform.py        # transposition: retell in a new setting/voice (§8.7)
-├── bridge.py           # emit an analysis as an Endless handoff bundle (--emit-endless)
-├── report.py           # StoryAnalysis / Divergence → Markdown
+├── compare.py          # fidelity critic: two StoryAnalysis → Divergence, hierarchical per-chapter (§8.5, S3)
+├── transform.py        # transposition + persistent EntityMap across chapters (§8.7, S3)
+├── bridge.py           # emit an Endless handoff — bundle dir, or one-file --as-doc
+├── report.py           # StoryAnalysis / Divergence → Markdown, with Mermaid diagrams
 ├── config.py           # YAML → Pydantic (only for --deep)
 ├── store.py            # content-addressed cache for --deep artifacts (§4.2)
 ├── llm.py              # slim LiteLLM+Instructor wrapper, lazy-imported
@@ -78,21 +84,31 @@ numbers as evidence rather than hiding a guess.
 
 1. **`provider: ollama` → `ollama_chat`.** `/api/generate` skips chat templates.
    `llm.py` normalizes it; don't undo.
-2. **Local models need `Mode.JSON`, not `Mode.TOOLS`.** Handled in `llm.py`.
+2. **Local models need `Mode.JSON`, not `Mode.TOOLS`.** Handled in `llm.py` —
+   which now auto-picks JSON for Ollama/OpenRouter and tool-calls for
+   OpenAI/Anthropic (override per role with `json_mode`).
 3. **Set `max_tokens`.** Ollama silently truncates otherwise.
 4. **Thinking models burn budget reasoning.** `thinking: false` per role.
+
+## Cloud vs local for `--deep`
+
+The deterministic core needs no model. The `--deep` roles can run on Ollama or a
+hosted provider: set the role's `provider` (`openrouter`/`openai`/`anthropic`)
+and put the key in `.env` (loaded automatically on the deep path; see
+`.env.example`). Handy for modest hardware or faster iteration. The determinism
+boundary is unchanged — dotenv/litellm stay lazy behind the deep extra.
 
 ## How to verify changes locally
 
 ```bash
 uv sync
-uv run pytest
-uv run deconstruct examples/the_lantern.txt          # deterministic report
+uv run pytest                                        # deterministic tests only
+uv run deconstruct examples/the_lantern.txt          # deterministic report (Mermaid arc)
 uv run deconstruct examples/the_lantern.txt -f json  # raw StoryAnalysis
 
-# Deep passes (needs the extra + a pulled model):
+# Deep passes (needs the extra + a pulled Ollama model OR a cloud key in .env):
 uv sync --extra deep
-uv run deconstruct examples/the_lantern.txt --deep
+uv run deconstruct examples/the_clockmaker_of_veil_street.txt --deep   # chaptered → S1 path
 ```
 
 ## Tools and integrations

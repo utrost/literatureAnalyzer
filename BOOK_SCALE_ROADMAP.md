@@ -49,7 +49,7 @@ The prerequisite everything else depends on. Additive schema work; no scale yet.
 - **Beats → sections bridge (✅ done in S1):** a chaptered book now gets beats labeled *per chapter*, namespaced by section (`ch1_eq`), and nested under the structure (each chapter's `beat_ids` populated) — a hierarchical `BeatPlan`. The flat `beats` list is unchanged for existing consumers; Endless still iterates it. Per-level *generation* remains S2.
 - **Exit (met):** schemas + segmentation landed; all existing tests pass unchanged; a chaptered text yields a real tree + per-chapter arcs, a short story a one-node tree.
 
-### Phase S1 — Chunked analysis + world graph *(Analyzer)* → **R2 novella** — 🚧 in progress
+### Phase S1 — Chunked analysis + world graph *(Analyzer)* → **R2 novella** — ✅ shipped (deterministic backbone; LLM-quality tuning ongoing)
 
 The biggest single lift on the analysis side.
 
@@ -72,24 +72,27 @@ The biggest single lift on the analysis side.
 - **Storage → SQLite:** event-log table + materialized views; chunk-level incremental cache (re-analyze only changed chapters).
 - **Exit:** deconstruct a ~30k-word chaptered novella into a coherent hierarchical `StoryAnalysis`; entity-resolution accuracy measured on a small labeled sample.
 
-### Phase S2 — Retrieval + consistency generation *(Endless)* → **R3 novella→short novel**
+### Phase S2 — Retrieval + consistency generation *(Endless)* → **R3 novella→short novel** — ✅ exit met
 
 The generation side catches up to the same structures.
 
-- **Hierarchical planner:** top-down — macro-outline → chapter outlines → per-chapter beats, each a bounded call.
-- **Retrieval-fed Author:** graph queries + a vector index over prior scenes supply per-beat context, superseding the pure rolling synopsis.
-- **Editor role (now mandatory):** consistency check against the graph with regen on contradiction — the deferred role becomes load-bearing.
-- **Shared graph:** Endless writes to the same event-sourced graph the analyzer reads/produces.
-- **Exit:** generate a ~30k-word novella that holds together — a full read-through / Editor pass with no continuity breaks.
+*Increment 1 shipped (hierarchical planner):* `bookplan.py` plans a book as an *arc of arcs* — the `book_planner` role sketches a macro `BookOutline` (chapter briefs), each brief is concretized into a chapter's beats by the existing per-chapter planner, and `assemble_book_plan` folds them into one hierarchical `BeatPlan` (beat ids namespaced by chapter, `structure.beat_ids` populated). Word budgeting across chapters (`budget_chapters`) and the assembly are deterministic and tested; it's symmetric with the analyzer's `_hierarchical_beats` — both sides speak the same hierarchical plan.
 
-### Phase S3 — Book-scale round-trip & transposition *(both)*
+- **Hierarchical planner:** ✅ built *and wired* — `story.chapters` / `--chapters N` routes generation through the book planner (increment 2). The generation loop iterates the flat `plan.beats`, which for a book is every chapter's beats in reading order, with the rolling synopsis keeping context bounded and per-beat checkpointing.
+- **Retrieval-fed Author:** ✅ (increment 3) `retrieval.py` supplies per-beat characters-in-play + tails of recent scenes that mention them, superseding the pure rolling synopsis. Deterministic; book-mode only.
+- **Editor role:** ✅ (increment 4) `roles/editor.py` consistency-checks each drafted scene against the world and regenerates once on a contradiction; a defensive fallback keeps the draft if the structured call fails.
+- **Exit (met):** a 26,977-word / 6-chapter / 30-beat novella generated end to end and read through clean — arc honored globally, no surviving continuity breaks (smoke test, qwen3.6:35b-mlx). ✅
+
+*What the run measured (and the next lever it points at):* the Editor forced a regen on **16 of 30 beats (53%)**, ~80% on a **small set of mutable object/location/lock invariants** (where the Iron Key is, whether a door is locked, the compass direction). Retrieval surfaces character *state* and recent *prose*, but nothing materializes current object/location/lock state, so the Author guesses and the Editor catches it (a full call each). *Efficiency work landed since:* an **arc-position directive** (`state.py`, `ENDLESS_ARC_STATE`) targeting premature-resolution regens, and a **beat-execution checklist** (`checklist.py`, `ENDLESS_BEAT_CHECKLIST`) targeting the largest class — beat-plan non-execution (missing/forbidden events + premature secret reveals). A JSON-log A/B harness (`SMOKE_TEST_ARCSTATE.md`) measures them. The **object/location/lock** materialized state (needs a generation-time extractor) is the open item.
+
+### Phase S3 — Book-scale round-trip & transposition *(both)* — ✅ compare + mapping shipped
 
 Make the loop's critics and transforms work at scale.
 
-- **Hierarchical `compare()`:** arc similarity per level, per-chapter beat alignment, entity-mapping-aware world overlap — so fidelity still means something over a book.
-- **Persistent mapping table:** transposition keeps a global, stable entity map so the same character reskins/renames identically in *every* chapter (today's deterministic `--rename` is the seed).
-- **Cost controls:** per-role model tiers (cheap for extraction, strong for authoring), safe parallelism across independent chunks, aggressive chunk caching.
-- **Exit:** full round-trip on a novella (analyze → transpose → generate → re-analyze → compare) yielding a meaningful hierarchical fidelity score.
+- **Hierarchical `compare()`:** ✅ per-chapter arc fidelity (inc 1) + per-chapter beat pacing (inc 2), aligned by reading order and scaled by chapter alignment. Per-chapter *arc* is a **diagnostic** (excluded from `overall`) because a per-chapter sentiment curve is reword-sensitive and faithful regeneration rewords by design; per-chapter *pacing* (beat counts, reword-robust) counts. Whole-text shape/style/world still score globally.
+- **Persistent mapping table:** ✅ (inc 3) `transpose()` freezes the reskin as an `EntityMap` (id → new name) applied identically to the merged world *and* every per-chapter `WorldDiff`, so a character reskins the same way in every chapter. Persisted on the analysis, rendered as a table.
+- **Cost controls:** per-role model tiers now trivially available — any role can point at a cheap/strong hosted model or a local one (cloud support shipped in both repos). Safe parallelism + aggressive chunk caching still open (S4).
+- **Exit (met by eyeball):** a generated novella round-tripped (generate → deconstruct → re-deconstruct → `--compare`) with a believable per-chapter fidelity picture; validated on the S1↔S2 decide gate and the arc-state A/B. Full transpose→generate→compare loop still worth a live run.
 
 ### Phase S4 — Scale-up & hardening → **R4 full novel**
 
