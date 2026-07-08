@@ -1,6 +1,10 @@
 # Literature Analyzer — Design Document
 
-*Personal project. Audience of one. Status: draft v0.1 — phase 0 shipped. The
+*Personal project. Audience of one. Status: draft v0.2 — phase 0 shipped, plus
+book-scale S0/S1 (chunked extraction + event-sourced world graph + SQLite) and
+S3 (hierarchical `compare()`, persistent transposition entity map), and
+first-class cloud providers for `--deep`. See §9 and
+[`BOOK_SCALE_ROADMAP.md`](./BOOK_SCALE_ROADMAP.md). The
 companion to [Endless](https://github.com/utrost/Endless); read that project's
 `story_engine_design.md` first, because this one is defined by inversion.*
 
@@ -251,7 +255,7 @@ the two layers explicit is what stops that imbalance from recurring.
 | **Objects / Chekhov guns** | props that carry narrative weight | contract | `WorldSeed.chekhov_objects` | ✅ shipped (`--deep`) |
 | **Beats** | functional segmentation of the plot | contract | `BeatPlan` | ✅ shipped (`--deep`) |
 | **Character development** | each character's *change* across the story | contract† | — (needs new field) | ⏳ next (v1) |
-| **Act hierarchy** | acts → sequences → scenes nesting the flat beats | contract† | — (needs nested `BeatPlan`) | ⏳ v1 |
+| **Act hierarchy** | acts → sequences → scenes nesting the flat beats | contract† | `Section` tree + `BeatPlan.structure` | ✅ shipped (S0/S1: chapter segmentation → `Section` tree, per-chapter arcs, per-chapter beats) |
 | **Relationships / social graph** | who's tied to whom, and how it shifts | contract† | — (needs edges on the graph) | later |
 | **Conflict / stakes** | the dramatic question; what's at risk and against what | analysis‡ | — (Endless scores it, no slot) | later |
 | **Timeline / chronology** | story-time vs. narration-order; flashbacks, threads | analysis‡ | — | later |
@@ -383,11 +387,21 @@ belongs where generation lives.
 similarities (shape: same-best + z-scored arc distance; style: per-axis deltas;
 world: name/protagonist overlap; beats: id/count overlap) and an overall score in
 [0, 1]. Deterministic, offline, rendered by `report.render_divergence`. World and
-beats are compared only when both sides ran `--deep`. What's still manual is the
-*end-to-end automation* — the actual analyze → invoke Endless → analyze chain
-crosses repos; today you bridge with `--emit-endless`, generate in Endless, then
-`--compare` the two analyses. Both halves exist; only the one-command orchestration
-across the two tools doesn't.
+beats are compared only when both sides ran `--deep`.
+
+*Hierarchical (S3):* for a chaptered book, `compare()` also scores **per-chapter**
+fidelity — chapters aligned by reading order, each pair getting an arc comparison
+and a beat-**pacing** (count) comparison, scaled by chapter alignment. Per-chapter
+*arc* is a **diagnostic only** (excluded from `overall`): a per-chapter sentiment
+window is dominated by word choice, so a faithful regeneration — which rewords by
+design — moves it even when the structure holds. Per-chapter *pacing* (beat counts,
+reword-robust) does count. This localizes drift to the chapter it happened in
+rather than averaging it away. What's still manual is the *end-to-end automation* —
+the analyze → invoke Endless → analyze chain crosses repos; today you bridge with
+`--emit-endless` (a bundle dir or a one-file `--as-doc` handoff), generate in
+Endless (`--from-doc` ingests the one-file form directly), then `--compare` the two
+analyses. Both halves exist; only the one-command orchestration across the two tools
+doesn't.
 
 So: no third repo. A third project would duplicate Endless's judge and add a
 *third* schema contract to keep in sync — cost, no benefit. The **round-trip
@@ -497,6 +511,20 @@ ties" must survive the jump to a new world. That's the make-or-break LLM judgmen
 *Scaling from short stories to book length is its own multi-phase effort spanning
 both repos — see [`BOOK_SCALE_ROADMAP.md`](./BOOK_SCALE_ROADMAP.md).*
 
+**Book scale (S0 / S1 / S3) — ✅ shipped on the analysis side.** The scaling track
+delivered, deterministically and behind the same `--deep` boundary: **chapter
+segmentation** → a `Section` tree + per-chapter (multi-scale) arcs (S0); a
+**chunked Lector** emitting a `WorldDiff` per chapter, an entity-resolving
+**merge** into one `WorldSeed`, a story-time **event log** with SQLite
+persistence, a chunk-level **incremental cache**, and an **entity-resolution eval**
+(S1); and, closing the loop, **hierarchical `compare()`** (per-chapter arc +
+pacing) plus a **persistent transposition `EntityMap`** so a character reskins
+identically in every chapter (S3). The enriched report renders Mermaid diagrams
+(arc chart, chapter hierarchy, event-log timeline), and the Endless handoff has a
+one-file `--as-doc` form. Remaining S1 work is LLM-quality (coreference tuning,
+measured by the eval), not architecture. This overtook parts of the linear v1/v2
+below.
+
 **v0 — Phase 0. ✅ shipped.**
 - Deterministic arc classifier (sampled sentiment → Reagan six by z-scored RMSE).
 - Deterministic prose metrics → `StyleProfile` + `StyleEvidence` + exemplars.
@@ -546,10 +574,15 @@ way to see a whole shelf.
 
 ## 10. What's NOT here yet
 
-Real sentiment model, labeled eval set, round-trip fidelity metric, corpus-level
-comparison, better sentence segmentation. The dimensions still on the map — POV,
-character development, act hierarchy, per-character voice, relationships, genre,
+Real sentiment model, a labeled eval set to *score* arc/style classification,
+corpus-level comparison, better sentence segmentation. *(Shipped since first
+draft: the round-trip fidelity metric — now hierarchical — and act/chapter
+hierarchy; both moved from this list into §9.)* The dimensions still on the map —
+POV, character development, per-character voice, relationships, genre,
 conflict/stakes, pacing, timeline, themes, tone — are laid out across the two
 layers in §8; the sequencing is in §9. Also open: structural-template
 classification (three-act / hero's journey / …), and lifting the conflict-arc
-assumption so conflict-optional structures like Kishōtenketsu fit (§8.2).
+assumption so conflict-optional structures like Kishōtenketsu fit (§8.2). On the
+S1 side, op-based world *mutations* (moves/removes beyond introduce/change/learn)
+and materialized-state *views* over the event table remain; coreference quality
+is the live tuning target, measured by the entity-resolution eval.
