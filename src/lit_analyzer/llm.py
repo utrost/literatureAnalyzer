@@ -12,6 +12,7 @@ skips chat templates, and local models need ``Mode.JSON`` not ``Mode.TOOLS``.
 
 from __future__ import annotations
 
+import os
 from importlib import resources
 from typing import TypeVar
 
@@ -20,6 +21,25 @@ from pydantic import BaseModel
 from .config import ModelConfig
 
 T = TypeVar("T", bound=BaseModel)
+
+_env_loaded = False
+
+
+def load_env() -> None:
+    """Load a local .env once so hosted-provider API keys are picked up.
+
+    Only relevant on the --deep (cloud) path; a no-op without python-dotenv or a
+    .env file, so the deterministic core is unaffected.
+    """
+    global _env_loaded
+    if _env_loaded:
+        return
+    _env_loaded = True
+    try:
+        from dotenv import load_dotenv
+    except ImportError:
+        return
+    load_dotenv()
 
 
 class DeepDependencyError(RuntimeError):
@@ -35,7 +55,24 @@ def _require_deep_deps():
             "The --deep passes need the 'deep' extra. Install it with "
             "`uv sync --extra deep` (adds litellm + instructor)."
         ) from exc
+    load_env()  # cloud keys from .env, once we know we're on the deep path
     return instructor, litellm
+
+
+def _resolve_api_key(cfg: ModelConfig) -> str | None:
+    return os.environ.get(cfg.api_key_env) if cfg.api_key_env else None
+
+
+def _instructor_mode(instructor, cfg: ModelConfig):
+    """JSON for Ollama/OpenRouter, tool-calls for OpenAI/Anthropic; json_mode overrides."""
+    if cfg.json_mode is True:
+        return instructor.Mode.JSON
+    if cfg.json_mode is False:
+        return instructor.Mode.TOOLS
+    provider = _normalize_provider(cfg.provider)
+    if provider.startswith("ollama") or provider.startswith("openrouter"):
+        return instructor.Mode.JSON
+    return instructor.Mode.TOOLS
 
 
 def _normalize_provider(provider: str) -> str:
@@ -52,6 +89,9 @@ def _extra_kwargs(cfg: ModelConfig) -> dict:
     kwargs: dict = {"temperature": cfg.temperature}
     if cfg.endpoint:
         kwargs["api_base"] = cfg.endpoint
+    api_key = _resolve_api_key(cfg)
+    if api_key:
+        kwargs["api_key"] = api_key
     if cfg.max_tokens is not None:
         kwargs["max_tokens"] = cfg.max_tokens
     normalized = _normalize_provider(cfg.provider)
@@ -76,12 +116,7 @@ def call_structured(
 ) -> T:
     """Call an LLM and validate output against a Pydantic model."""
     instructor, litellm = _require_deep_deps()
-    mode = (
-        instructor.Mode.JSON
-        if _normalize_provider(cfg.provider).startswith("ollama")
-        else instructor.Mode.TOOLS
-    )
-    client = instructor.from_litellm(litellm.completion, mode=mode)
+    client = instructor.from_litellm(litellm.completion, mode=_instructor_mode(instructor, cfg))
     return client.create(
         model=_model_id(cfg),
         messages=[

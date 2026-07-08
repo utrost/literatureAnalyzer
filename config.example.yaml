@@ -4,6 +4,17 @@
 #
 # provider: ollama is auto-normalized to ollama_chat (same fix as Endless —
 # /api/generate skips chat templates).
+#
+# Cloud / hosted models (no GPU, faster): set a role's provider to openrouter,
+# openai, or anthropic and put the key in .env (OPENROUTER_API_KEY etc. — see
+# .env.example; loaded automatically on --deep). Structured extraction uses JSON
+# mode for Ollama/OpenRouter and tool-calls for OpenAI/Anthropic; override with
+# `json_mode: true|false`. Example role:
+#   lector:
+#     provider: openrouter
+#     model: anthropic/claude-3.5-sonnet
+#     max_tokens: 4000
+#     # api_key_env: OPENROUTER_API_KEY   # only for a non-standard var name
 
 deep:
   lector:

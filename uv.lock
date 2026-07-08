@@ -723,6 +723,7 @@ dependencies = [
 deep = [
     { name = "instructor" },
     { name = "litellm" },
+    { name = "python-dotenv" },
     { name = "structlog" },
 ]
 
@@ -736,6 +737,7 @@ requires-dist = [
     { name = "instructor", marker = "extra == 'deep'", specifier = ">=1.6" },
     { name = "litellm", marker = "extra == 'deep'", specifier = ">=1.50" },
     { name = "pydantic", specifier = ">=2.7" },
+    { name = "python-dotenv", marker = "extra == 'deep'", specifier = ">=1.0" },
     { name = "pyyaml", specifier = ">=6.0" },
     { name = "structlog", marker = "extra == 'deep'", specifier = ">=24.1" },
     { name = "typer", specifier = ">=0.12" },
