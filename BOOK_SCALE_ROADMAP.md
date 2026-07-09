@@ -163,3 +163,22 @@ Our recent implementation of the **Asset Library, Genre Classification, Trope Ta
 ### 4. Recombination Playground & CLI Steerability (Phase S0 / S2)
 - Expose direct CLI arguments in Endless to override styles, worlds, and templates directly (`--style`, --world-seed, `--beat-template`). This allows rapid, programmatic testing of book-scale recombination recipes without having to constantly edit `config.yaml` or write template files.
 
+---
+
+## A third element — the Story Workbench (proposed)
+
+Analyzer produces a deconstruction; Endless consumes it; today the only way to intervene between them is hand-editing JSON. The **Workbench** is the human-in-the-loop **editing surface over the shared handoff** — read a `StoryAnalysis` / `--as-doc` handoff, tweak the arc, world, beats, and style, validate, and emit a handoff Endless ingests. It re-implements *neither* analysis nor generation: its whole job is **view → edit → validate → emit** over the existing contract. (Name TBD, but **not** "Editor" — that already names the LLM consistency role in Endless. Candidates: Workbench, Loom, Bench, Studio.)
+
+This directly serves the recurring "let a user easily alter a deconstruction as input for a new story" need. The seam already exists: `--as-doc` emits the editable artifact, `--from-doc` ingests it — the Workbench sits in the middle of that pipe with a UI.
+
+**Finish first (these de-risk the Workbench and are worth doing regardless):**
+
+1. **Extract the shared schema into a package.** The four contract types (`Shape`/`StyleProfile`/`WorldSeed`/`BeatPlan`) are copied *verbatim* across two repos today. Two copies is tolerable; a **third consumer is where "copy verbatim" stops scaling** (we already had to hand-reconcile a drifted roadmap — schema drift would silently break the round-trip). Pull them into a tiny shared package all three import, so the Workbench builds against the contract from day one. **Load-bearing; do before the GUI.**
+2. **Build the headless "edit core."** Load a deconstruction → apply *typed* edits → validate (good errors) → re-emit a handoff, as a tested, deterministic unit. The Workbench GUI is a thin front-end over this; building it headless-first keeps editing logic in the clean, unit-tested style and yields a **non-GUI CLI editing path** (`--set …` / overrides) immediately.
+
+**Open design decisions (deferred until we build):**
+- **Repo:** a new sibling repo (keeps a stateful, heavier-dep GUI out of the two clean CLI/library repos — the leaning) vs. a package inside `literatureAnalyzer`.
+- **GUI stack:** a lightweight local web MVP (Gradio/Streamlit, schema-driven forms, localhost — the leaning for a single-user local-first tool) vs. a full FastAPI + React app vs. a TUI.
+
+**In parallel (not blocking):** *measure* the stacked Author aids — retrieval / arc-position / checklist / world-state — via the `ENDLESS_*` env toggles + `SMOKE_TEST_ARCSTATE.md`, so the generator the Workbench feeds is known-good. Tier-3 loose ends remain: one-command cross-repo round-trip orchestration; op-based world mutations + materialized views (S1 analyzer); coreference tuning (`chunked_lector.v2`, measured by the eval); a labeled eval set to *score* arc/style classification; and POV-filtered Context (Endless's remaining Author-context gap).
+
