@@ -8,7 +8,13 @@ dependencies = [
     "typer>=0.12",
     "pyyaml>=6.0",
     "vadersentiment>=3.3.2",
+    "story-contract",
 ]
+
+# The shared schema contract lives in ./contract as its own tiny package, so
+# Endless can depend on just it (via git). Here it's a local path source.
+[tool.uv.sources]
+story-contract = { path = "contract", editable = true }
 
 # The deterministic core (arc + metrics) needs nothing above. LLM-powered
 # extraction (Lector, beat labeler) lives behind `--deep` and this extra so
