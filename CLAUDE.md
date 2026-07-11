@@ -20,13 +20,16 @@ intent and is defined by inversion from Endless — read Endless's
 
 ## The contract with Endless (do not break)
 
-`schemas.py` copies four types from Endless verbatim — `Shape`, `StyleProfile`,
-`WorldSeed`, `BeatPlan` — so this tool's **output** is Endless's **input**. That
-copy is a contract. If you change one of these fields, change it in Endless too,
-or the round-trip breaks. The analysis-only types (`ArcSample`, `ShapeMatch`,
-`StyleEvidence`, `StoryAnalysis`, plus the S1/S3 additions `Section`, `SectionArc`,
+The four contract types — `Shape`, `StyleProfile`, `WorldSeed`, `BeatPlan` (+
+parts) — live once in the **`story_contract`** package (`./contract`, this repo)
+and are imported by both tools, so this tool's **output** is Endless's **input**
+from the *same* definition. `schemas.py` re-exports them; **don't re-define them
+there.** To change a contract field, edit `contract/src/story_contract/`, then in
+Endless `uv lock --upgrade-package story-contract`; `tests/test_contract.py`
+guards structural drift. The analysis-only types (`ArcSample`, `ShapeMatch`,
+`StyleEvidence`, `StoryAnalysis`, plus the S1/S3 additions `SectionArc`,
 `WorldDiff`, `WorldEvent`, the `Divergence`/`HierarchyDivergence` family, and the
-transposition `EntityMap`) are ours to evolve freely.
+transposition `EntityMap`) stay in `schemas.py` and are ours to evolve freely.
 
 ## Repo layout
 
@@ -52,7 +55,8 @@ src/lit_analyzer/
 ├── config.py           # YAML → Pydantic (only for --deep)
 ├── store.py            # content-addressed cache for --deep artifacts (§4.2)
 ├── llm.py              # slim LiteLLM+Instructor wrapper, lazy-imported
-├── schemas.py          # shared contract + analysis-only types
+├── schemas.py          # analysis-only types; re-exports the shared contract from story_contract
+contract/               # the story_contract package — the shared 4-type contract (both tools import it)
 ├── prompts/*.v1.md     # versioned prompts for the LLM roles
 └── roles/              # lector, chunked_lector, beat_labeler, classifier, reskinner, beat_recaster
 examples/               # sample stories (public-domain / self-authored)
