@@ -58,6 +58,17 @@ def _deconstruct(
         "--as-style",
         help="Retell in this voice: a StyleProfile or analysis.json (e.g. one extracted from another author).",
     ),
+    set_edit: list[str] = typer.Option(
+        None,
+        "--set",
+        help="Edit a field before emitting (repeatable): 'world.characters.silas.wants=to escape', "
+        "'shape.best=tragedy', 'beats.ch2_fall.required_events=a|b' ('|' → list). Lists index by id.",
+    ),
+    validate: bool = typer.Option(
+        False,
+        "--validate",
+        help="Report contract issues (bad protagonist id, duplicate/dangling ids) and stop, unless --emit-endless is also given.",
+    ),
     out: Path = typer.Option(
         None,
         "--out",
@@ -116,6 +127,28 @@ def _deconstruct(
     else:
         typer.echo("provide a FILE to analyze, or --from analysis.json to reload", err=True)
         raise typer.Exit(code=2)
+
+    # Headless edit core: apply typed field edits to the deconstruction before
+    # anything downstream consumes it (transpose / emit / compare / render).
+    if set_edit:
+        from . import edits
+
+        try:
+            analysis = edits.apply_edits(analysis, set_edit)
+        except edits.EditError as exc:
+            typer.echo(f"edit failed: {exc}", err=True)
+            raise typer.Exit(code=2)
+
+    if validate:
+        from . import edits
+
+        issues = edits.validate_contract(analysis)
+        for msg in issues:
+            typer.echo(f"⚠ {msg}", err=True)
+        typer.echo(f"{len(issues)} contract issue(s)" if issues else "contract OK", err=True)
+        # --validate is a lint: report and stop, unless the user also asked to emit.
+        if emit_endless is None:
+            raise typer.Exit(code=1 if issues else 0)
 
     if transpose_to is not None:
         analysis = _transpose(

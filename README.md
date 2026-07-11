@@ -70,6 +70,28 @@ uv run deconstruct examples/the_lantern.txt --deep -f json -o analysis.json
 uv run deconstruct --from analysis.json                 # re-render as Markdown
 ```
 
+## Editing a deconstruction (`--set`) before regenerating
+
+Tweak the extracted structure and hand the result to Endless — no hand-editing
+JSON. `--set path=value` (repeatable) edits contract fields in place, re-validates
+against the schema, and flows into `--emit-endless` / `--transpose` / `--compare`:
+
+```bash
+uv run deconstruct --from analysis.json \
+  --set "world.characters.silas.wants=to escape the tithe" \
+  --set "beats.fall.required_events=Silas confronts Kael|the light fails" \
+  --set "shape.best=tragedy" \
+  --emit-endless edited.handoff.md --as-doc      # → Endless: story --from-doc edited.handoff.md
+```
+
+Paths are dotted; lists whose items have an `id` (characters, locations, objects,
+beats) index by that id, and a `|` splits a list value. `--validate` lints the
+contract (bad `protagonist_id`, duplicate or dangling ids) and stops — a cheap
+pre-flight before regenerating. Edits land in the **structured** artifacts, never
+in prose; a bad value is rejected by schema validation rather than silently
+shipped. This is the headless engine a future Story Workbench GUI draws forms over
+(see `BOOK_SCALE_ROADMAP.md`).
+
 ## Transpose a story (retell it elsewhere, in another voice)
 
 The capstone: deconstruct a story, keep its **bones**, swap its **surface**, and
