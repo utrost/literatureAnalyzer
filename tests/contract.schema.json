@@ -1,0 +1,534 @@
+{
+  "BeatPlan": {
+    "$defs": {
+      "Beat": {
+        "properties": {
+          "forbidden_events": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Forbidden Events",
+            "type": "array"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "mood": {
+            "title": "Mood",
+            "type": "string"
+          },
+          "pov": {
+            "title": "Pov",
+            "type": "string"
+          },
+          "rationale": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Rationale"
+          },
+          "required_events": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Required Events",
+            "type": "array"
+          },
+          "shape_function": {
+            "title": "Shape Function",
+            "type": "string"
+          },
+          "target_words": {
+            "exclusiveMinimum": 0,
+            "title": "Target Words",
+            "type": "integer"
+          },
+          "tropes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Tropes",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "shape_function",
+          "target_words",
+          "pov",
+          "required_events",
+          "mood"
+        ],
+        "title": "Beat",
+        "type": "object"
+      },
+      "Section": {
+        "properties": {
+          "beat_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Beat Ids",
+            "type": "array"
+          },
+          "children": {
+            "items": {
+              "$ref": "#/$defs/Section"
+            },
+            "title": "Children",
+            "type": "array"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "level": {
+            "enum": [
+              "book",
+              "part",
+              "chapter",
+              "scene"
+            ],
+            "title": "Level",
+            "type": "string"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Title"
+          }
+        },
+        "required": [
+          "id",
+          "level"
+        ],
+        "title": "Section",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "_meta": {
+        "anyOf": [
+          {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Meta"
+      },
+      "beats": {
+        "items": {
+          "$ref": "#/$defs/Beat"
+        },
+        "title": "Beats",
+        "type": "array"
+      },
+      "structure": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/Section"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null
+      }
+    },
+    "required": [
+      "beats"
+    ],
+    "title": "BeatPlan",
+    "type": "object"
+  },
+  "Shape": {
+    "$defs": {
+      "Shape": {
+        "properties": {
+          "beats": {
+            "items": {
+              "$ref": "#/$defs/ShapeBeat"
+            },
+            "title": "Beats",
+            "type": "array"
+          },
+          "children": {
+            "items": {
+              "$ref": "#/$defs/Shape"
+            },
+            "title": "Children",
+            "type": "array"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "beats"
+        ],
+        "title": "Shape",
+        "type": "object"
+      },
+      "ShapeBeat": {
+        "properties": {
+          "function": {
+            "title": "Function",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "valence": {
+            "maximum": 1.0,
+            "minimum": -1.0,
+            "title": "Valence",
+            "type": "number"
+          },
+          "weight": {
+            "default": 1.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Weight",
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "valence",
+          "function"
+        ],
+        "title": "ShapeBeat",
+        "type": "object"
+      }
+    },
+    "$ref": "#/$defs/Shape"
+  },
+  "StyleProfile": {
+    "$defs": {
+      "StyleAxes": {
+        "properties": {
+          "description_density": {
+            "enum": [
+              "sparse",
+              "medium",
+              "lush"
+            ],
+            "title": "Description Density",
+            "type": "string"
+          },
+          "dialogue_attribution": {
+            "enum": [
+              "minimal",
+              "conventional",
+              "elaborate"
+            ],
+            "title": "Dialogue Attribution",
+            "type": "string"
+          },
+          "diction_register": {
+            "enum": [
+              "formal",
+              "colloquial",
+              "archaic",
+              "technical"
+            ],
+            "title": "Diction Register",
+            "type": "string"
+          },
+          "latinate_ratio": {
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ],
+            "title": "Latinate Ratio",
+            "type": "string"
+          },
+          "psychic_distance": {
+            "enum": [
+              "far",
+              "medium",
+              "close"
+            ],
+            "title": "Psychic Distance",
+            "type": "string"
+          },
+          "sentence_length_mean": {
+            "title": "Sentence Length Mean",
+            "type": "integer"
+          },
+          "sentence_length_variance": {
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ],
+            "title": "Sentence Length Variance",
+            "type": "string"
+          },
+          "show_tell_ratio": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Show Tell Ratio",
+            "type": "number"
+          }
+        },
+        "required": [
+          "sentence_length_mean",
+          "sentence_length_variance",
+          "diction_register",
+          "latinate_ratio",
+          "psychic_distance",
+          "show_tell_ratio",
+          "description_density",
+          "dialogue_attribution"
+        ],
+        "title": "StyleAxes",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "_meta": {
+        "anyOf": [
+          {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Meta"
+      },
+      "authored_brief": {
+        "title": "Authored Brief",
+        "type": "string"
+      },
+      "axes": {
+        "$ref": "#/$defs/StyleAxes"
+      },
+      "exemplars": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Exemplars",
+        "type": "array"
+      },
+      "id": {
+        "title": "Id",
+        "type": "string"
+      },
+      "name": {
+        "title": "Name",
+        "type": "string"
+      }
+    },
+    "required": [
+      "id",
+      "name",
+      "axes",
+      "authored_brief"
+    ],
+    "title": "StyleProfile",
+    "type": "object"
+  },
+  "WorldSeed": {
+    "$defs": {
+      "Character": {
+        "properties": {
+          "appearance": {
+            "title": "Appearance",
+            "type": "string"
+          },
+          "archetype": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Archetype"
+          },
+          "emotional_state": {
+            "title": "Emotional State",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "secret": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Secret"
+          },
+          "wants": {
+            "title": "Wants",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "appearance",
+          "wants",
+          "emotional_state"
+        ],
+        "title": "Character",
+        "type": "object"
+      },
+      "ChekhovObject": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description"
+        ],
+        "title": "ChekhovObject",
+        "type": "object"
+      },
+      "Location": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description"
+        ],
+        "title": "Location",
+        "type": "object"
+      },
+      "Secret": {
+        "properties": {
+          "content": {
+            "title": "Content",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "known_by": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Known By",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "content"
+        ],
+        "title": "Secret",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "_meta": {
+        "anyOf": [
+          {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Meta"
+      },
+      "characters": {
+        "items": {
+          "$ref": "#/$defs/Character"
+        },
+        "title": "Characters",
+        "type": "array"
+      },
+      "chekhov_objects": {
+        "items": {
+          "$ref": "#/$defs/ChekhovObject"
+        },
+        "title": "Chekhov Objects",
+        "type": "array"
+      },
+      "locations": {
+        "items": {
+          "$ref": "#/$defs/Location"
+        },
+        "title": "Locations",
+        "type": "array"
+      },
+      "protagonist_id": {
+        "title": "Protagonist Id",
+        "type": "string"
+      },
+      "secrets": {
+        "items": {
+          "$ref": "#/$defs/Secret"
+        },
+        "title": "Secrets",
+        "type": "array"
+      }
+    },
+    "required": [
+      "characters",
+      "locations",
+      "protagonist_id"
+    ],
+    "title": "WorldSeed",
+    "type": "object"
+  }
+}
